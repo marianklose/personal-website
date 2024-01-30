@@ -1,0 +1,44 @@
+[
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "personal-website",
+    "section": "",
+    "text": "This is a Quarto website.\nTo learn more about Quarto websites visit https://quarto.org/docs/websites.\n\n1 + 1\n\n[1] 2"
+  },
+  {
+    "objectID": "about.html",
+    "href": "about.html",
+    "title": "About",
+    "section": "",
+    "text": "About this site\n\n1 + 1\n\n[1] 2"
+  },
+  {
+    "objectID": "posts/2024-01-30/index.html",
+    "href": "posts/2024-01-30/index.html",
+    "title": "xxx",
+    "section": "",
+    "text": "Lorem Ipsum"
+  },
+  {
+    "objectID": "posts.html",
+    "href": "posts.html",
+    "title": "Neuigkeiten",
+    "section": "",
+    "text": "xxx\n\n\n\ntest\n\n\ntest2\n\n\n\nxxx\n\n\n\nMarian Klose\n\n\nJan 24, 2024\n\n\n\n\n\n\n\n\nNo matching items"
+  },
+  {
+    "objectID": "publications.html",
+    "href": "publications.html",
+    "title": "Test",
+    "section": "",
+    "text": "Lorem Ipsum"
+  },
+  {
+    "objectID": "publications/publications.html",
+    "href": "publications/publications.html",
+    "title": "Publications",
+    "section": "",
+    "text": "Hooijmaijers, Richard, Ridhi Parasrampuria, Eleonora Marostica, Geraldine Ferron‐Brady, Teun M. Post, and Sandra A. G. Visser. 2023. “Building an Adaptive Dose Simulation Framework to Aid Dose and Schedule Selection.” CPT: Pharmacometrics & Systems Pharmacology, September. https://doi.org/10.1002/psp4.13027.\n\n\nSandborn, William J., and Stephen B. Hanauer. 2002. “Infliximab in the Treatment of Crohn’s Disease: A User’s Guide for Clinicians.” American Journal of Gastroenterology 97 (December): 2962–72. https://doi.org/10.1111/j.1572-0241.2002.07093.x.\n\n\nSyversen, Silje Watterdal, Kristin Kaasen Jørgensen, Guro Løvik Goll, Marthe Kirkesæther Brun, Øystein Sandanger, Kristin Hammersbøen Bjørlykke, Joseph Sexton, et al. 2021. “Effect of Therapeutic Drug Monitoring Vs Standard Therapy During Maintenance Infliximab Therapy on Disease Control in Patients with Immune-Mediated Inflammatory Diseases.” JAMA 326 (December): 2375. https://doi.org/10.1001/jama.2021.21316.\n\n\nTaylor, Zachary L., Ethan A. Poweleit, Kelli Paice, Katherine M. Somers, Kathryn Pavia, Alexander A. Vinks, Nieko Punt, Tomoyuki Mizuno, and Sonya Tang Girdwood. 2023. “Tutorial on Model Selection and Validation of Model Input into Precision Dosing Software for Model‐informed Precision Dosing.” CPT: Pharmacometrics & Systems Pharmacology 12 (December): 1827–45. https://doi.org/10.1002/psp4.13056."
+  }
+]

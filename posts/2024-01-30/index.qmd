@@ -1,0 +1,14 @@
+---
+title: "xxx"
+description: "xxx"
+author:
+  - name: Marian Klose
+    url: https://github.com/marianklose
+    orcid: 0009-0005-1706-6289
+date: 01-24-2024
+categories: [test, test2] # self-defined categories
+image: preview.jpg
+draft: false # setting this to `true` will prevent your post from appearing on your listing page until you're ready!
+---
+
+Lorem Ipsum

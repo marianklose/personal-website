@@ -1,0 +1,9 @@
+---
+title: "Publications"
+bibliography: references.bib
+nocite: |
+  @*
+---
+
+::: {#refs}
+:::
