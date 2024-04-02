@@ -1,11 +1,21 @@
 ---
-title: "personal-website"
+title: "Marian Klose"
+toc: false
+about:
+    template: trestles
+    links:
+        - icon: linkedin
+          text: LinkedIn
+          url: https://www.linkedin.com/in/marian-klose/
+        - icon: github
+          text: Github
+          url: https://github.com/marianklose
+        - text: "{{< fa envelope >}} Email"
+          url: mailto:marian.klose@fu-berlin.de
+image: img/profile_picture.jpg
+comments: false
 ---
 
-This is a Quarto website.
+## About me
 
-To learn more about Quarto websites visit <https://quarto.org/docs/websites>.
-
-```{r}
-1 + 1
-```
+I'm currently a PhD student at [Freie Universitaet Berlin](https://www.bcp.fu-berlin.de/en/pharmazie/faecher/klinische_pharmazie/arbeitsgruppe_kloft/mitarbeiter/Doktoranden_innen/klose_marian/index.html) and member of the graduate research training program [PharMetrX](https://www.pharmetrx.de/). I am supervised by [Prof. Charlotte Kloft](https://www.bcp.fu-berlin.de/en/pharmazie/faecher/klinische_pharmazie/arbeitsgruppe_kloft/mitarbeiter/Leiterin/kloft_charlotte/index.html) (Freie Universitaet Berlin) and co-supervised by [Prof. Wilhelm Huisinga](https://www.math.uni-potsdam.de/en/professuren/mathematical-modelling-and-systems-biology/team/translate-to-english-prof-dr-wilhelm-huisinga) (University of Potsdam). My research focuses on how pharmacometric tools used within so-called *model-informed precision dosing* frameworks can be further optimised. Currently this means to investigate how full Bayesian approaches can be applied to our domain of pharmacometrics. 

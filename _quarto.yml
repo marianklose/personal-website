@@ -2,12 +2,11 @@ project:
   type: website
 
 website:
-  title: "personal-website"
+  title: "Marian Klose"
   navbar:
     left:
       - href: publications/publications.qmd
         text: Publications
-    right:
       - text: "Blog"
         href: posts.qmd
 
