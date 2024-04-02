@@ -7,34 +7,6 @@
     "text": "Klose M, Cristofoletti R, Silva CM, Mangal N, Turgeon J, Michaud V, Lesko LJ, Schmidt S. Exploring the impact of CYP2D6 and UGT2B7 gene-drug interactions, and CYP-mediated DDI on oxycodone and oxymorphone pharmacokinetics using physiologically-based pharmacokinetic modeling and simulation. Eur J Pharm Sci. 2024 Mar 1;194:106689. doi: 10.1016/j.ejps.2023.106689. Epub 2024 Jan 1. PMID: 38171419.\nColombo I, Koster KL, Holer L, Haefliger S, Rabaglio M, Bastian S, Schwitter M, Eckhardt K, Hayoz S, Mc Laughlin AM, Kloft C, Klose M, Halbherr S, Baumgartner C, Sessa C, Stathis A, Hess D, Joerger M. TLD-1, a novel liposomal doxorubicin, in patients with advanced solid tumors: Dose escalation and expansion part of a multicenter open-label phase I trial (SAKK 65/16). Eur J Cancer. 2024 Apr;201:113588. doi: 10.1016/j.ejca.2024.113588. Epub 2024 Feb 2. PMID: 38377773."
   },
   {
-    "objectID": "posts/2024-01-30/index.html",
-    "href": "posts/2024-01-30/index.html",
-    "title": "xxx",
-    "section": "",
-    "text": "Lorem Ipsum"
-  },
-  {
-    "objectID": "index.html",
-    "href": "index.html",
-    "title": "Marian Klose",
-    "section": "",
-    "text": "I’m currently a PhD student at Freie Universitaet Berlin and member of the graduate research training program PharMetrX. I am supervised by Prof. Charlotte Kloft (Freie Universitaet Berlin) and co-supervised by Prof. Wilhelm Huisinga (University of Potsdam). My research focuses on how pharmacometric tools used within so-called model-informed precision dosing frameworks can be further optimised. Currently this means to investigate how full Bayesian approaches can be applied to our domain of pharmacometrics."
-  },
-  {
-    "objectID": "index.html#about-me",
-    "href": "index.html#about-me",
-    "title": "Marian Klose",
-    "section": "",
-    "text": "I’m currently a PhD student at Freie Universitaet Berlin and member of the graduate research training program PharMetrX. I am supervised by Prof. Charlotte Kloft (Freie Universitaet Berlin) and co-supervised by Prof. Wilhelm Huisinga (University of Potsdam). My research focuses on how pharmacometric tools used within so-called model-informed precision dosing frameworks can be further optimised. Currently this means to investigate how full Bayesian approaches can be applied to our domain of pharmacometrics."
-  },
-  {
-    "objectID": "posts.html",
-    "href": "posts.html",
-    "title": "Neuigkeiten",
-    "section": "",
-    "text": "xxx\n\n\n\ntest\n\n\ntest2\n\n\n\nxxx\n\n\n\nMarian Klose\n\n\nJan 24, 2024\n\n\n\n\n\n\n\n\nNo matching items"
-  },
-  {
     "objectID": "publications/publications.html#section",
     "href": "publications/publications.html#section",
     "title": "Publications",
@@ -61,5 +33,33 @@
     "title": "Publications",
     "section": "2021",
     "text": "2021\n\nMichelet R, Weinelt FA, Klose M, Mc Laughlin AM, Kluwe F, Montefusco-Pereira C, Van Dyk M, Vay M, Huisinga W, Kloft C, Mikus G. Using microdose-based activity measurement to individualise dosing of cytochrome P450 metabolised drugs: a case study with yohimbine and tamoxifen. PAGE 2021: Clinical Applications. Available from: https://www.page-meeting.org/default.asp?abstract=9807."
+  },
+  {
+    "objectID": "posts/2024-01-30/index.html",
+    "href": "posts/2024-01-30/index.html",
+    "title": "xxx",
+    "section": "",
+    "text": "Lorem Ipsum"
+  },
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "Marian Klose",
+    "section": "",
+    "text": "I’m currently a PhD student at Freie Universitaet Berlin and member of the graduate research training program PharMetrX. I am supervised by Prof. Charlotte Kloft (Freie Universitaet Berlin) and co-supervised by Prof. Wilhelm Huisinga (University of Potsdam). My research focuses on how pharmacometric tools used within so-called model-informed precision dosing frameworks can be further optimised. Currently this means to investigate how full Bayesian approaches can be applied to our domain of pharmacometrics."
+  },
+  {
+    "objectID": "index.html#about-me",
+    "href": "index.html#about-me",
+    "title": "Marian Klose",
+    "section": "",
+    "text": "I’m currently a PhD student at Freie Universitaet Berlin and member of the graduate research training program PharMetrX. I am supervised by Prof. Charlotte Kloft (Freie Universitaet Berlin) and co-supervised by Prof. Wilhelm Huisinga (University of Potsdam). My research focuses on how pharmacometric tools used within so-called model-informed precision dosing frameworks can be further optimised. Currently this means to investigate how full Bayesian approaches can be applied to our domain of pharmacometrics."
+  },
+  {
+    "objectID": "posts.html",
+    "href": "posts.html",
+    "title": "Neuigkeiten",
+    "section": "",
+    "text": "xxx\n\n\n\ntest\n\n\ntest2\n\n\n\nxxx\n\n\n\nMarian Klose\n\n\nJan 24, 2024\n\n\n\n\n\n\n\n\nNo matching items"
   }
 ]
