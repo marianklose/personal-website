@@ -1,3 +1,9 @@
 .custom-callout .callout-header .callout-title-container {
     color: black !important; /* Forces the title color to black */
 }
+
+/* Reduce padding around the entire grid */
+.custom-grid {
+    padding: 10px; /* Adjust this value as needed */
+    margin: 0 auto; /* Centers the grid, if desired */
+}

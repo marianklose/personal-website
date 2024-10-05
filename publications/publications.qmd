@@ -1,13 +1,13 @@
 ---
 title: "Publications" 
-toc: false
+toc: true
 format:
   html:
     css: styles.css
 ---
 
 
-::: {.grid}
+::: {.grid .custom-grid}
 
 ::: {.g-col-6}
 ::: {.callout-note appearance="light" .custom-callout icon=false }
@@ -24,8 +24,6 @@ format:
 :::
 
 :::
-
-
 
 
 
@@ -57,6 +55,16 @@ Journal: Cancer Chemother Pharmacol
 Publication Date: 2024-09  
 DOI: [10.1007/s00280-024-04679-z](https://doi.org/10.1007/s00280-024-04679-z){target="_blank"}    
 Authors: Mc Laughlin AM, Hess D, Michelet R, Colombo I, Haefliger S, Bastian S, Rabaglio M, Schwitter M, Fischer S, Eckhardt K, Hayoz S, Kopp C, <u>Klose M</u>, Sessa C, Stathis A, Halbherr S, Huisinga W, Joerger M, Kloft C.  
+:::
+
+
+::: {.callout-caution  appearance="light" .custom-callout icon=false collapse="true"}
+## Machine learning-driven flattening of model priors: A comparative simulation study across multiple compounds
+
+Event: PAGE (2024) 
+Publication Date: 2024-06-26   
+Link: [https://www.page-meeting.org/default.asp?abstract=10858](https://www.page-meeting.org/default.asp?abstract=10858){target="_blank"}  
+Authors: <u>Klose M</u>, Thoma F, Kovar L, Huisinga W, Michelet R, Kloft C.   
 :::
 
 
