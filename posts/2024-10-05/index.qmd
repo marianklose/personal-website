@@ -1,0 +1,37 @@
+---
+title: "About this blog"
+description: "Some motivations and disclaimers"
+author:
+  - name: Marian Klose
+    url: https://github.com/marianklose
+    orcid: 0009-0005-1706-6289
+date: 10-05-2024
+categories: [Motivation, Disclaimer] # self-defined categories
+image: preview.jpg
+draft: false # setting this to `true` will prevent your post from appearing on your listing page until you're ready!
+---
+
+## Motivation
+
+As someone involved in pharmacometrics, I’ve often found that many concepts are either poorly documented or explained in such technical language that they become hard to grasp (at least for me). This can be quite frustrating when you’re trying to learn or understand something new for which you don't have a suitable mathematical and statistical background. 
+
+There are many nice blogs and articles in the field of pharmacometrics, such as
+
+- [Danielle Navarro](https://blog.djnavarro.net/)
+- [PMX Solutions](https://www.pmxsolutions.com/)
+- [Tingjie Guo’s NMHelp](https://nmhelp.tingjieguo.com/)
+- [mrgsolve](https://mrgsolve.org/blog/)
+
+For instance, Danielle Navarro’s post on [population pharmacokinetic models in stan](https://blog.djnavarro.net/posts/2023-06-10_pop-pk-models/) was incredibly helpful in my understanding of implementing pop-PK models in Stan. She just explained the concepts in a very easy-to-understand way and it is at the same time quite entertaining to read. Please check out her blog, if you haven't already!
+
+I often explain new concepts to myself using Quarto or RMarkdown documents and I thought I might as well share them as little blog posts. While I don’t expect to match the quality of the blogs I've mentioned, I still hope that some posts can be helpful to others who are tackling similar challenges.
+
+
+## Disclaimers
+
+Before diving in, a few things to note:
+
+- I’m not an expert in everything I write about; I’m learning as I go and simply documenting my process. Expect some mistakes along the way!
+- English is not my first language, so I rely on tools like ChatGPT and DeepL to help with writing. I also use tools like ChatGPT to generate ideas or to find good ways to visualize concepts.
+- I do my best to give credit where it’s due and cite sources when appropriate. Much of what I share builds on others’ work, and I’m not trying to reinvent the wheel. 
+

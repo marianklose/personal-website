@@ -28,52 +28,45 @@
     "text": "2021\n\n\n\n\n\n\nEvaluation of the MeroRisk Calculator, A User-Friendly Tool to Predict the Risk of Meropenem Target Non-Attainment in Critically Ill Patients\n\n\n\n\n\nJournal: Antibiotics (Basel)\nPublication Date: 2021-04-20\nDOI: 10.3390/antibiotics10040468\nAuthors: Liebchen U, Klose M, Paal M, Vogeser M, Zoller M, Schroeder I, Schmitt L, Huisinga W, Michelet R, Zander J, Scharf C, Weinelt FA, Kloft C.\n\n\n\n\n\n\n\n\n\nUsing microdose-based activity measurement to individualise dosing of cytochrome P450 metabolised drugs: a case study with yohimbine and tamoxifen.\n\n\n\n\n\nEvent: PAGE (2021) Publication Date: 2021\nLink: https://www.page-meeting.org/default.asp?abstract=9807\nAuthors: Michelet R, Weinelt FA, Klose M, Mc Laughlin AM, Kluwe F, Montefusco-Pereira C, Van Dyk M, Vay M, Huisinga W, Kloft C, Mikus G."
   },
   {
-    "objectID": "publications/publications.html#section-3",
-    "href": "publications/publications.html#section-3",
-    "title": "Publications",
-    "section": "2021",
-    "text": "2021\n\n\n\n\n\n\nUsing microdose-based activity measurement to individualise dosing of cytochrome P450 metabolised drugs: a case study with yohimbine and tamoxifen.\n\n\n\n\n\nEvent: PAGE (2021) Publication Date: 2021\nLink: https://www.page-meeting.org/default.asp?abstract=9807\nAuthors: Michelet R, Weinelt FA, Klose M, Mc Laughlin AM, Kluwe F, Montefusco-Pereira C, Van Dyk M, Vay M, Huisinga W, Kloft C, Mikus G."
+    "objectID": "posts/2024-10-05/index.html",
+    "href": "posts/2024-10-05/index.html",
+    "title": "About this blog",
+    "section": "",
+    "text": "As someone involved in pharmacometrics, I’ve often found that many concepts are either poorly documented or explained in such technical language that they become hard to grasp (at least to me). This can be quite frustrating when you’re trying to learn or understand something new for which you don’t have a suitable mathematical and statistical background.\nThere are many nice blogs and articles in the field of pharmacometrics, such as\n\nDanielle Navarro\nPMX Solutions\nTingjie Guo’s NMHelp\nmrgsolve\n\nFor instance, Danielle Navarro’s post on population pharmacokinetic models in stan was incredibly helpful in my understanding of implementing pop-PK models in Stan. She just explained the concepts in a very easy-to-understand way and it is at the same time quite entertaining to read. Please check out her blog, if you haven’t already!\nI often explain new concepts to myself using Quarto or RMarkdown documents and I thought I might as well share them as little blog posts. While I don’t expect to match the quality of the blogs I’ve mentioned, I still hope that some posts can be helpful to others who are tackling similar challenges."
   },
   {
-    "objectID": "posts/2024-01-30/index.html",
-    "href": "posts/2024-01-30/index.html",
-    "title": "xxx",
+    "objectID": "posts/2024-10-05/index.html#motivation",
+    "href": "posts/2024-10-05/index.html#motivation",
+    "title": "About this blog",
     "section": "",
-    "text": "Lorem Ipsum"
+    "text": "As someone involved in pharmacometrics, I’ve often found that many concepts are either poorly documented or explained in such technical language that they become hard to grasp (at least to me). This can be quite frustrating when you’re trying to learn or understand something new for which you don’t have a suitable mathematical and statistical background.\nThere are many nice blogs and articles in the field of pharmacometrics, such as\n\nDanielle Navarro\nPMX Solutions\nTingjie Guo’s NMHelp\nmrgsolve\n\nFor instance, Danielle Navarro’s post on population pharmacokinetic models in stan was incredibly helpful in my understanding of implementing pop-PK models in Stan. She just explained the concepts in a very easy-to-understand way and it is at the same time quite entertaining to read. Please check out her blog, if you haven’t already!\nI often explain new concepts to myself using Quarto or RMarkdown documents and I thought I might as well share them as little blog posts. While I don’t expect to match the quality of the blogs I’ve mentioned, I still hope that some posts can be helpful to others who are tackling similar challenges."
+  },
+  {
+    "objectID": "posts/2024-10-05/index.html#disclaimers",
+    "href": "posts/2024-10-05/index.html#disclaimers",
+    "title": "About this blog",
+    "section": "Disclaimers",
+    "text": "Disclaimers\nBefore diving in, a few things to note:\n\nI’m not an expert in everything I write about; I’m learning as I go and simply documenting my process. Expect some mistakes along the way!\nEnglish is not my first language, so I rely on tools like ChatGPT and DeepL to help with writing. I also use tools like ChatGPT to generate ideas or to find good ways to visualize concepts.\nI do my best to give credit where it’s due and cite sources when appropriate. Much of what I share builds on others’ work, and I’m not trying to reinvent the wheel."
   },
   {
     "objectID": "index.html",
     "href": "index.html",
     "title": "Marian Klose",
     "section": "",
-    "text": "Hi there! I’m Marian Klose, currently a PhD student at Freie Universitaet Berlin, and part of the PharMetrX graduate research training program. I am directly supervised by Prof. Charlotte Kloft from Freie Universitaet Berlin and co-supervised by Prof. Wilhelm Huisinga from University of Potsdam.\nHow did I ended up here? After my A-levels I did a work-and-travel year and then started studying chemistry and biochemisty. I realized that I wanted to work in a field that was a bit more applied, so I switched to pharmacy. There I got into pharmacometrics pretty early on and loved the mix of computer science, pharmacy, and math. After my studies, I headed to Florida for six months to work at the University of Florida’s Center for Pharmacometrics and Systems Pharmacology under supervison of Prof. Stephan Schmidt and Prof. Rodrigo Cristofoletti, and also did a three-month internship at Boehringer Ingelheim to see if my interest would remain steady. And I was still fascinated by pharmacometrics, so I decided to start my PhD and applied to the PharMetrX program — and here I am today!\nIn the field of pharmacometrics, I’ve noticed that not everything is perfectly documented. Thankfully, there are many helpful blogs and articles available that break down complex topics into simpler, more accessible concepts. Whenever I come across a concept I don’t fully understand (which happens quite often), I often try to explain it to myself using a Quarto or RMarkdown document and visualize the concept. Since I’m anyways creating these documents for myself, I thought I might as well share them as little blog posts. My goal really isn’t to produce perfectly polished content, but rather to document my own learning process and potentially help others who might be facing the same challenges."
+    "text": "Hi there! I’m Marian Klose, currently a PhD student at Freie Universitaet Berlin, and part of the PharMetrX graduate research training program. I am directly supervised by Prof. Charlotte Kloft from Freie Universitaet Berlin and co-supervised by Prof. Wilhelm Huisinga from University of Potsdam.\nHow did I ended up here? After my A-levels I did a work-and-travel year and then started studying chemistry and biochemisty. I realized that I wanted to work in a field that was a bit more applied, so I switched to pharmacy. There I got into pharmacometrics pretty early on and loved the mix of computer science, pharmacy, and math. After my studies, I headed to Florida for six months to work at the University of Florida’s Center for Pharmacometrics and Systems Pharmacology under supervison of Prof. Stephan Schmidt and Prof. Rodrigo Cristofoletti, and also did a three-month internship at Boehringer Ingelheim to see if my interest would remain steady. And I was still fascinated by pharmacometrics, so I decided to start my PhD and applied to the PharMetrX program — and here I am today!\nIn the field of pharmacometrics, not everything is perfectly documented. Thankfully, there are many helpful blogs and articles available that break down complex topics into simpler, more accessible concepts. Whenever I come across a concept I don’t fully understand (which happens quite often), I try to explain it to myself using a Quarto or RMarkdown document. Since I’m anyways creating these documents for myself, I thought I might as well share them as little blog posts. My goal really isn’t to produce perfectly polished content, but rather to document my own learning process and potentially help others who might be facing the same challenges."
   },
   {
     "objectID": "index.html#about-me",
     "href": "index.html#about-me",
     "title": "Marian Klose",
     "section": "",
-    "text": "Hi there! I’m Marian Klose, currently a PhD student at Freie Universitaet Berlin, and part of the PharMetrX graduate research training program. I am directly supervised by Prof. Charlotte Kloft from Freie Universitaet Berlin and co-supervised by Prof. Wilhelm Huisinga from University of Potsdam.\nHow did I ended up here? After my A-levels I did a work-and-travel year and then started studying chemistry and biochemisty. I realized that I wanted to work in a field that was a bit more applied, so I switched to pharmacy. There I got into pharmacometrics pretty early on and loved the mix of computer science, pharmacy, and math. After my studies, I headed to Florida for six months to work at the University of Florida’s Center for Pharmacometrics and Systems Pharmacology under supervison of Prof. Stephan Schmidt and Prof. Rodrigo Cristofoletti, and also did a three-month internship at Boehringer Ingelheim to see if my interest would remain steady. And I was still fascinated by pharmacometrics, so I decided to start my PhD and applied to the PharMetrX program — and here I am today!\nIn the field of pharmacometrics, I’ve noticed that not everything is perfectly documented. Thankfully, there are many helpful blogs and articles available that break down complex topics into simpler, more accessible concepts. Whenever I come across a concept I don’t fully understand (which happens quite often), I often try to explain it to myself using a Quarto or RMarkdown document and visualize the concept. Since I’m anyways creating these documents for myself, I thought I might as well share them as little blog posts. My goal really isn’t to produce perfectly polished content, but rather to document my own learning process and potentially help others who might be facing the same challenges."
+    "text": "Hi there! I’m Marian Klose, currently a PhD student at Freie Universitaet Berlin, and part of the PharMetrX graduate research training program. I am directly supervised by Prof. Charlotte Kloft from Freie Universitaet Berlin and co-supervised by Prof. Wilhelm Huisinga from University of Potsdam.\nHow did I ended up here? After my A-levels I did a work-and-travel year and then started studying chemistry and biochemisty. I realized that I wanted to work in a field that was a bit more applied, so I switched to pharmacy. There I got into pharmacometrics pretty early on and loved the mix of computer science, pharmacy, and math. After my studies, I headed to Florida for six months to work at the University of Florida’s Center for Pharmacometrics and Systems Pharmacology under supervison of Prof. Stephan Schmidt and Prof. Rodrigo Cristofoletti, and also did a three-month internship at Boehringer Ingelheim to see if my interest would remain steady. And I was still fascinated by pharmacometrics, so I decided to start my PhD and applied to the PharMetrX program — and here I am today!\nIn the field of pharmacometrics, not everything is perfectly documented. Thankfully, there are many helpful blogs and articles available that break down complex topics into simpler, more accessible concepts. Whenever I come across a concept I don’t fully understand (which happens quite often), I try to explain it to myself using a Quarto or RMarkdown document. Since I’m anyways creating these documents for myself, I thought I might as well share them as little blog posts. My goal really isn’t to produce perfectly polished content, but rather to document my own learning process and potentially help others who might be facing the same challenges."
   },
   {
     "objectID": "posts.html",
     "href": "posts.html",
-    "title": "Neuigkeiten",
+    "title": "Blog",
     "section": "",
-    "text": "xxx\n\n\n\ntest\n\n\ntest2\n\n\n\nxxx\n\n\n\nMarian Klose\n\n\nJan 24, 2024\n\n\n\n\n\n\n\n\nNo matching items"
-  },
-  {
-    "objectID": "publications/publications.html#a-model-informed-clinical-trial-simulation-tool-with-a-graphical-user-interface-for-duchenne-muscular-dystrophy",
-    "href": "publications/publications.html#a-model-informed-clinical-trial-simulation-tool-with-a-graphical-user-interface-for-duchenne-muscular-dystrophy",
-    "title": "Publications",
-    "section": "A model-informed clinical trial simulation tool with a graphical user interface for Duchenne muscular dystrophy",
-    "text": "A model-informed clinical trial simulation tool with a graphical user interface for Duchenne muscular dystrophy\nJournal: CPT: Pharmacometrics & Systems Pharmacology\nPublication Date: 2024-10-03\nDOI: 10.1002/psp4.13246\nAuthors: Kim J, Morales JF, Kang S, Klose M, Willcocks RJ, Daniels MJ, Belfiore-Oshan R, Walter GA, Rooney WD, Vandenborne K, Kim S."
-  },
-  {
-    "objectID": "publications/publications.html#legend",
-    "href": "publications/publications.html#legend",
-    "title": "Publications",
-    "section": "",
-    "text": "Publication\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nAbstract/Poster"
+    "text": "About this blog\n\n\n\nMotivation\n\n\nDisclaimer\n\n\n\nSome motivations and disclaimers\n\n\n\nMarian Klose\n\n\nOct 5, 2024\n\n\n\n\n\n\n\n\nNo matching items"
   }
 ]
