@@ -8,9 +8,9 @@ author:
 date: 10-06-2024
 categories: [RUV, Error, NONMEM] 
 image: preview.jpg
+bibliography: G:/Mitarbeiter/Klose/Literature/zotero_library/everything.bib
 draft: true 
 echo: true
-bibliography: references.bib
 execute:
   echo: true
   message: false
@@ -65,7 +65,7 @@ Let's try to shed some light into the darkness.
 
 ## Some theory
 
-Let's stick to the *Uppsala way* of coding the RUV and try to understand what is going on. Most of this theory can also be found in [@proost2017]. `EPS(1)` is a random variable drawn from a normal distribution with a mean of 0 and a variance of 1. You could write:
+Let's stick to the *Uppsala way* of coding the RUV and try to understand what is going on. Most of this theory can also be found in [@proostCombinedProportionalAdditive2017]. `EPS(1)` is a random variable drawn from a normal distribution with a mean of 0 and a variance of 1. You could write:
 
 $$EPS(1) \sim \mathcal{N}(0,1)$$
 
@@ -116,7 +116,6 @@ std_norm_combined |>
   theme_bw()
 ```
 
-
 Let's compare the standard deviation and variance of both distributions:
 
 ```{r}
@@ -129,5 +128,3 @@ std_norm_combined |>
   ) |> 
   kbl() |> kable_styling()
 ```
-
-
