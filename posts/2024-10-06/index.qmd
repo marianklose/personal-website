@@ -1,5 +1,5 @@
 ---
-title: "Coding RUV as THETA in NONMEM"
+title: "Coding RUV via $THETA in NONMEM"
 description: "Have you ever been confused why some people use the $THETA block to code their RUV in NONMEM? You are not alone!"
 author:
   - name: Marian Klose
@@ -8,7 +8,7 @@ author:
 date: 10-06-2024
 categories: [RUV, Error, NONMEM] 
 image: preview.jpg
-bibliography: G:/Mitarbeiter/Klose/Literature/zotero_library/everything.bib
+bibliography: C:/Users/mklose/Desktop/bibliography.bib
 draft: true 
 echo: true
 execute:
@@ -32,115 +32,120 @@ library(dplyr)
 library(kableExtra)
 ```
 
-When I've started my PhD in pharmacometrics, I wanted to specify a combined error model in NONMEM for one of my projects. A colleague of mine was so kind to send me a reference model so I could implement it properly. To my surprise the model code contained a novel way of specifying the residual unexplained variability (RUV) and it was not quite clear why you would do that. Fixing the \$SIGMA block, modelling the RUV via \$THETA entries, specifying a W as scaling factor and then squaring something just to take the square root again. It all seemed a bit odd to me. Let's take a closer look at this.
+::: {.callout-tip collapse="true" appearance="minimal"}
+## Summary
+- **Classical RUV Specification**: The classical way of specifying RUV in NONMEM involves directly specifying a variance in the `$SIGMA` block.
+- **Alternative RUV Specification**: Coding residual unexplained variability (RUV) via the `$THETA` block in NONMEM allows direct estimation of standard deviation or coefficient of variation, rather than variance.
+- **Fixed SIGMA Block**: In the "alternative" RUV coding method, `$SIGMA` is fixed to 1, making ```EPS()``` terms standard normal, which are then scaled by `$THETA` parameters representing standard deviations or coefficients of variation.
+- **Additive vs. Proportional Models**: In additive error models, `$THETA` represents a standard deviation. In proportional error models, `$THETA` represents a coefficient of variation (CV) relative to the predicted value (`IPRED`).
+- **Combining Error Components**: For combined proportional and additive error models, the joint standard deviation (`SD`) is computed as the square root of the sum of squared standard deviations, due to variance additivity rules.
+:::
 
 
+When I started my PhD in pharmacometrics, I wanted to try something fancy[^1]: specifying a combined proportional and additive error model in NONMEM for one of my projects. A colleague kindly sent me a reference model, and to my confusion, the code included a (at least to me) novel way of defining residual unexplained variability (RUV):
 
-## Different ways to specify the RUV
+```{r filename="alternative way (combined)"}
+#| eval: false
+#| collapse: false
+#| code-fold: false
 
-### The classical way 
+$THETA
+0.15        ; RUV_PROP
+0.23        ; RUV_ADD
 
-Until this happend, I was always modeling the RUV in the *classical* way (if you can call it like this) by specifying it directly in the \$SIGMA block. I have also never thought about another way of doing so. The way I was used to model looked like this for an additive model:
-
-``` r
 $ERROR
 IPRED = F
-Y = IPRED + EPS(1)
+SD_PROP = THETA(1)*IPRED
+SD_ADD = THETA(2)
+SD = SQRT(SD_PROP**2 + SD_ADD**2)
+Y = IPRED + SD * EPS(1)
 
 $SIGMA
-0.23
+1 FIX
 ```
 
-In this additive model the initial estimate for the *variance* of the RUV is 0.23. Now for a combined proportional and additive model I would've coded it like this:
+It wasn’t immediately clear why it was set up this way, and I was left with some questions:
 
+- Why is the RUV in the ```$SIGMA``` block fixed to 1? And why only one entry, given we have both proportional and additive components?
+- What's with the scaling parameter ```SD```?
+- Why are we squaring the proportional and additive error components and then taking the square root?
+- How do we interpret the units for ```THETA(1)``` and ```THETA(2)```?
 
-``` r
+It seemed a bit odd to me. I was more familiar with defining RUV directly in the ```$SIGMA``` block, something like:
+
+```{r filename="classical way v1"}
+#| eval: false
+#| collapse: false
+#| code-fold: false
+
 $ERROR
 IPRED = F
 Y = IPRED + IPRED * EPS(1) + EPS(2)
 
 $SIGMA
-0.23
-0.12
+0.0225
+0.0529
 ```
 
-or a bit more elegant
+or maybe in a slightly more elegant form:
 
-``` r
+```{r filename="classical way v2"}
+#| eval: false
+#| collapse: false
+#| code-fold: false
+Y = IPRED * (1 + EPS(1)) + EPS(2)
+```
+
+So, why use this “alternative”[^2] way of defining the error? Before we try to explain this way of writing a combined error model to ourselves, let's break down the additive and proportional error model separately to understand what's going on. Please note: most of this theory can also be found elsewhere, such as in [@proostCombinedProportionalAdditive2017].
+
+## Additive error models
+
+The "classical" way (if I can call it that) of specifying an additive error model in NONMEM is as follows:
+
+```{r filename="classical way (additive)"}
+#| eval: false
+#| collapse: false
+#| code-fold: false
+
 $ERROR
 IPRED = F
-Y = IPRED * (1 + EPS(1)) + EPS(2)
+Y = IPRED + EPS(1)
 
 $SIGMA
-0.23
-0.12
+0.0529
 ```
 
-All these versions share that the RUV is directly specified in the \$SIGMA block. And it is quite straightforward to understand: We have random variables drawn from a normal distribution centered around a mean of 0 with a variance specified in the \$SIGMA block. The proportional part ``` IPRED * EPS(1) ``` is dependent on the predicted value, while the additive part ``` EPS(2) ``` is independent and just gets added to the resulting concentration. 
+In this approach, RUV is defined directly in the ```$SIGMA``` block, where ```EPS(1)``` is assumed to be normally distributed with a mean of 0 and variance of 0.0529:
 
-So far so good. Now what's the alternative way?
+$$EPS(1) \sim \mathcal{N}(0,0.0529)$$
 
+Now the *alternative* way (my colleague called it the *Uppsala way*[^3]) of coding the additive error model looks like this:
 
-### The Uppsala way
+```{r filename="alternative way (additive)"}
+#| eval: false
+#| collapse: false
+#| code-fold: false
 
-The model code I received from my colleague looked like this for an additive model:
-
-``` r
 $THETA
 0.23        ; RUV_ADD
 
 $ERROR
 IPRED = F
-W_ADD = THETA(1)
-Y = IPRED + W_ADD * EPS(1)
+SD_ADD = THETA(1)
+Y = IPRED + SD_ADD * EPS(1)
 
 $SIGMA
 1 FIX
 ```
 
 
-and this for an combined proportional and additive model:
-
-``` r
-$THETA
-0.23        ; RUV_PROP
-0.12        ; RUV_ADD
-
-$ERROR
-IPRED = F
-W_PROP = THETA(1)*IPRED
-W_ADD = THETA(2)
-W = SQRT(W_PROP**2 + W_ADD**2)
-Y = IPRED + W * EPS(1)
-
-$SIGMA
-1 FIX
-```
-
-The colleague called it the *Uppsala way* of coding things. I was left with some questions:
-
--   Why would we fix the RUV in the \$SIGMA block to 1? And why do we just have one entry if we have two components - proportional and additive?
--   Why are we specifying some sort of scaling parameter W?
--   How should we interpret the output from this? What's the unit for THETA(1) and THETA(2)?
-
-Let's try to shed some light into the darkness.
-
-## About scaling factors and distributions
-
-Let's stick to the *Uppsala way* of coding the RUV and try to understand what is going on. To keep it simple we will first tackle the additive error model. The key is to understand what happens if we perform this scaling operation:
-
-``` r
-W_ADD * EPS(1)
-```
-
-Most of this theory can also be found in the literature [@proostCombinedProportionalAdditive2017]. 
-
-
-`EPS(1)` is a random variable drawn from a normal distribution with a mean of 0 and a variance of 1 (a standard normal distribution). You could write:
+Here, ```$SIGMA``` is fixed so ```EPS(1)``` has a variance of 1, effectively making it a standard normal distribution:
 
 $$EPS(1) \sim \mathcal{N}(0,1)$$
 
-To me it helps to quickly visualize the distribution by sampling from a standard normal distribution (mean = 0, variance = 1):
+But we then multiply this random variable ```EPS(1)```  by a scaling factor ```SD_ADD``` (which is being estimated as a ```THETA``` parameter) before the product is being added to the individual predicted ```IPRED``` value. Let’s visualize what happens when we fix ```$SIGMA``` to 1 and multiply it by ```SD = 0.23```. 
+
+In a first step we will plot a standard normal distribution (```$SIGMA 1 FIX```):
 
 ```{r}
 # sample from standard normal distribution
@@ -151,7 +156,7 @@ std_norm <- tibble(x = x, source = "unscaled")
 std_norm |> 
   ggplot(aes(x = x, fill = source)) +
   geom_density(alpha=0.2)+
-  labs(title = "Standard normal distribution", x = "EPS(1)", y = "Density")+
+  labs(title = "Standard normal distribution", x = "", y = "Density")+
   scale_fill_manual(
     "Source",
     values = c(
@@ -161,12 +166,33 @@ std_norm |>
   theme_bw()
 ```
 
-But what happens now if we multiply this random variable with some scaling parameter W? Let's find out:
+The resulting standard deviation should be 1, and since $1^2 = 1$, the resulting variance should also be 1. Let's check our empirical estimates (it is a simulation, after all) to confirm this:
 
 ```{r}
+# summarize data and calculate sd and variance
+std_norm |> 
+  group_by(source) |>   
+  summarize(
+    sd = sd(x) |> signif(digits = 2),
+    var = var(x) |> signif(digits = 2)
+  ) |> 
+  rename(
+    "Source" = source,
+    "Standard Deviation" = sd,
+    "Variance" = var
+  ) |>
+  kbl() |> kable_styling()
+```
+
+Good. But what happens now to this standard normal distribution if we multiply the random variable with some scaling parameter $SD = 0.23$? Let's find out:
+
+```{r}
+# set a seed
+set.seed(123)
+
 # multiply with W
-W <- 0.23
-x_scaled <- x * W
+SD <- 0.23
+x_scaled <- x * SD
 std_norm_scaled <- tibble(x = x_scaled, source = "scaled")
 
 # combine both
@@ -176,7 +202,7 @@ std_norm_combined <- bind_rows(std_norm, std_norm_scaled)
 std_norm_combined |> 
   ggplot(aes(x = x, fill = source)) +
   geom_density(alpha = 0.2)+
-  labs(title = "Normal distributions", x = "W * EPS(1)", y = "Density")+
+  labs(title = "Normal distributions: Impact of scaling factor SD", x = "", y = "Density")+
   scale_fill_manual(
     "Source",
     values = c(
@@ -194,17 +220,252 @@ Let's compare the standard deviation and variance of both distributions:
 std_norm_combined |> 
   group_by(source) |>   
   summarize(
-    sd = sd(x),
-    var = var(x)
+    sd = sd(x) |> signif(digits = 2),
+    var = var(x) |> signif(digits = 2)
   ) |> 
-  kbl() |> kable_styling()
+  rename(
+    "Source" = source,
+    "Standard Deviation" = sd,
+    "Variance" = var
+  ) |> 
+  kbl() |> 
+  kable_styling()
 ```
 
-For the unscaled distribution we do not have any surprises: $\sigma^2 \approx 1$ and since $1^2 = 1$ we also say $\sigma^2 \approx \sigma$. For the scaled distribution we can see that the resulting standard distribution $\sigma$ is approximately equal to our scaling factor ```W_ADD```. This means that in the model code
+For the scaled distribution, we can see that the resulting standard deviation $\sigma$ is approximately equal to our scaling factor ```SD_ADD``` (which is 0.23) and the variance is $0.23^2 \approx 0.053$. This means that in our model code
 
-``` r
-W_ADD * EPS(1)
+```{r filename="alternative way (additive)"}
+#| eval: false
+#| collapse: false
+#| code-fold: false
+
+SD_ADD * EPS(1)
 ```
 
-the ```W_ADD``` parameter (specified via \$THETA) was representing a standard deviation. 
+the `SD_ADD` parameter (specified via ```$THETA```) is representing a standard deviation. Cool thing! This is why both of these models are equivalent:
 
+```{r filename="classical way (additive)"}
+#| eval: false
+#| collapse: false
+#| code-fold: false
+
+$SIGMA
+0.0529   ; variance
+```
+
+and
+
+```{r filename="alternative way (additive)"}
+#| eval: false
+#| collapse: false
+#| code-fold: false
+
+$THETA
+0.23   ; standard deviation
+
+$SIGMA
+1 FIX
+```
+
+To sum it up: We need to be careful with the units. If we use the *classical* way, the ```$SIGMA``` estimate is a variance, but if we use the *alternative* way, the ```$THETA``` estimate is a standard deviation. Typically, we would report the standard deviation (rather than the variance) if we use an additive model, and I think one of the advantages of the *alternative* way is that we directly read out the standard deviation from the parameter estimates (without the need to transform anything). Some also say that the estimation becomes more stable if we model the stochastic parts via ```$THETA```, but I cannot judge if this is true or just a myth.
+
+::: callout-tip
+## Specifying additive RUV via \$THETA gives us a standard deviation
+
+Whenever we have an additive error model and we specify the RUV in the ```$THETA``` block (the *alternative* way), the resulting estimate is a standard deviation.
+:::
+
+
+## Proportional error models
+
+Now, let’s look at proportional error models. The *classical* way of specifying the proportional error model looks like this:
+
+```{r filename="classical way (proportional)"}
+#| eval: false
+#| collapse: false
+#| code-fold: false
+
+$ERROR
+IPRED = F
+Y = IPRED + IPRED * EPS(1)
+
+$SIGMA
+0.0225
+```
+
+And the *alternative* way is:
+
+```{r filename="alternative way (proportional)"}
+#| eval: false
+#| collapse: false
+#| code-fold: false
+
+$THETA
+0.15        ; RUV_PROP
+
+$ERROR
+IPRED = F
+SD_PROP = IPRED * THETA(1)
+Y = IPRED + SD_PROP * EPS(1)
+
+$SIGMA
+1 FIX
+```
+
+The structure is similar to the additive model we discussed earlier, except that the standard deviation of the random noise around our prediction depends on the prediction itself. This is why we first calculate the standard deviation ```SD_PROP``` at the given prediction as:
+
+```{r filename="alternative way (proportional)"}
+#| eval: false
+#| collapse: false
+#| code-fold: false
+
+SD_PROP = IPRED * THETA(1)
+```
+
+This already gives us an understanding of the units of ```THETA(1)```:  it represents the coefficient of variation (CV) of the prediction ```IPRED```. Why? A coefficient of variation represents the ratio of the standard deviation to the mean. This is why we end up with a standard deviation (```SD_PROP```) if we multiply the prediction (```IPRED```) with the CV (```THETA(1)```). 
+
+### An example
+
+Suppose we have a prediction (```IPRED```) of 10 mg/L and we want to show the resulting distribution. For the *classical* approach, we would specify a variance (```EPS(1)```) of 0.0225, and for the *alternative* way, we would specify a CV (```THETA(1)```) of 0.15. What do you think? Will this be equivalent or not? Let’s find out!
+
+```{r}
+# Set seed for reproducibility
+set.seed(123)
+
+# Parameters
+IPRED <- 10         
+CV_percent <- 0.15    
+SD_prop <- CV_percent * IPRED  
+sd_classical <- IPRED * sqrt(0.0225)  
+
+# Number of samples
+n <- 100000
+
+# Classical way: Specify variance directly
+eps_classical <- rnorm(n, mean = 10, sd = sd_classical)  
+
+# Alternative way: Specify CV%
+eps_alternative <- rnorm(n, mean = 10, sd = 1 * SD_prop) 
+
+# Create a tibble combining both distributions
+prop_models <- tibble(
+  value = c(eps_classical, eps_alternative),
+  source = rep(c("Classical (Variance = 0.0225)", "Alternative (CV = 0.15)"), each = n)
+)
+
+# Plot the density of both distributions
+prop_models |> 
+  ggplot(aes(x = value, fill = source)) +
+  geom_density(alpha = 0.4) +
+  labs(
+    title = "Classical vs. alternative specification",
+    x = "Concentration [mg/L]",
+    y = "Density"
+  ) +
+  scale_fill_manual(
+    "Model Specification",
+    values = c(
+      "Classical (Variance = 0.0225)" = "#003049",  # Blue
+      "Alternative (CV = 0.15)" = "#c1121f"      # Red
+    )
+  ) +
+  scale_x_continuous(breaks=c(4,6,8,10,12,14,16))+
+  theme_bw()
+```
+
+Both models end up with the same distribution. In the *classical* way, we are given a variance of 0.0225. To get the standard deviation, we take the square root of the variance:
+
+$$
+\sigma_{EPS} = \sqrt{0.0225} = 0.15
+$$
+
+This estimate of 0.15 already serves as a CV, as we are then multiply this by the prediction (```IPRED```) of 10 mg/L to get the standard deviation of the prediction distribution:
+
+$$
+\sigma_{PRED} = 0.15 \times 10 = 1.5 \, \text{mg/L}
+$$
+
+In the *alternative* way, we are directly given the coefficient of variation (CV) as 0.15. The CV represents the relative variability, so to get the standard deviation, we multiply the CV by the prediction (```IPRED```):
+
+$$
+\sigma_{PRED} = 0.15 \times 10 = 1.5 \, \text{mg/L}
+$$
+
+In both cases, the resulting variability is the same, meaning both approaches lead to the same standard deviation of 1.5 mg/L. 
+
+
+::: callout-tip
+## Specifying proportional RUV in \$THETA gives us a coefficient of variation
+
+Whenever we have a proportional error model and we specify the RUV in the ```$THETA``` block, the resulting estimate is a coefficient of variation.
+:::
+
+
+
+
+## Combined proportional and additive error models
+
+Finally, let's combine our knowledge to understand the *alternative* way of specifying a combined proportional and additive error model:
+
+```{r filename="alternative way (combined)"}
+#| eval: false
+#| collapse: false
+#| code-fold: false
+
+$THETA
+0.15        ; RUV_PROP
+0.23        ; RUV_ADD
+
+$ERROR
+IPRED = F
+SD_PROP = THETA(1)*IPRED
+SD_ADD = THETA(2)
+SD = SQRT(SD_PROP**2 + SD_ADD**2)
+Y = IPRED + SD * EPS(1)
+
+$SIGMA
+1 FIX
+```
+
+Two parts should already be familiar:
+
+```{r filename="alternative way (combined)"}
+#| eval: false
+#| collapse: false
+#| code-fold: false
+
+SD_PROP = THETA(1)*IPRED
+SD_ADD = THETA(2)
+```
+
+In the first part, we calculate ```SD_PROP```, representing the resulting standard deviation of the proportional part (as ```THETA(1)``` is a CV). The second part, ```SD_ADD```, gives us the standard deviation of the additive part. Now we want to find the joint standard deviation ```SD``` at the given concentration. But how do we combine these components?
+
+```{r filename="alternative way (combined)"}
+#| eval: false
+#| collapse: false
+#| code-fold: false
+
+SD = SQRT(SD_PROP**2 + SD_ADD**2)
+```
+
+We can see that we first square both terms, then add them together, then take the square root. Sounds complicated - why not just add them directly together? This is because variances are additive when combining independent random variables, while standard deviations are not [@sochVarianceSumTwo2020]. Written a bit more formally for two independent random variables (we assume the covariance to be 0):
+
+
+$$\mathrm{Var}(X + Y) = \mathrm{Var}(X) + \mathrm{Var}(Y)$$
+In our case, ```SD_PROP``` and ```SD_ADD``` are standard deviations, so we must first square them to get the variances and then add them. However, we want to go back to a standard deviation before we multiply ```SD``` with ```EPS(1)``` (being fixed to 1). Therefore, we take the square root in the end.
+
+::: callout-tip
+## Combined error models
+
+When specifying a combined error model, the estimates in the $THETA block represent a standard deviation for the additive part and a coefficient of variation for the proportional part.
+:::
+
+
+
+## Conclusion
+
+This is a somewhat lengthy explanation of why we code the *alternative* approach in NONMEM. Personally, I wasn't very familiar with how distributions behave when multiplying by a random variable, and I didn’t realize that while variances are additive when combining two random processes, standard deviations are not. If you have a stronger background in statistics, this might have been obvious, but I hope this explanation was still helpful for some.
+
+[^1]: Yeah, I know, not really fancy. But that's how it feels when you touch a combined error model for the first time. 
+[^2]: For many of you, this is likely quite standard. The naming reflects my perspective. 
+[^3]: I'm not sure if this was initially introduced by one of the Uppsala groups or if this is just some hearsay.
