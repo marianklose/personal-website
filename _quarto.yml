@@ -3,6 +3,14 @@ project:
 
 website:
   title: "Marian Klose"
+  comments:
+    giscus:
+      repo: "quarto-dev/quarto-web"
+      category: "Comments"
+      category-id: "DIC_kwDOLLh1WM4CjMUX"
+      mapping: "pathname"
+      reactions-enabled: true
+      language: "en"
   navbar:
     left:
       - href: publications/publications.qmd
