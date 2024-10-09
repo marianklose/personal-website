@@ -21,7 +21,6 @@ format:
     toc: true
     code-fold: true
     code-tools: true
-    embed-resources: true
 ---
 
 ```{r}
@@ -502,6 +501,7 @@ This is a somewhat lengthy explanation of why and how we code the *alternative* 
 [^3]: I'm not sure if this was initially introduced by one of the Uppsala groups or if this is just some hearsay.
 [^4]: Some people also code it with `W` instead of `SD` but it's always a good idea to find descriptive variable names.
 [^5]: Probably something you would tackle in the first semester of your statistics studies. But not if you study pharmacy ;)
+
 
 
 
