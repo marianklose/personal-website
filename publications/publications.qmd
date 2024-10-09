@@ -30,7 +30,7 @@ comments: false
 
 ## 2024 
 
-::: {.callout-note appearance="minimal" .custom-callout icon=false collapse="true"}
+::: {.callout-note appearance="minimal" .custom-callout icon=false collapse="false"}
 ## A model-informed clinical trial simulation tool with a graphical user interface for Duchenne muscular dystrophy
 
 Journal: CPT: Pharmacometrics & Systems Pharmacology  
@@ -39,7 +39,7 @@ DOI: [10.1002/psp4.13246](https://doi.org/10.1002/psp4.13246){target="_blank"}
 Authors: Kim J, Morales JF, Kang S, <u>Klose M</u>, Willcocks RJ, Daniels MJ, Belfiore-Oshan R, Walter GA, Rooney WD, Vandenborne K, Kim S.  
 :::
 
-::: {.callout-note appearance="minimal" .custom-callout icon=false collapse="true"}
+::: {.callout-note appearance="minimal" .custom-callout icon=false collapse="false"}
 ## Type 1 diabetes prevention clinical trial simulator: Case reports of model-informed drug development tool
 
 Journal: CPT: Pharmacometrics & Systems Pharmacology  
@@ -49,7 +49,7 @@ Authors: Morales JF, <u>Klose M</u>, Hoffert Y, Podichetty JT, Burton J, Schmidt
 :::
 
 
-::: {.callout-note appearance="minimal" .custom-callout icon=false collapse="true"}
+::: {.callout-note appearance="minimal" .custom-callout icon=false collapse="false"}
 ## Population pharmacokinetics of TLD-1, a novel liposomal doxorubicin, in a phase I trial
 
 Journal: Cancer Chemother Pharmacol  
@@ -59,7 +59,7 @@ Authors: Mc Laughlin AM, Hess D, Michelet R, Colombo I, Haefliger S, Bastian S, 
 :::
 
 
-::: {.callout-caution  appearance="minimal" .custom-callout icon=false collapse="true"}
+::: {.callout-caution  appearance="minimal" .custom-callout icon=false collapse="false"}
 ## Machine learning-driven flattening of model priors: A comparative simulation study across multiple compounds
 
 Event: PAGE (2024) 
@@ -69,7 +69,7 @@ Authors: <u>Klose M</u>, Thoma F, Kovar L, Huisinga W, Michelet R, Kloft C.
 :::
 
 
-::: {.callout-note appearance="minimal" .custom-callout icon=false collapse="true"}
+::: {.callout-note appearance="minimal" .custom-callout icon=false collapse="false"}
 ## TLD-1, a novel liposomal doxorubicin, in patients with advanced solid tumors: Dose escalation and expansion part of a multicenter open-label phase I trial (SAKK 65/16)
 
 Journal: European Journal of Cancer  
@@ -80,7 +80,7 @@ Authors: Colombo I, Koster KL, Holer L, Haefliger S, Rabaglio M, Bastian S, Schw
 
 
 
-::: {.callout-note appearance="minimal" .custom-callout icon=false collapse="true"}
+::: {.callout-note appearance="minimal" .custom-callout icon=false collapse="false"}
 ## Exploring the impact of CYP2D6 and UGT2B7 gene-drug interactions, and CYP-mediated DDI on oxycodone and oxymorphone pharmacokinetics using physiologically-based pharmacokinetic modeling and simulation
 
 Journal: Eur J Pharm Sci  
@@ -92,7 +92,7 @@ Authors: <u>Klose M</u>, Cristofoletti R, Silva CM, Mangal N, Turgeon J, Michaud
 
 ## 2022
 
-::: {.callout-caution  appearance="minimal" .custom-callout icon=false collapse="true"}
+::: {.callout-caution  appearance="minimal" .custom-callout icon=false collapse="false"}
 ## The Impact of UGT2B7 and CYP2D6 Gene-Drug- and CYP-mediated Drug-Drug-Interactions on Oxycodone and Oxymorphone Pharmacokinetics using PBPK Modelling.
 
 Event: ACoP13 (2022)  
@@ -105,7 +105,7 @@ Authors: <u>Klose M</u>, Schmidt S, Cristofoletti R.
 ## 2021
 
 
-::: {.callout-note appearance="minimal" .custom-callout icon=false collapse="true"}
+::: {.callout-note appearance="minimal" .custom-callout icon=false collapse="false"}
 ## Evaluation of the MeroRisk Calculator, A User-Friendly Tool to Predict the Risk of Meropenem Target Non-Attainment in Critically Ill Patients
 
 Journal: Antibiotics (Basel)  
@@ -114,7 +114,7 @@ DOI: [10.3390/antibiotics10040468](https://doi.org/10.3390/antibiotics10040468){
 Authors: Liebchen U, <u>Klose M</u>, Paal M, Vogeser M, Zoller M, Schroeder I, Schmitt L, Huisinga W, Michelet R, Zander J, Scharf C, Weinelt FA, Kloft C.  
 :::
 
-::: {.callout-caution  appearance="minimal" .custom-callout icon=false collapse="true"}
+::: {.callout-caution  appearance="minimal" .custom-callout icon=false collapse="false"}
 ## Using microdose-based activity measurement to individualise dosing of cytochrome P450 metabolised drugs: a case study with yohimbine and tamoxifen.
 
 Event: PAGE (2021) 

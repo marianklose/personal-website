@@ -5,18 +5,23 @@ website:
   title: "Marian Klose"
   comments:
     giscus:
-      repo: "quarto-dev/quarto-web"
-      category: "Comments"
-      category-id: "DIC_kwDOLLh1WM4CjMUX"
-      mapping: "pathname"
+      repo: marianklose/personal-website
+      repo-id: R_kgDOLLh1WA
+      category: Comments
+      category-id: DIC_kwDOLLh1WM4CjMUX
+      mapping: pathname
       reactions-enabled: true
-      language: "en"
+      language: en
+      input-position: bottom
   navbar:
     left:
       - href: publications/publications.qmd
         text: Publications
-      - text: "Blog"
-        href: posts.qmd
+      - href: cv/cv.qmd
+        text: CV
+      - href: posts.qmd
+        text: Blog
+        
 
 format:
   html:

@@ -1,5 +1,5 @@
 ---
-title: "Coding RUV via THETA in NONMEM"
+title: "Coding RUV via $THETA in NONMEM"
 description: "Have you ever been confused why some people use the $THETA block to code their RUV in NONMEM? You are not alone!"
 author:
   - name: Marian Klose

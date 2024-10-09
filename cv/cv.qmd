@@ -1,0 +1,63 @@
+---
+comments: false
+---
+
+
+
+<!-- # Education {.section-title} -->
+
+<!-- - **2022**: License to Practise as a Pharmacist - LaGeSo Berlin   -->
+<!-- - **2017 - 2021**: Pharmacy Studies - Freie Universität Berlin (8 semesters | GPA 3.7)   -->
+<!-- - **2015 - 2017**: Chemistry and Biochemistry Studies - FU und HU Berlin (3 semesters | GPA 2.7)   -->
+<!-- - **2006 - 2014**: Secondary School - St. Ursula Gymnasium Attendorn (GPA 3.1) -->
+
+<!-- # Work Experience {.section-title} -->
+
+<!-- - **Oct 2022 - Dec 2022**: Intern - Boehringer Ingelheim TMCP Data Science   -->
+<!--   Building up a code library for various modeling approaches and adjusting reporting tools.   -->
+
+<!-- - **Nov 2021 - Apr 2022**: Short-term Scholar - Center for Pharmacometrics and Systems Pharmacology, University of Florida   -->
+<!--   PBPK Modeling & Simulation for drug-drug- and gene-drug-interactions of oxycodone.   -->
+
+<!-- - **May 2021 - Oct 2021**: Pre-registration Pharmacist - Medios Apotheke an der Charite   -->
+<!--   Internship in a community pharmacy.   -->
+
+<!-- - **Jul 2020 - Mar 2020**: Teaching Assistant - Charité University Hospital Berlin   -->
+<!--   Support for lab exercises and oral exams in 'Medical Microbiology, Virology and Infection Prevention'.   -->
+
+<!-- - **Dec 2017 - Dec 2019**: Student Assistant - PharMetrX Program   -->
+<!--   Supported administrative tasks and planning of PharMetrX anniversary.   -->
+
+<!-- - **Aug 2019 - Sep 2019**: University Internship - PharMetrX Program   -->
+<!--   Modeling and simulation of meropenem concentration-time profiles in critically ill patients.   -->
+
+<!-- - **Sep 2018 - Oct 2018**: Industry Internship - Sanofi   -->
+<!--   Contributed to a white paper on modeling and simulation in pediatric type 2 diabetes patients. -->
+
+<!-- # Miscellaneous {.section-title} -->
+
+<!-- - **2019 - 2021**: Student Member - Institute Council, Freie Universität Berlin   -->
+<!--   Represented student interests.   -->
+<!-- - **2017 - 2021**: Member - Students Council, Freie Universität Berlin   -->
+<!--   Supported various student projects.   -->
+<!-- - **2014 - 2015**: Work and Travel - Australia, New Zealand, Asia   -->
+<!--   12-month duration. -->
+
+<!-- # Language Skills {.section-title} -->
+
+<!-- - **German**: Native   -->
+<!-- - **English**: Fluent   -->
+<!-- - **Latin**: Basic   -->
+
+<!-- # Computer Skills {.section-title} -->
+
+<!-- - **Microsoft Office**: Intermediate   -->
+<!-- - **LaTeX**: Intermediate   -->
+<!-- - **Pharmacometrics**: GastroPlus (Intermediate), Monolix (Beginner), MatLab/SimBiology (Beginner)   -->
+<!-- - **Programming**: R (Intermediate), Python (Beginner), HTML/CSS/JavaScript (Beginner) -->
+
+<!-- # Courses and Training {.section-title} -->
+
+<!-- - **2022**: Pharmacometrics Spring School, Lixoft (MonolixSuite)   -->
+<!-- - **2022**: MATLAB/SimBiology PBPK Modeling Workshop   -->
+<!-- - **2021**: Python: Data Science, Machine Learning & Neural Networks (Udemy, 29.5h) -->
