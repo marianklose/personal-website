@@ -1,0 +1,35 @@
+---
+title: "Using microdose-based activity measurement to individualise dosing of cytochrome P450 metabolised drugs: a case study with yohimbine and tamoxifen"
+description: "PAGE 2021"
+author:
+  - name: "R. Michelet, F. Weinelt, **M. Klose**, A. M. Mc Laughlin, F. Kluwe, C. Montefusco-Pereira, M. Van Dyk, M. Vay, W. Huisinga, C. Kloft & G. Mikus"
+date: 09-02-2021 # mm-dd-yyyy
+categories: [Middle author, Yohimbine, Tamoxifen, CYP2D6, Microdosing]
+Type: Abstract
+Journal: "*PAGE 2021*"
+draft: false 
+echo: true
+execute:
+  echo: true
+  message: false
+  warning: false
+format:
+  html:
+    number-sections: false
+    toc: false
+    code-fold: false
+    code-tools: false
+comments: false
+---
+
+## Abstract
+
+**Objectives:** Understanding pharmacokinetic (PK) interindividual variability (IIV) can enable reaching optimal drug exposure, minimising therapeutic failure. Genotype-derived phenotypes are often applied to derive a patient’s individual clearance (iCL) but do not always translate into the optimal individual dose. Alternatively, the direct measurement of enzyme activity using a microdosed external probe could provide insights into the patient’s iCL and could be used in model-informed precision dosing (MIPD).
+Here, we propose the use of the CYP2D6 substrate yohimbine (YOH) as a probe to individualise the dosing of the selective oestrogen receptor modulator tamoxifen (TAM). While YOH’s PK was previously characterised using intensive blood sampling over 24 hours [1], deriving YOH iCL (iCLYOH), which varies 1000-fold between normal and poor metabolisers, with less samples would be ideal. This iCL can then be used in a Bayesian framework to predict the optimal dose of other CYP2D6 substrates. After standard dosing of 20 mg TAM once daily, high IIV in TAM concentrations and its ~100-fold more active metabolite endoxifen (ENDX) is observed and attributed to variability in CYP2D6 activity [2]. Therefore, treatment with TAM would benefit from MIPD and thus we present this as a case study of using microdose-based activity measurement to individualise dosing of CYP metabolised drugs.
+
+**Material/Methods:** A recent study investigating oral YOH as a predictor for CYP2D6 activity was used for PK model development [1], including the CYP2D6 genotype-derived phenotype, using NONMEM v. 7.4. The best-fitting model was then refitted to the data blinded for the attributed CYP2D6 activity score (AS) to mimic the application where this data is not available. To use the final model for Bayesian inference in a clinical setting, optimal sampling time points between 0.25 and 4 h post-dose were determined using optimal design analysis in R/Rstudio (v.3.6.3/1.3.959) applying the popED package (v.0.5.0). This design was evaluated by stochastically simulating YOH concentrations at the optimal timepoints to estimate MAP CL. The agreement between the MAP estimate and the iCL of the simulation was then evaluated: bias and precision were assessed using median estimation errors and median absolute estimation errors. To incorporate the ‘real-world’ small deviations from planned sampling times, simulated sampling times were drawn from a normal distribution (sd=5 min) around the planned sample.
+For the MIPD application, a published parent-metabolite TAM PK model [2] was selected. Based on the empirical Bayes estimates and the CYP2D6 AS of the patients in the original YOH model development dataset, iCLYOH for the blinded model application dataset were converted to CYP2D6 AS’s, which were implemented as covariates in the TAM model. Then ENDX exposure of 1000 virtual patients with the same AS were stochastically simulated after 20, 40 and 60 mg daily doses. The percentages of virtual patients reaching the target ENDX minimum steady state concentration of 5.97 ng/mL were calculated [3]. For each patient, the lowest dose resulting in >90% of target attainment was selected as optimal dose.
+
+**Results:** A two-compartmental model with first-order absorption and linear elimination best described the YOH data. The IIV on YOH CL was largely explained by including CYP2D6 activity as a covariate, leading to a reduction from 1,143 to 43.9 CV%. Based on the optimal experimental design analysis, one early (0.25 h) and one late (4 h) sample were sufficient to reliably estimate iCL. iCLYOH were linked to the following phenotypes: patients with iCLYOH≤6 L/h: poor metabolisers, 6<iCLYOH<180 L/h: intermediate metabolisers and iCLYOH≥180 L/h: normal metabolisers. The PK model and iCL estimation were successfully linked to the TAM model in order to provide dosing recommendations for TAM treatment based on 2 YOH samples.
+
+**Conclusion:** This study achieved TAM dose individualisation by using YOH derived CYP2D6 activity and MIPD. A clinical study where both TAM and YOH are administered could inform a direct link between iCLYOH and iCLTAM. This framework can be used for dose individualisation of other CYP substrates as long as a PK model and a probe is available; e.g. midazolam for CYP3A4 could be considered to expand this microdose-based activity measurement for individualised dosing and its utility should be investigated in prospective clinical trials. Furthermore, integration of the workflow in an easy-to-use tool would further encourage clinical application.

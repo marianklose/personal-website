@@ -1,0 +1,29 @@
+---
+title: "Type 1 diabetes prevention clinical trial simulator: Case reports of model-informed drug development tool"
+description: "CPT: Pharmacometrics & Systems Pharmacology"
+author:
+  - name: Morales JF, Klose M, Hoffert Y, Podichetty JT, Burton J, Schmidt S, Romero K, O'Doherty I, Martin F, Campbell-Thompson M, Haller MJ, Atkinson MA, Kim S.
+date: 03-07-2024
+categories: [Second author, Clinical trial simulation, Type 1 diabetes]
+Type: Publication
+Journal: "CPT: Pharmacometrics & Systems Pharmacology"
+doi: "10.1002/psp4.13193"
+draft: false 
+echo: true
+execute:
+  echo: true
+  message: false
+  warning: false
+format:
+  html:
+    number-sections: false
+    toc: false
+    code-fold: false
+    code-tools: false
+comments: false
+---
+
+## Abstract
+
+Clinical trials seeking to delay or prevent the onset of type 1 diabetes (T1D) face a series of pragmatic challenges. Despite more than 100 years since the discovery of insulin, teplizumab remains the only FDA-approved therapy to delay progression from Stage 2 to Stage 3 T1D. To increase the efficiency of clinical trials seeking this goal, our project sought to inform T1D clinical trial designs by developing a disease progression model-based clinical trial simulation tool. Using individual-level data collected from the TrialNet Pathway to Prevention and The Environmental Determinants of Diabetes in the Young natural history studies, we previously developed a quantitative joint model to predict the time to T1D onset. We then applied trial-specific inclusion/exclusion criteria, sample sizes in treatment and placebo arms, trial duration, assessment interval, and dropout rate. We implemented a function for presumed drug effects. To increase the size of the population pool, we generated virtual populations using multivariate normal distribution and ctree machine learning algorithms. As an output, power was calculated, which summarizes the probability of success, showing a statistically significant difference in the time distribution until the T1D diagnosis between the two arms. Using this tool, power curves can also be generated through iterations. The web-based tool is publicly available: https://app.cop.ufl.edu/t1d/. Herein, we briefly describe the tool and provide instructions for simulating a planned clinical trial with two case studies. This tool will allow for improved clinical trial designs and accelerate efforts seeking to prevent or delay the onset of T1D.
+

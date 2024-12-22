@@ -1,0 +1,29 @@
+---
+title: "Exploring the impact of CYP2D6 and UGT2B7 gene-drug interactions, and CYP-mediated DDI on oxycodone and oxymorphone pharmacokinetics using physiologically-based pharmacokinetic modeling and simulation"
+description: "European Journal of Pharmaceutical Sciences"
+author:
+  - name: "**Klose M**, Cristofoletti R, Silva CM, Mangal N, Turgeon J, Michaud V, Lesko LJ, Schmidt S."
+date: 03-01-2024 # mm-dd-yyyy
+categories: [First author, PBPK, Oxycodone, GDI, DDI, UGT2B7, CYP2D6]
+Type: PUBLICATION/ABSTRACT/POSTER
+Journal: "*European Journal of Pharmaceutical Sciences*"
+doi: 10.1016/j.ejps.2023.106689
+draft: false 
+echo: true
+execute:
+  echo: true
+  message: false
+  warning: false
+format:
+  html:
+    number-sections: false
+    toc: false
+    code-fold: false
+    code-tools: false
+comments: false
+---
+
+## Abstract
+
+Oxycodone is one of the most commonly used opioids to treat moderate to severe pain. It is metabolized mainly by CYP3A4 and CYP2D6, while only a small fraction of the dose is excreted unchanged into the urine. Oxymorphone, the metabolite primarily formed by CYP2D6, has a 40- to 60-fold higher mu-opioid receptor affinity than the parent compound. While CYP2D6-mediated gene-drug-interactions (GDIs) and drug-drug interactions (DDIs) are well-studied, they only account for a portion of the variability in oxycodone and oxymorphone exposure. The combined impact of CYP2D6-mediated GDIs and DDIs, CYP3A4-mediated DDIs, and UGT2B7 GDIs is not fully understood yet and hard to study in head-to-head clinical trials given the relatively large number of scenarios. Instead, we propose the use of a physiologically-based pharmacokinetic model that integrates available information on oxycodone's metabolism to characterize and predict the impact of DDIs and GDIs on the exposure of oxycodone and its major, pharmacologically-active metabolite oxymorphone. To this end, we first developed and verified a PBPK model for oxycodone and its metabolites using published clinical data. The verified model was then applied to determine the dose-exposure relationship of oxycodone and oxymorphone stratified by CYP2D6 and UGT2B7 phenotypes respectively, and administered perpetrators of CYP-based drug interactions. Our simulations demonstrate that the combination of CYP2D6 UM and a UGT2B7Y (268) mutation may lead to a 2.3-fold increase in oxymorphone exposure compared to individuals who are phenotyped as CYP2D6 NM / UGT2B7 NM. The extent of oxymorphone exposure increases up to 3.2-fold in individuals concurrently taking CYP3A4 inhibitors, such as ketoconazole. Inhibition of the CYP3A4 pathway results in a relative increase in the partial metabolic clearance of oxycodone to oxymorphone. Oxymorphone is impacted to a higher extent by GDIs and DDIs than oxycodone. We predict oxymorphone exposure to be highest in CYP2D6 UMs/UGT2B7 PMs in the presence of ketoconazole (strong CYP3A4 index inhibitor) and lowest in CYP2D6 PMs/UGT2B7 NMs in the presence of rifampicin (strong CYP3A4 index inducer) covering a 55-fold exposure range.
+

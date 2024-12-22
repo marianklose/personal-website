@@ -30,6 +30,8 @@ ul.task-list li input[type="checkbox"] {
 <script src="../site_libs/quarto-search/fuse.min.js"></script>
 <script src="../site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="../">
+<script src="../site_libs/quarto-listing/list.min.js"></script>
+<script src="../site_libs/quarto-listing/quarto-listing.js"></script>
 <script src="../site_libs/quarto-html/quarto.js"></script>
 <script src="../site_libs/quarto-html/popper.min.js"></script>
 <script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
@@ -66,7 +68,93 @@ ul.task-list li input[type="checkbox"] {
     "search-label": "Search"
   }
 }</script>
+<script>
 
+  window.document.addEventListener("DOMContentLoaded", function (_event) {
+    const listingTargetEl = window.document.querySelector('#listing-publications .list');
+    if (!listingTargetEl) {
+      // No listing discovered, do not attach.
+      return; 
+    }
+
+    const options = {
+      valueNames: ['listing-date','listing-title','listing-author','listing-categories','listing-Journal',{ data: ['index'] },{ data: ['categories'] },{ data: ['listing-date-sort'] },{ data: ['listing-file-modified-sort'] }],
+      
+      searchColumns: ["listing-date","listing-title","listing-author","listing-image","listing-description","listing-categories"],
+    };
+
+    window['quarto-listings'] = window['quarto-listings'] || {};
+    window['quarto-listings']['listing-publications'] = new List('listing-publications', options);
+
+    if (window['quarto-listing-loaded']) {
+      window['quarto-listing-loaded']();
+    }
+  });
+
+  window.addEventListener('hashchange',() => {
+    if (window['quarto-listing-loaded']) {
+      window['quarto-listing-loaded']();
+    }
+  })
+  
+
+  window.document.addEventListener("DOMContentLoaded", function (_event) {
+    const listingTargetEl = window.document.querySelector('#listing-abstracts .list');
+    if (!listingTargetEl) {
+      // No listing discovered, do not attach.
+      return; 
+    }
+
+    const options = {
+      valueNames: ['listing-date','listing-title','listing-author','listing-categories','listing-Journal',{ data: ['index'] },{ data: ['categories'] },{ data: ['listing-date-sort'] },{ data: ['listing-file-modified-sort'] }],
+      
+      searchColumns: ["listing-date","listing-title","listing-author","listing-image","listing-description","listing-categories"],
+    };
+
+    window['quarto-listings'] = window['quarto-listings'] || {};
+    window['quarto-listings']['listing-abstracts'] = new List('listing-abstracts', options);
+
+    if (window['quarto-listing-loaded']) {
+      window['quarto-listing-loaded']();
+    }
+  });
+
+  window.addEventListener('hashchange',() => {
+    if (window['quarto-listing-loaded']) {
+      window['quarto-listing-loaded']();
+    }
+  })
+  </script>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
 
 <link rel="stylesheet" href="../styles.css">
 <link rel="stylesheet" href="styles.css">
@@ -113,16 +201,7 @@ ul.task-list li input[type="checkbox"] {
 <!-- sidebar -->
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
-        <nav id="TOC" role="doc-toc" class="toc-active">
-    <h2 id="toc-title">On this page</h2>
-   
-  <ul>
-  <li><a href="#section" id="toc-section" class="nav-link active" data-scroll-target="#section">2024</a></li>
-  <li><a href="#section-1" id="toc-section-1" class="nav-link" data-scroll-target="#section-1">2022</a></li>
-  <li><a href="#section-2" id="toc-section-2" class="nav-link" data-scroll-target="#section-2">2021</a></li>
-  </ul>
-</nav>
-    </div>
+    <h5 class="quarto-listing-category-title">Categories</h5><div class="quarto-listing-category category-default"><div class="category" data-category="">All <span class="quarto-category-count">(9)</span></div><div class="category" data-category="Antiinfectives">Antiinfectives <span class="quarto-category-count">(1)</span></div><div class="category" data-category="Bayes">Bayes <span class="quarto-category-count">(1)</span></div><div class="category" data-category="CYP2D6">CYP2D6 <span class="quarto-category-count">(3)</span></div><div class="category" data-category="Clinical trial simulation">Clinical trial simulation <span class="quarto-category-count">(2)</span></div><div class="category" data-category="DDI">DDI <span class="quarto-category-count">(2)</span></div><div class="category" data-category="Doxorubicin">Doxorubicin <span class="quarto-category-count">(2)</span></div><div class="category" data-category="Duchenne muscular dystrophy">Duchenne muscular dystrophy <span class="quarto-category-count">(1)</span></div><div class="category" data-category="Efficacy">Efficacy <span class="quarto-category-count">(1)</span></div><div class="category" data-category="First author">First author <span class="quarto-category-count">(3)</span></div><div class="category" data-category="GDI">GDI <span class="quarto-category-count">(2)</span></div><div class="category" data-category="Machine learning">Machine learning <span class="quarto-category-count">(1)</span></div><div class="category" data-category="Meropenem">Meropenem <span class="quarto-category-count">(1)</span></div><div class="category" data-category="Microdosing">Microdosing <span class="quarto-category-count">(1)</span></div><div class="category" data-category="Middle author">Middle author <span class="quarto-category-count">(4)</span></div><div class="category" data-category="NCA">NCA <span class="quarto-category-count">(1)</span></div><div class="category" data-category="NLME PK">NLME PK <span class="quarto-category-count">(2)</span></div><div class="category" data-category="Oxycodone">Oxycodone <span class="quarto-category-count">(2)</span></div><div class="category" data-category="PBPK">PBPK <span class="quarto-category-count">(2)</span></div><div class="category" data-category="PEGylated liposomal doxorubicin">PEGylated liposomal doxorubicin <span class="quarto-category-count">(2)</span></div><div class="category" data-category="Prior Modifications">Prior Modifications <span class="quarto-category-count">(1)</span></div><div class="category" data-category="RShiny">RShiny <span class="quarto-category-count">(2)</span></div><div class="category" data-category="Safety">Safety <span class="quarto-category-count">(1)</span></div><div class="category" data-category="Second author">Second author <span class="quarto-category-count">(2)</span></div><div class="category" data-category="Simulation study">Simulation study <span class="quarto-category-count">(1)</span></div><div class="category" data-category="TLD-1">TLD-1 <span class="quarto-category-count">(2)</span></div><div class="category" data-category="Tamoxifen">Tamoxifen <span class="quarto-category-count">(1)</span></div><div class="category" data-category="Type 1 diabetes">Type 1 diabetes <span class="quarto-category-count">(1)</span></div><div class="category" data-category="UGT2B7">UGT2B7 <span class="quarto-category-count">(2)</span></div><div class="category" data-category="Yohimbine">Yohimbine <span class="quarto-category-count">(1)</span></div></div></div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
@@ -145,215 +224,473 @@ ul.task-list li input[type="checkbox"] {
 </header>
 
 
-<div class="grid custom-grid">
-<div class="g-col-6">
-<div class="custom-callout callout callout-style-simple callout-note no-icon callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon no-icon"></i>
+<section id="peer-reviewed-publications" class="level2">
+<h2 class="anchored" data-anchor-id="peer-reviewed-publications">Peer-Reviewed Publications</h2>
+<div id="listing-publications" class="quarto-listing quarto-listing-container-default">
+<div class="list quarto-listing-default">
+<div class="quarto-post image-right" data-index="0" data-categories="Middle author,Clinical trial simulation,RShiny,Duchenne muscular dystrophy" data-listing-date-sort="1727906400000" data-listing-file-modified-sort="1734886198027" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="2" data-listing-word-count-sort="220">
+<div class="body">
+<h3 class="no-anchor listing-title">
+<a href="../publications/publications_docs/10-03-2024_cts_duchenne_muscular_dystrophy.html" class="no-external">A model-informed clinical trial simulation tool with a graphical user interface for Duchenne muscular dystrophy</a>
+</h3>
+<div class="listing-subtitle">
+<a href="../publications/publications_docs/10-03-2024_cts_duchenne_muscular_dystrophy.html" class="no-external"></a>
 </div>
-<div class="callout-title-container flex-fill">
-Publication
+<div class="listing-categories">
+<div class="listing-category" onclick="window.quartoListingCategory('Middle author'); return false;">
+Middle author
 </div>
+<div class="listing-category" onclick="window.quartoListingCategory('Clinical trial simulation'); return false;">
+Clinical trial simulation
 </div>
-<div class="callout-body-container callout-body">
-
+<div class="listing-category" onclick="window.quartoListingCategory('RShiny'); return false;">
+RShiny
 </div>
-</div>
-</div>
-<div class="g-col-6">
-<div class="custom-callout callout callout-style-simple callout-caution no-icon callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon no-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-Abstract/Poster
-</div>
-</div>
-<div class="callout-body-container callout-body">
-
+<div class="listing-category" onclick="window.quartoListingCategory('Duchenne muscular dystrophy'); return false;">
+Duchenne muscular dystrophy
 </div>
 </div>
 </div>
+<div class="metadata">
+<a href="../publications/publications_docs/10-03-2024_cts_duchenne_muscular_dystrophy.html" class="no-external">
+<div class="listing-date">
+Oct 3, 2024
 </div>
-<section id="section" class="level2">
-<h2 class="anchored" data-anchor-id="section">2024</h2>
-<div class="custom-callout callout callout-style-simple callout-note no-icon callout-titled">
-<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-3-contents" aria-controls="callout-3" aria-expanded="true" aria-label="Toggle callout">
-<div class="callout-icon-container">
-<i class="callout-icon no-icon"></i>
+<div class="listing-author">
+Kim J, Morales JF, Kang S, <strong>Klose M</strong>, Willcocks RJ, Daniels MJ, Belfiore-Oshan R, Walter GA, Rooney WD, Vandenborne K, Kim S
 </div>
-<div class="callout-title-container flex-fill">
-A model-informed clinical trial simulation tool with a graphical user interface for Duchenne muscular dystrophy
+<div class="metadata-value listing-Journal">
+<em>CPT: Pharmacometrics &amp; Systems Pharmacology</em>
 </div>
-<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
-</div>
-<div id="callout-3" class="callout-3-contents callout-collapse collapse show">
-<div class="callout-body-container callout-body">
-<p>Journal: CPT: Pharmacometrics &amp; Systems Pharmacology<br>
-Publication Date: 2024-10-03<br>
-DOI: <a href="https://doi.org/10.1002/psp4.13246" target="_blank">10.1002/psp4.13246</a><br>
-Authors: Kim J, Morales JF, Kang S, <u>Klose M</u>, Willcocks RJ, Daniels MJ, Belfiore-Oshan R, Walter GA, Rooney WD, Vandenborne K, Kim S.</p>
+</a>
 </div>
 </div>
+<div class="quarto-post image-right" data-index="1" data-categories="Second author,Clinical trial simulation,RShiny,Type 1 diabetes" data-listing-date-sort="1719957600000" data-listing-file-modified-sort="1734886240717" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="2" data-listing-word-count-sort="246">
+<div class="body">
+<h3 class="no-anchor listing-title">
+<a href="../publications/publications_docs/07-03-2024_t1d_cts.html" class="no-external">Type 1 diabetes prevention clinical trial simulator: Case reports of model-informed drug development tool</a>
+</h3>
+<div class="listing-subtitle">
+<a href="../publications/publications_docs/07-03-2024_t1d_cts.html" class="no-external"></a>
 </div>
-<div class="custom-callout callout callout-style-simple callout-note no-icon callout-titled">
-<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-4-contents" aria-controls="callout-4" aria-expanded="true" aria-label="Toggle callout">
-<div class="callout-icon-container">
-<i class="callout-icon no-icon"></i>
+<div class="listing-categories">
+<div class="listing-category" onclick="window.quartoListingCategory('Second author'); return false;">
+Second author
 </div>
-<div class="callout-title-container flex-fill">
-Type 1 diabetes prevention clinical trial simulator: Case reports of model-informed drug development tool
+<div class="listing-category" onclick="window.quartoListingCategory('Clinical trial simulation'); return false;">
+Clinical trial simulation
 </div>
-<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+<div class="listing-category" onclick="window.quartoListingCategory('RShiny'); return false;">
+RShiny
 </div>
-<div id="callout-4" class="callout-4-contents callout-collapse collapse show">
-<div class="callout-body-container callout-body">
-<p>Journal: CPT: Pharmacometrics &amp; Systems Pharmacology<br>
-Publication Date: 2024-07-03<br>
-DOI: <a href="https://doi.org/10.1002/psp4.13193" target="_blank">10.1002/psp4.13193</a><br>
-Authors: Morales JF, <u>Klose M</u>, Hoffert Y, Podichetty JT, Burton J, Schmidt S, Romero K, O’Doherty I, Martin F, Campbell-Thompson M, Haller MJ, Atkinson MA, Kim S.</p>
+<div class="listing-category" onclick="window.quartoListingCategory('Type 1 diabetes'); return false;">
+Type 1 diabetes
 </div>
 </div>
 </div>
-<div class="custom-callout callout callout-style-simple callout-note no-icon callout-titled">
-<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-5-contents" aria-controls="callout-5" aria-expanded="true" aria-label="Toggle callout">
-<div class="callout-icon-container">
-<i class="callout-icon no-icon"></i>
+<div class="metadata">
+<a href="../publications/publications_docs/07-03-2024_t1d_cts.html" class="no-external">
+<div class="listing-date">
+Jul 3, 2024
 </div>
-<div class="callout-title-container flex-fill">
-Population pharmacokinetics of TLD-1, a novel liposomal doxorubicin, in a phase I trial
+<div class="listing-author">
+Morales JF, <strong>Klose M</strong>, Hoffert Y, Podichetty JT, Burton J, Schmidt S, Romero K, O’Doherty I, Martin F, Campbell-Thompson M, Haller MJ, Atkinson MA, Kim S.
 </div>
-<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+<div class="metadata-value listing-Journal">
+<em>CPT: Pharmacometrics &amp; Systems Pharmacology</em>
 </div>
-<div id="callout-5" class="callout-5-contents callout-collapse collapse show">
-<div class="callout-body-container callout-body">
-<p>Journal: Cancer Chemother Pharmacol<br>
-Publication Date: 2024-09<br>
-DOI: <a href="https://doi.org/10.1007/s00280-024-04679-z" target="_blank">10.1007/s00280-024-04679-z</a><br>
-Authors: Mc Laughlin AM, Hess D, Michelet R, Colombo I, Haefliger S, Bastian S, Rabaglio M, Schwitter M, Fischer S, Eckhardt K, Hayoz S, Kopp C, <u>Klose M</u>, Sessa C, Stathis A, Halbherr S, Huisinga W, Joerger M, Kloft C.</p>
+</a>
 </div>
 </div>
+<div class="quarto-post image-right" data-index="2" data-categories="Middle author,Doxorubicin,TLD-1,PEGylated liposomal doxorubicin,NLME PK" data-listing-date-sort="1718402400000" data-listing-file-modified-sort="1734886652036" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="2" data-listing-word-count-sort="259">
+<div class="body">
+<h3 class="no-anchor listing-title">
+<a href="../publications/publications_docs/06-15-2024_nlme_pk_tld1.html" class="no-external">Population pharmacokinetics of TLD-1, a novel liposomal doxorubicin, in a phase I trial</a>
+</h3>
+<div class="listing-subtitle">
+<a href="../publications/publications_docs/06-15-2024_nlme_pk_tld1.html" class="no-external"></a>
 </div>
-<div class="custom-callout callout callout-style-simple callout-caution no-icon callout-titled">
-<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-6-contents" aria-controls="callout-6" aria-expanded="true" aria-label="Toggle callout">
-<div class="callout-icon-container">
-<i class="callout-icon no-icon"></i>
+<div class="listing-categories">
+<div class="listing-category" onclick="window.quartoListingCategory('Middle author'); return false;">
+Middle author
 </div>
-<div class="callout-title-container flex-fill">
-Machine learning-driven flattening of model priors: A comparative simulation study across multiple compounds
+<div class="listing-category" onclick="window.quartoListingCategory('Doxorubicin'); return false;">
+Doxorubicin
 </div>
-<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+<div class="listing-category" onclick="window.quartoListingCategory('TLD-1'); return false;">
+TLD-1
 </div>
-<div id="callout-6" class="callout-6-contents callout-collapse collapse show">
-<div class="callout-body-container callout-body">
-<p>Event: PAGE (2024) Publication Date: 2024-06-26<br>
-Link: <a href="https://www.page-meeting.org/default.asp?abstract=10858" target="_blank">https://www.page-meeting.org/default.asp?abstract=10858</a><br>
-Authors: <u>Klose M</u>, Thoma F, Kovar L, Huisinga W, Michelet R, Kloft C.</p>
+<div class="listing-category" onclick="window.quartoListingCategory('PEGylated liposomal doxorubicin'); return false;">
+PEGylated liposomal doxorubicin
 </div>
-</div>
-</div>
-<div class="custom-callout callout callout-style-simple callout-note no-icon callout-titled">
-<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-7-contents" aria-controls="callout-7" aria-expanded="true" aria-label="Toggle callout">
-<div class="callout-icon-container">
-<i class="callout-icon no-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-TLD-1, a novel liposomal doxorubicin, in patients with advanced solid tumors: Dose escalation and expansion part of a multicenter open-label phase I trial (SAKK 65/16)
-</div>
-<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
-</div>
-<div id="callout-7" class="callout-7-contents callout-collapse collapse show">
-<div class="callout-body-container callout-body">
-<p>Journal: European Journal of Cancer<br>
-Publication Date: 2024-04<br>
-DOI: <a href="https://doi.org/10.1016/j.ejca.2024.113588" target="_blank">10.1016/j.ejca.2024.113588</a><br>
-Authors: Colombo I, Koster KL, Holer L, Haefliger S, Rabaglio M, Bastian S, Schwitter M, Eckhardt K, Hayoz S, Mc Laughlin AM, Kloft C, <u>Klose M</u>, Halbherr S, Baumgartner C, Sessa C, Stathis A, Hess D, Joerger M.</p>
+<div class="listing-category" onclick="window.quartoListingCategory('NLME PK'); return false;">
+NLME PK
 </div>
 </div>
 </div>
-<div class="custom-callout callout callout-style-simple callout-note no-icon callout-titled">
-<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-8-contents" aria-controls="callout-8" aria-expanded="true" aria-label="Toggle callout">
-<div class="callout-icon-container">
-<i class="callout-icon no-icon"></i>
+<div class="metadata">
+<a href="../publications/publications_docs/06-15-2024_nlme_pk_tld1.html" class="no-external">
+<div class="listing-date">
+Jun 15, 2024
 </div>
-<div class="callout-title-container flex-fill">
-Exploring the impact of CYP2D6 and UGT2B7 gene-drug interactions, and CYP-mediated DDI on oxycodone and oxymorphone pharmacokinetics using physiologically-based pharmacokinetic modeling and simulation
+<div class="listing-author">
+Mc Laughlin AM, Hess D, Michelet R, Colombo I, Haefliger S, Bastian S, Rabaglio M, Schwitter M, Fischer S, Eckhardt K, Hayoz S, Kopp C, <strong>Klose M</strong>, Sessa C, Stathis A, Halbherr S, Huisinga W, Joerger M, Kloft C.
 </div>
-<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+<div class="metadata-value listing-Journal">
+<em>Cancer Chemotherapy and Pharmacology</em>
 </div>
-<div id="callout-8" class="callout-8-contents callout-collapse collapse show">
-<div class="callout-body-container callout-body">
-<p>Journal: Eur J Pharm Sci<br>
-Publication Date: 2024-03-01<br>
-DOI: <a href="https://doi.org/10.1016/j.ejps.2023.106689" target="_blank">10.1016/j.ejps.2023.106689</a><br>
-Authors: <u>Klose M</u>, Cristofoletti R, Silva CM, Mangal N, Turgeon J, Michaud V, Lesko LJ, Schmidt S.</p>
+</a>
 </div>
+</div>
+<div class="quarto-post image-right" data-index="3" data-categories="First author,PBPK,Oxycodone,GDI,DDI,UGT2B7,CYP2D6" data-listing-date-sort="1709247600000" data-listing-file-modified-sort="1734889024952" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="2" data-listing-word-count-sort="326">
+<div class="body">
+<h3 class="no-anchor listing-title">
+<a href="../publications/publications_docs/03-01-2024_oxycodone_pbpk_ddi_gdi.html" class="no-external">Exploring the impact of CYP2D6 and UGT2B7 gene-drug interactions, and CYP-mediated DDI on oxycodone and oxymorphone pharmacokinetics using physiologically-based pharmacokinetic modeling and simulation</a>
+</h3>
+<div class="listing-subtitle">
+<a href="../publications/publications_docs/03-01-2024_oxycodone_pbpk_ddi_gdi.html" class="no-external"></a>
+</div>
+<div class="listing-categories">
+<div class="listing-category" onclick="window.quartoListingCategory('First author'); return false;">
+First author
+</div>
+<div class="listing-category" onclick="window.quartoListingCategory('PBPK'); return false;">
+PBPK
+</div>
+<div class="listing-category" onclick="window.quartoListingCategory('Oxycodone'); return false;">
+Oxycodone
+</div>
+<div class="listing-category" onclick="window.quartoListingCategory('GDI'); return false;">
+GDI
+</div>
+<div class="listing-category" onclick="window.quartoListingCategory('DDI'); return false;">
+DDI
+</div>
+<div class="listing-category" onclick="window.quartoListingCategory('UGT2B7'); return false;">
+UGT2B7
+</div>
+<div class="listing-category" onclick="window.quartoListingCategory('CYP2D6'); return false;">
+CYP2D6
+</div>
+</div>
+</div>
+<div class="metadata">
+<a href="../publications/publications_docs/03-01-2024_oxycodone_pbpk_ddi_gdi.html" class="no-external">
+<div class="listing-date">
+Mar 1, 2024
+</div>
+<div class="listing-author">
+<strong>Klose M</strong>, Cristofoletti R, Silva CM, Mangal N, Turgeon J, Michaud V, Lesko LJ, Schmidt S.
+</div>
+<div class="metadata-value listing-Journal">
+<em>European Journal of Pharmaceutical Sciences</em>
+</div>
+</a>
+</div>
+</div>
+<div class="quarto-post image-right" data-index="4" data-categories="Middle author,TLD-1,PEGylated liposomal doxorubicin,Doxorubicin,Safety,Efficacy,NCA" data-listing-date-sort="1706828400000" data-listing-file-modified-sort="1734905830667" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="2" data-listing-word-count-sort="248">
+<div class="body">
+<h3 class="no-anchor listing-title">
+<a href="../publications/publications_docs/02-02-2024_pk_safety_efficacy_tld1.html" class="no-external">TLD-1, a novel liposomal doxorubicin, in patients with advanced solid tumors: Dose escalation and expansion part of a multicenter open-label phase I trial (SAKK 65/16)</a>
+</h3>
+<div class="listing-subtitle">
+<a href="../publications/publications_docs/02-02-2024_pk_safety_efficacy_tld1.html" class="no-external"></a>
+</div>
+<div class="listing-categories">
+<div class="listing-category" onclick="window.quartoListingCategory('Middle author'); return false;">
+Middle author
+</div>
+<div class="listing-category" onclick="window.quartoListingCategory('TLD-1'); return false;">
+TLD-1
+</div>
+<div class="listing-category" onclick="window.quartoListingCategory('PEGylated liposomal doxorubicin'); return false;">
+PEGylated liposomal doxorubicin
+</div>
+<div class="listing-category" onclick="window.quartoListingCategory('Doxorubicin'); return false;">
+Doxorubicin
+</div>
+<div class="listing-category" onclick="window.quartoListingCategory('Safety'); return false;">
+Safety
+</div>
+<div class="listing-category" onclick="window.quartoListingCategory('Efficacy'); return false;">
+Efficacy
+</div>
+<div class="listing-category" onclick="window.quartoListingCategory('NCA'); return false;">
+NCA
+</div>
+</div>
+</div>
+<div class="metadata">
+<a href="../publications/publications_docs/02-02-2024_pk_safety_efficacy_tld1.html" class="no-external">
+<div class="listing-date">
+Feb 2, 2024
+</div>
+<div class="listing-author">
+Colombo I, Koster KL, Holer L, Haefliger S, Rabaglio M, Bastian S, Schwitter M, Eckhardt K, Hayoz S, Mc Laughlin AM, Kloft C, <strong>Klose M</strong>, Halbherr S, Baumgartner C, Sessa C, Stathis A, Hess D, Joerger M.
+</div>
+<div class="metadata-value listing-Journal">
+<em>European Journal of Cancer</em>
+</div>
+</a>
+</div>
+</div>
+<div class="quarto-post image-right" data-index="5" data-categories="Second author,Meropenem,Antiinfectives,NLME PK" data-listing-date-sort="1618869600000" data-listing-file-modified-sort="1734890242068" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="2" data-listing-word-count-sort="251">
+<div class="body">
+<h3 class="no-anchor listing-title">
+<a href="../publications/publications_docs/04-20-2021_mero_risk_calculator_evaluation.html" class="no-external">Evaluation of the MeroRisk Calculator, A User-Friendly Tool to Predict the Risk of Meropenem Target Non-Attainment in Critically Ill Patients</a>
+</h3>
+<div class="listing-subtitle">
+<a href="../publications/publications_docs/04-20-2021_mero_risk_calculator_evaluation.html" class="no-external"></a>
+</div>
+<div class="listing-categories">
+<div class="listing-category" onclick="window.quartoListingCategory('Second author'); return false;">
+Second author
+</div>
+<div class="listing-category" onclick="window.quartoListingCategory('Meropenem'); return false;">
+Meropenem
+</div>
+<div class="listing-category" onclick="window.quartoListingCategory('Antiinfectives'); return false;">
+Antiinfectives
+</div>
+<div class="listing-category" onclick="window.quartoListingCategory('NLME PK'); return false;">
+NLME PK
+</div>
+</div>
+</div>
+<div class="metadata">
+<a href="../publications/publications_docs/04-20-2021_mero_risk_calculator_evaluation.html" class="no-external">
+<div class="listing-date">
+Apr 20, 2021
+</div>
+<div class="listing-author">
+Liebchen U, <strong>Klose M</strong>, Paal M, Vogeser M, Zoller M, Schroeder I, Schmitt L, Huisinga W, Michelet R, Zander J, Scharf C, Weinelt FA, Kloft C.
+</div>
+<div class="metadata-value listing-Journal">
+<em>Antibiotics</em>
+</div>
+</a>
+</div>
+</div>
+</div>
+<div class="listing-no-matching d-none">
+No matching items
 </div>
 </div>
 </section>
-<section id="section-1" class="level2">
-<h2 class="anchored" data-anchor-id="section-1">2022</h2>
-<div class="custom-callout callout callout-style-simple callout-caution no-icon callout-titled">
-<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-9-contents" aria-controls="callout-9" aria-expanded="true" aria-label="Toggle callout">
-<div class="callout-icon-container">
-<i class="callout-icon no-icon"></i>
+<section id="abstractsposterspresentations" class="level2">
+<h2 class="anchored" data-anchor-id="abstractsposterspresentations">Abstracts/Posters/Presentations</h2>
+<div id="listing-abstracts" class="quarto-listing quarto-listing-container-default">
+<div class="list quarto-listing-default">
+<div class="quarto-post image-right" data-index="0" data-categories="First author,Machine learning,Bayes,Prior Modifications,Simulation study" data-listing-date-sort="1719352800000" data-listing-file-modified-sort="1734888035908" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="4" data-listing-word-count-sort="677">
+<div class="body">
+<h3 class="no-anchor listing-title">
+<a href="../publications/abstracts_docs/06-26-2024_ml_driven_flattening_model_priors.html" class="no-external">Machine learning-driven flattening of model priors: A comparative simulation study across multiple compounds</a>
+</h3>
+<div class="listing-subtitle">
+<a href="../publications/abstracts_docs/06-26-2024_ml_driven_flattening_model_priors.html" class="no-external"></a>
 </div>
-<div class="callout-title-container flex-fill">
-The Impact of UGT2B7 and CYP2D6 Gene-Drug- and CYP-mediated Drug-Drug-Interactions on Oxycodone and Oxymorphone Pharmacokinetics using PBPK Modelling.
+<div class="listing-categories">
+<div class="listing-category" onclick="window.quartoListingCategory('First author'); return false;">
+First author
 </div>
-<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+<div class="listing-category" onclick="window.quartoListingCategory('Machine learning'); return false;">
+Machine learning
 </div>
-<div id="callout-9" class="callout-9-contents callout-collapse collapse show">
-<div class="callout-body-container callout-body">
-<p>Event: ACoP13 (2022)<br>
-Publication Date: 2022<br>
-Link: <a href="https:go-acop.org/?abstract=413" target="_blank">www.go-acop.org/?abstract=413</a><br>
-Authors: <u>Klose M</u>, Schmidt S, Cristofoletti R.</p>
+<div class="listing-category" onclick="window.quartoListingCategory('Bayes'); return false;">
+Bayes
 </div>
+<div class="listing-category" onclick="window.quartoListingCategory('Prior Modifications'); return false;">
+Prior Modifications
 </div>
-</div>
-</section>
-<section id="section-2" class="level2">
-<h2 class="anchored" data-anchor-id="section-2">2021</h2>
-<div class="custom-callout callout callout-style-simple callout-note no-icon callout-titled">
-<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-10-contents" aria-controls="callout-10" aria-expanded="true" aria-label="Toggle callout">
-<div class="callout-icon-container">
-<i class="callout-icon no-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-Evaluation of the MeroRisk Calculator, A User-Friendly Tool to Predict the Risk of Meropenem Target Non-Attainment in Critically Ill Patients
-</div>
-<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
-</div>
-<div id="callout-10" class="callout-10-contents callout-collapse collapse show">
-<div class="callout-body-container callout-body">
-<p>Journal: Antibiotics (Basel)<br>
-Publication Date: 2021-04-20<br>
-DOI: <a href="https://doi.org/10.3390/antibiotics10040468" target="_blank">10.3390/antibiotics10040468</a><br>
-Authors: Liebchen U, <u>Klose M</u>, Paal M, Vogeser M, Zoller M, Schroeder I, Schmitt L, Huisinga W, Michelet R, Zander J, Scharf C, Weinelt FA, Kloft C.</p>
+<div class="listing-category" onclick="window.quartoListingCategory('Simulation study'); return false;">
+Simulation study
 </div>
 </div>
 </div>
-<div class="custom-callout callout callout-style-simple callout-caution no-icon callout-titled">
-<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-11-contents" aria-controls="callout-11" aria-expanded="true" aria-label="Toggle callout">
-<div class="callout-icon-container">
-<i class="callout-icon no-icon"></i>
+<div class="metadata">
+<a href="../publications/abstracts_docs/06-26-2024_ml_driven_flattening_model_priors.html" class="no-external">
+<div class="listing-date">
+Jun 26, 2024
 </div>
-<div class="callout-title-container flex-fill">
-Using microdose-based activity measurement to individualise dosing of cytochrome P450 metabolised drugs: a case study with yohimbine and tamoxifen.
+<div class="listing-author">
+<strong>M. Klose</strong>, F. Thoma, L. Kovar, W. Huisinga, R. Michelet, C. Kloft
 </div>
-<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+<div class="metadata-value listing-Journal">
+<em>PAGE 2024</em>
 </div>
-<div id="callout-11" class="callout-11-contents callout-collapse collapse show">
-<div class="callout-body-container callout-body">
-<p>Event: PAGE (2021) Publication Date: 2021<br>
-Link: <a href="https://www.page-meeting.org/default.asp?abstract=9807" target="_blank">https://www.page-meeting.org/default.asp?abstract=9807</a><br>
-Authors: Michelet R, Weinelt FA, <u>Klose M</u>, Mc Laughlin AM, Kluwe F, Montefusco-Pereira C, Van Dyk M, Vay M, Huisinga W, Kloft C, Mikus G.</p>
+</a>
 </div>
 </div>
+<div class="quarto-post image-right" data-index="1" data-categories="First author,PBPK,Oxycodone,GDI,DDI,UGT2B7,CYP2D6" data-listing-date-sort="1667080800000" data-listing-file-modified-sort="1734889866045" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="1" data-listing-word-count-sort="1">
+<div class="body">
+<h3 class="no-anchor listing-title">
+<a href="../publications/abstracts_docs/10-30-2022_oxycodone_pbpk_ddi_gdi.html" class="no-external">The Impact of UGT2B7 and CYP2D6 Gene-Drug- and CYP-mediated Drug-Drug-Interactions on Oxycodone and Oxymorphone Pharmacokinetics using PBPK Modelling.</a>
+</h3>
+<div class="listing-subtitle">
+<a href="../publications/abstracts_docs/10-30-2022_oxycodone_pbpk_ddi_gdi.html" class="no-external"></a>
 </div>
+<div class="listing-categories">
+<div class="listing-category" onclick="window.quartoListingCategory('First author'); return false;">
+First author
+</div>
+<div class="listing-category" onclick="window.quartoListingCategory('PBPK'); return false;">
+PBPK
+</div>
+<div class="listing-category" onclick="window.quartoListingCategory('Oxycodone'); return false;">
+Oxycodone
+</div>
+<div class="listing-category" onclick="window.quartoListingCategory('GDI'); return false;">
+GDI
+</div>
+<div class="listing-category" onclick="window.quartoListingCategory('DDI'); return false;">
+DDI
+</div>
+<div class="listing-category" onclick="window.quartoListingCategory('UGT2B7'); return false;">
+UGT2B7
+</div>
+<div class="listing-category" onclick="window.quartoListingCategory('CYP2D6'); return false;">
+CYP2D6
+</div>
+</div>
+</div>
+<div class="metadata">
+<a href="../publications/abstracts_docs/10-30-2022_oxycodone_pbpk_ddi_gdi.html" class="no-external">
+<div class="listing-date">
+Oct 30, 2022
+</div>
+<div class="listing-author">
+<strong>Klose M</strong>, Schmidt S, Cristofoletti R.
+</div>
+<div class="metadata-value listing-Journal">
+<em>ACoP13</em>
+</div>
+</a>
+</div>
+</div>
+<div class="quarto-post image-right" data-index="2" data-categories="Middle author,Yohimbine,Tamoxifen,CYP2D6,Microdosing" data-listing-date-sort="1630533600000" data-listing-file-modified-sort="1734890631121" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="4" data-listing-word-count-sort="682">
+<div class="body">
+<h3 class="no-anchor listing-title">
+<a href="../publications/abstracts_docs/09-02-2021_microdosed_yohimbine.html" class="no-external">Using microdose-based activity measurement to individualise dosing of cytochrome P450 metabolised drugs: a case study with yohimbine and tamoxifen</a>
+</h3>
+<div class="listing-subtitle">
+<a href="../publications/abstracts_docs/09-02-2021_microdosed_yohimbine.html" class="no-external"></a>
+</div>
+<div class="listing-categories">
+<div class="listing-category" onclick="window.quartoListingCategory('Middle author'); return false;">
+Middle author
+</div>
+<div class="listing-category" onclick="window.quartoListingCategory('Yohimbine'); return false;">
+Yohimbine
+</div>
+<div class="listing-category" onclick="window.quartoListingCategory('Tamoxifen'); return false;">
+Tamoxifen
+</div>
+<div class="listing-category" onclick="window.quartoListingCategory('CYP2D6'); return false;">
+CYP2D6
+</div>
+<div class="listing-category" onclick="window.quartoListingCategory('Microdosing'); return false;">
+Microdosing
+</div>
+</div>
+</div>
+<div class="metadata">
+<a href="../publications/abstracts_docs/09-02-2021_microdosed_yohimbine.html" class="no-external">
+<div class="listing-date">
+Sep 2, 2021
+</div>
+<div class="listing-author">
+R. Michelet, F. Weinelt, <strong>M. Klose</strong>, A. M. Mc Laughlin, F. Kluwe, C. Montefusco-Pereira, M. Van Dyk, M. Vay, W. Huisinga, C. Kloft &amp; G. Mikus
+</div>
+<div class="metadata-value listing-Journal">
+<em>PAGE 2021</em>
+</div>
+</a>
+</div>
+</div>
+</div>
+<div class="listing-no-matching d-none">
+No matching items
+</div>
+</div>
+<!-- ::: {.grid .custom-grid} -->
+<!-- ::: {.g-col-6} -->
+<!-- ::: {.callout-note appearance="minimal" .custom-callout icon=false } -->
+<!-- ## Publication -->
+<!-- ::: -->
+<!-- ::: -->
+<!-- ::: {.g-col-6} -->
+<!-- ::: {.callout-caution appearance="minimal" .custom-callout icon=false } -->
+<!-- ## Abstract/Poster -->
+<!-- ::: -->
+<!-- ::: -->
+<!-- ::: -->
+<!-- ## 2024  -->
+<!-- ::: {.callout-note appearance="minimal" .custom-callout icon=false collapse="false"} -->
+<!-- ## A model-informed clinical trial simulation tool with a graphical user interface for Duchenne muscular dystrophy -->
+<!-- Journal: CPT: Pharmacometrics & Systems Pharmacology   -->
+<!-- Publication Date: 2024-10-03   -->
+<!-- DOI: [10.1002/psp4.13246](https://doi.org/10.1002/psp4.13246){target="_blank"}     -->
+<!-- Authors: Kim J, Morales JF, Kang S, <u>Klose M</u>, Willcocks RJ, Daniels MJ, Belfiore-Oshan R, Walter GA, Rooney WD, Vandenborne K, Kim S.   -->
+<!-- ::: -->
+<!-- ::: {.callout-note appearance="minimal" .custom-callout icon=false collapse="false"} -->
+<!-- ## Type 1 diabetes prevention clinical trial simulator: Case reports of model-informed drug development tool -->
+<!-- Journal: CPT: Pharmacometrics & Systems Pharmacology   -->
+<!-- Publication Date: 2024-07-03   -->
+<!-- DOI: [10.1002/psp4.13193](https://doi.org/10.1002/psp4.13193){target="_blank"}     -->
+<!-- Authors: Morales JF, <u>Klose M</u>, Hoffert Y, Podichetty JT, Burton J, Schmidt S, Romero K, O'Doherty I, Martin F, Campbell-Thompson M, Haller MJ, Atkinson MA, Kim S.   -->
+<!-- ::: -->
+<!-- ::: {.callout-note appearance="minimal" .custom-callout icon=false collapse="false"} -->
+<!-- ## Population pharmacokinetics of TLD-1, a novel liposomal doxorubicin, in a phase I trial -->
+<!-- Journal: Cancer Chemother Pharmacol   -->
+<!-- Publication Date: 2024-09   -->
+<!-- DOI: [10.1007/s00280-024-04679-z](https://doi.org/10.1007/s00280-024-04679-z){target="_blank"}     -->
+<!-- Authors: Mc Laughlin AM, Hess D, Michelet R, Colombo I, Haefliger S, Bastian S, Rabaglio M, Schwitter M, Fischer S, Eckhardt K, Hayoz S, Kopp C, <u>Klose M</u>, Sessa C, Stathis A, Halbherr S, Huisinga W, Joerger M, Kloft C.   -->
+<!-- ::: -->
+<!-- ::: {.callout-caution  appearance="minimal" .custom-callout icon=false collapse="false"} -->
+<!-- ## Machine learning-driven flattening of model priors: A comparative simulation study across multiple compounds -->
+<!-- Event: PAGE (2024)  -->
+<!-- Publication Date: 2024-06-26    -->
+<!-- Link: [https://www.page-meeting.org/default.asp?abstract=10858](https://www.page-meeting.org/default.asp?abstract=10858){target="_blank"}   -->
+<!-- Authors: <u>Klose M</u>, Thoma F, Kovar L, Huisinga W, Michelet R, Kloft C.    -->
+<!-- ::: -->
+<!-- ::: {.callout-note appearance="minimal" .custom-callout icon=false collapse="false"} -->
+<!-- ## TLD-1, a novel liposomal doxorubicin, in patients with advanced solid tumors: Dose escalation and expansion part of a multicenter open-label phase I trial (SAKK 65/16) -->
+<!-- Journal: European Journal of Cancer   -->
+<!-- Publication Date: 2024-04   -->
+<!-- DOI: [10.1016/j.ejca.2024.113588](https://doi.org/10.1016/j.ejca.2024.113588){target="_blank"}     -->
+<!-- Authors: Colombo I, Koster KL, Holer L, Haefliger S, Rabaglio M, Bastian S, Schwitter M, Eckhardt K, Hayoz S, Mc Laughlin AM, Kloft C, <u>Klose M</u>, Halbherr S, Baumgartner C, Sessa C, Stathis A, Hess D, Joerger M.   -->
+<!-- ::: -->
+<!-- ::: {.callout-note appearance="minimal" .custom-callout icon=false collapse="false"} -->
+<!-- ## Exploring the impact of CYP2D6 and UGT2B7 gene-drug interactions, and CYP-mediated DDI on oxycodone and oxymorphone pharmacokinetics using physiologically-based pharmacokinetic modeling and simulation -->
+<!-- Journal: Eur J Pharm Sci   -->
+<!-- Publication Date: 2024-03-01   -->
+<!-- DOI: [10.1016/j.ejps.2023.106689](https://doi.org/10.1016/j.ejps.2023.106689){target="_blank"}     -->
+<!-- Authors: <u>Klose M</u>, Cristofoletti R, Silva CM, Mangal N, Turgeon J, Michaud V, Lesko LJ, Schmidt S.   -->
+<!-- ::: -->
+<!-- ## 2022 -->
+<!-- ::: {.callout-caution  appearance="minimal" .custom-callout icon=false collapse="false"} -->
+<!-- ## The Impact of UGT2B7 and CYP2D6 Gene-Drug- and CYP-mediated Drug-Drug-Interactions on Oxycodone and Oxymorphone Pharmacokinetics using PBPK Modelling. -->
+<!-- Event: ACoP13 (2022)   -->
+<!-- Publication Date: 2022    -->
+<!-- Link: [www.go-acop.org/?abstract=413](https:go-acop.org/?abstract=413){target="_blank"}   -->
+<!-- Authors: <u>Klose M</u>, Schmidt S, Cristofoletti R.    -->
+<!-- ::: -->
+<!-- ## 2021 -->
+<!-- ::: {.callout-note appearance="minimal" .custom-callout icon=false collapse="false"} -->
+<!-- ## Evaluation of the MeroRisk Calculator, A User-Friendly Tool to Predict the Risk of Meropenem Target Non-Attainment in Critically Ill Patients -->
+<!-- Journal: Antibiotics (Basel)   -->
+<!-- Publication Date: 2021-04-20   -->
+<!-- DOI: [10.3390/antibiotics10040468](https://doi.org/10.3390/antibiotics10040468){target="_blank"}     -->
+<!-- Authors: Liebchen U, <u>Klose M</u>, Paal M, Vogeser M, Zoller M, Schroeder I, Schmitt L, Huisinga W, Michelet R, Zander J, Scharf C, Weinelt FA, Kloft C.   -->
+<!-- ::: -->
+<!-- ::: {.callout-caution  appearance="minimal" .custom-callout icon=false collapse="false"} -->
+<!-- ## Using microdose-based activity measurement to individualise dosing of cytochrome P450 metabolised drugs: a case study with yohimbine and tamoxifen. -->
+<!-- Event: PAGE (2021)  -->
+<!-- Publication Date: 2021    -->
+<!-- Link: [https://www.page-meeting.org/default.asp?abstract=9807](https://www.page-meeting.org/default.asp?abstract=9807){target="_blank"}   -->
+<!-- Authors: Michelet R, Weinelt FA, <u>Klose M</u>, Mc Laughlin AM, Kluwe F, Montefusco-Pereira C, Van Dyk M, Vay M, Huisinga W, Kloft C, Mikus G.    -->
+<!-- ::: -->
+
 
 
 </section>

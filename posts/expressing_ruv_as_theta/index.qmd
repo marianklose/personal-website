@@ -1,5 +1,5 @@
 ---
-title: "Coding RUV via $THETA in NONMEM"
+title: "Expressing RUV as $THETA in NONMEM"
 description: "Have you ever been confused why some people use the $THETA block to code their RUV in NONMEM? You are not alone!"
 author:
   - name: Marian Klose
@@ -8,13 +8,14 @@ author:
 date: 10-09-2024
 categories: [RUV, Error, NONMEM] 
 image: preview.jpg
-bibliography: C:/Users/mklose/Desktop/bibliography.bib
+bibliography: C:/Users/maria/Desktop/bibliography.bib
 draft: false 
 echo: true
 execute:
   echo: true
   message: false
   warning: false
+citation: true
 format:
   html:
     number-sections: false

@@ -8,9 +8,10 @@ author:
 date: 10-10-2024
 categories: [Estimation, NONMEM, Laplacian, FOCE, FO] 
 image: preview.png
-bibliography: C:/Users/mklose/Desktop/bibliography.bib
+bibliography: C:/Users/maria/Desktop/bibliography.bib
 draft: true 
 echo: true
+citation: true
 execute:
   echo: true
   message: false

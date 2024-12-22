@@ -1,0 +1,29 @@
+---
+title: "TITLE"
+description: "JOURNAL"
+author:
+  - name: "**AUTHOR 1**, AUTHOR 2, AUTHOR 3"
+date: 01-01-1999 # mm-dd-yyyy
+categories: [TAG1, TAG2, TAG3]
+Type: PUBLICATION/ABSTRACT/POSTER
+Journal: "*JOURNAL*"
+doi: DOINUMBER
+draft: false 
+echo: true
+execute:
+  echo: true
+  message: false
+  warning: false
+format:
+  html:
+    number-sections: false
+    toc: false
+    code-fold: false
+    code-tools: false
+comments: false
+---
+
+## Abstract
+
+Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.
+

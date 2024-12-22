@@ -1,0 +1,28 @@
+---
+title: "The Impact of UGT2B7 and CYP2D6 Gene-Drug- and CYP-mediated Drug-Drug-Interactions on Oxycodone and Oxymorphone Pharmacokinetics using PBPK Modelling."
+description: "ACoP13"
+author:
+  - name: "**Klose M**, Schmidt S, Cristofoletti R."
+date: 10-30-2022 # mm dd yyyy
+categories: [First author, PBPK, Oxycodone, GDI, DDI, UGT2B7, CYP2D6]
+Type: Abstract
+Journal: "*ACoP13*"
+draft: false 
+echo: true
+execute:
+  echo: true
+  message: false
+  warning: false
+format:
+  html:
+    number-sections: false
+    toc: false
+    code-fold: false
+    code-tools: false
+comments: false
+---
+
+## URL
+
+<https://www.go-acop.org/?abstract=413>
+

@@ -1,0 +1,29 @@
+---
+title: "A model-informed clinical trial simulation tool with a graphical user interface for Duchenne muscular dystrophy"
+description: "CPT: Pharmacometrics & Systems Pharmacology"
+author:
+  - name: Kim J, Morales JF, Kang S, Klose M, Willcocks RJ, Daniels MJ, Belfiore-Oshan R, Walter GA, Rooney WD, Vandenborne K, Kim S
+date: 03-10-2024
+categories: [Middle author, Clinical trial simulation, RShiny, Duchenne muscular dystrophy]
+Type: Publication
+Journal: "CPT: Pharmacometrics & Systems Pharmacology"
+doi: 10.1002/psp4.13246
+draft: false 
+echo: true
+execute:
+  echo: true
+  message: false
+  warning: false
+format:
+  html:
+    number-sections: false
+    toc: false
+    code-fold: false
+    code-tools: false
+comments: false
+---
+
+## Abstract
+
+Quantitative model-based clinical trial simulation tools play a critical role in informing study designs through simulation before actual execution. These tools help drug developers explore various trial scenarios in silico to select a clinical trial design to detect therapeutic effects more efficiently, therefore reducing time, expense, and participants' burden. To increase the usability of the tools, user-friendly and interactive platforms should be developed to navigate various simulation scenarios. However, developing such tools challenges researchers, requiring expertise in modeling and interface development. This tutorial aims to address this gap by guiding developers in creating tailored R Shiny apps, using an example of a model-based clinical trial simulation tool that we developed for Duchenne muscular dystrophy (DMD). In this tutorial, the structural framework, essential controllers, and visualization techniques for analysis are described, along with key code examples such as criteria selection and power calculation. A virtual population was created using a machine learning algorithm to enlarge the available sample size to simulate clinical trial scenarios in the presented tool. In addition, external validation of the simulated outputs was conducted using a placebo arm of a recently published DMD trial. This tutorial will be particularly useful for developing clinical trial simulation tools based on DMD progression models for other end points and biomarkers. The presented strategies can also be applied to other diseases.
+
