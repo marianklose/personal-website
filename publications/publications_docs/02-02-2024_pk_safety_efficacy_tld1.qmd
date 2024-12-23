@@ -4,7 +4,7 @@ description: "European Journal of Cancer"
 author:
   - name: "Colombo I, Koster KL, Holer L, Haefliger S, Rabaglio M, Bastian S, Schwitter M, Eckhardt K, Hayoz S, Mc Laughlin AM, Kloft C, **Klose M**, Halbherr S, Baumgartner C, Sessa C, Stathis A, Hess D, Joerger M."
 date: 02-02-2024 # mm dd yyyy
-categories: [Middle author, TLD-1, PEGylated liposomal doxorubicin, Doxorubicin, Safety, Efficacy, NCA]
+categories: [TLD-1, PEGylated liposomal doxorubicin, Doxorubicin, Safety, Efficacy, NCA, Middle author]
 Type: Publication
 Journal: "*European Journal of Cancer*"
 doi: 10.1016/j.ejca.2024.113588

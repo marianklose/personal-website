@@ -15,7 +15,8 @@ execute:
   echo: true
   message: false
   warning: false
-citation: true
+citation: 
+  url: https://marian-klose.com/posts/expressing_ruv_as_theta/index.html
 format:
   html:
     number-sections: false

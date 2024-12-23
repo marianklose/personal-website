@@ -11,7 +11,8 @@ image: preview.png
 bibliography: C:/Users/maria/Desktop/bibliography.bib
 draft: true 
 echo: true
-citation: true
+citation: 
+  url: https://marian-klose.com/posts/nlme_estimation_algorithm/index.html
 execute:
   echo: true
   message: false

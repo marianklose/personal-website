@@ -4,7 +4,7 @@ description: "CPT: Pharmacometrics & Systems Pharmacology"
 author:
   - name: Kim J, Morales JF, Kang S, **Klose M**, Willcocks RJ, Daniels MJ, Belfiore-Oshan R, Walter GA, Rooney WD, Vandenborne K, Kim S
 date: 10-03-2024 # 03 October 2024
-categories: [Middle author, Clinical trial simulation, RShiny, Duchenne muscular dystrophy]
+categories: [Clinical trial simulation, RShiny, Duchenne muscular dystrophy, Middle author]
 Type: Publication
 Journal: "*CPT: Pharmacometrics & Systems Pharmacology*"
 doi: 10.1002/psp4.13246

@@ -4,7 +4,7 @@ description: "Antibiotics"
 author:
   - name: "Liebchen U, **Klose M**, Paal M, Vogeser M, Zoller M, Schroeder I, Schmitt L, Huisinga W, Michelet R, Zander J, Scharf C, Weinelt FA, Kloft C. "
 date: 04-20-2021 # mm-dd-yyyy
-categories: [Second author, Meropenem, Antiinfectives, NLME PK]
+categories: [Meropenem, Antiinfectives, NLME PK, Second author]
 Type: Publication
 Journal: "*Antibiotics*"
 doi: 10.3390/antibiotics10040468

@@ -4,7 +4,7 @@ description: "Cancer Chemotherapy and Pharmacology"
 author:
   - name: Mc Laughlin AM, Hess D, Michelet R, Colombo I, Haefliger S, Bastian S, Rabaglio M, Schwitter M, Fischer S, Eckhardt K, Hayoz S, Kopp C, **Klose M**, Sessa C, Stathis A, Halbherr S, Huisinga W, Joerger M, Kloft C.
 date: 06-15-2024 # dd mm yyyy
-categories: [Middle author, Doxorubicin, TLD-1, PEGylated liposomal doxorubicin, NLME PK]
+categories: [Doxorubicin, TLD-1, PEGylated liposomal doxorubicin, NLME PK, Middle author]
 Type: Publication
 Journal: "*Cancer Chemotherapy and Pharmacology*"
 doi: 10.1007/s00280-024-04679-z

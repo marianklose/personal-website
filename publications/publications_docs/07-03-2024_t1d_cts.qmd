@@ -4,7 +4,7 @@ description: "CPT: Pharmacometrics & Systems Pharmacology"
 author:
   - name: Morales JF, **Klose M**, Hoffert Y, Podichetty JT, Burton J, Schmidt S, Romero K, O'Doherty I, Martin F, Campbell-Thompson M, Haller MJ, Atkinson MA, Kim S.
 date: 07-03-2024 # 03 July 2024
-categories: [Second author, Clinical trial simulation, RShiny, Type 1 diabetes]
+categories: [Clinical trial simulation, RShiny, Type 1 diabetes, Second author]
 Type: Publication
 Journal: "*CPT: Pharmacometrics & Systems Pharmacology*"
 doi: "10.1002/psp4.13193"

@@ -4,7 +4,7 @@ description: "European Journal of Pharmaceutical Sciences"
 author:
   - name: "**Klose M**, Cristofoletti R, Silva CM, Mangal N, Turgeon J, Michaud V, Lesko LJ, Schmidt S."
 date: 03-01-2024 # mm-dd-yyyy
-categories: [First author, PBPK, Oxycodone, GDI, DDI, UGT2B7, CYP2D6]
+categories: [PBPK, Oxycodone, GDI, DDI, UGT2B7, CYP2D6, First author]
 Type: PUBLICATION/ABSTRACT/POSTER
 Journal: "*European Journal of Pharmaceutical Sciences*"
 doi: 10.1016/j.ejps.2023.106689

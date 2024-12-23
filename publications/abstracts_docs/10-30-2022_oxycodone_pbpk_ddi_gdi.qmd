@@ -4,7 +4,7 @@ description: "ACoP13"
 author:
   - name: "**Klose M**, Schmidt S, Cristofoletti R."
 date: 10-30-2022 # mm dd yyyy
-categories: [First author, PBPK, Oxycodone, GDI, DDI, UGT2B7, CYP2D6]
+categories: [PBPK, Oxycodone, GDI, DDI, UGT2B7, CYP2D6, First author]
 Type: Abstract
 Journal: "*ACoP13*"
 draft: false 

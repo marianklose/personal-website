@@ -4,7 +4,7 @@ description: "PAGE 2021"
 author:
   - name: "R. Michelet, F. Weinelt, **M. Klose**, A. M. Mc Laughlin, F. Kluwe, C. Montefusco-Pereira, M. Van Dyk, M. Vay, W. Huisinga, C. Kloft & G. Mikus"
 date: 09-02-2021 # mm-dd-yyyy
-categories: [Middle author, Yohimbine, Tamoxifen, CYP2D6, Microdosing]
+categories: [Yohimbine, Tamoxifen, CYP2D6, Microdosing, Middle author]
 Type: Abstract
 Journal: "*PAGE 2021*"
 draft: false 
