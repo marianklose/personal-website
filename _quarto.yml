@@ -3,6 +3,7 @@ project:
 
 website:
   title: "Marian Klose"
+  favicon: img/favicon.ico
   comments:
     giscus:
       repo: marianklose/personal-website
