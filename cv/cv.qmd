@@ -1,8 +1,14 @@
 ---
+title: "CV" 
+toc: true
+format:
+  html:
+    css: styles.css
+    toc: false
 comments: false
 ---
 
-# Education {.section-title}
+## Education {.section-title}
 
 ::: {.grid}
 ::: {.g-col-3}
@@ -64,9 +70,8 @@ comments: false
 :::
 :::
 
----
 
-# Work Experience {.section-title}
+## Work Experience {.section-title}
 
 ::: {.grid}
 ::: {.g-col-3}
@@ -159,9 +164,9 @@ Contributed to a white paper on challenges and opportunities of modeling and sim
 :::
 :::
 
----
 
-# Miscellaneous {.section-title}
+
+## Miscellaneous {.section-title}
 
 ::: {.grid}
 ::: {.g-col-3}
@@ -202,9 +207,9 @@ Organized semester affairs and finances; mediated between students and lecturers
 :::
 :::
 
----
 
-# Language Skills {.section-title}
+
+## Language Skills {.section-title}
 
 ::: {.grid}
 ::: {.g-col-3}
@@ -224,9 +229,9 @@ English
 :::
 :::
 
----
 
-# Computer Skills {.section-title}
+
+## Computer Skills {.section-title}
 
 ::: {.grid}
 ::: {.g-col-3}
@@ -282,9 +287,9 @@ Python
 :::
 :::
 
----
 
-# Courses and Training {.section-title}
+
+## Courses and Training {.section-title}
 
 ::: {.grid}
 ::: {.g-col-3}
@@ -321,341 +326,4 @@ MATLAB/SimBiology Workshop – Introduction to PBPK Modeling with SimBiology
 Python – Data Science, Machine Learning & Neural Networks (Udemy)
 :::
 :::
-
-
-<!-- # Education {.section-title} -->
-
-<!-- ::: {.grid} -->
-<!-- ::: {.g-col-3} -->
-<!-- 2022 -->
-<!-- ::: -->
-<!-- ::: {.g-col-6} -->
-<!-- **License to practise as a pharmacist** -->
-<!-- ::: -->
-<!-- ::: {.g-col-3} -->
-<!-- *LaGeSo, Berlin* -->
-<!-- ::: -->
-<!-- ::: -->
-
-<!-- ::: {.grid} -->
-<!-- ::: {.g-col-3} -->
-<!-- 2017 – 2021 -->
-<!-- ::: -->
-<!-- ::: {.g-col-6} -->
-<!-- **Pharmacy Studies (8 semesters)** -->
-<!-- ::: -->
-<!-- ::: {.g-col-3} -->
-<!-- *Freie Universitaet Berlin* -->
-<!-- ::: -->
-<!-- ::: -->
-
-<!-- ::: {.grid} -->
-<!-- ::: {.g-col-3} -->
-<!-- 2015 – 2017 -->
-<!-- ::: -->
-<!-- ::: {.g-col-6} -->
-<!-- **Chemistry and Biochemistry Studies (3 semesters)** -->
-<!-- ::: -->
-<!-- ::: {.g-col-3} -->
-<!-- *FU and HU Berlin* -->
-<!-- ::: -->
-<!-- ::: -->
-
-<!-- ::: {.grid} -->
-<!-- ::: {.g-col-3} -->
-<!-- 2006 – 2014 -->
-<!-- ::: -->
-<!-- ::: {.g-col-6} -->
-<!-- **Secondary School** -->
-<!-- ::: -->
-<!-- ::: {.g-col-3} -->
-<!-- *St. Ursula Gymnasium Attendorn* -->
-<!-- ::: -->
-<!-- ::: -->
-
-<!-- --- -->
-
-<!-- # Work Experience {.section-title} -->
-
-<!-- ::: {.grid} -->
-<!-- ::: {.g-col-3} -->
-<!-- Mar 23 – Present -->
-<!-- ::: -->
-<!-- ::: {.g-col-6} -->
-<!-- **PhD Student**   -->
-<!-- PhD Student -->
-<!-- ::: -->
-<!-- ::: {.g-col-3} -->
-<!-- *PharMetrX program* -->
-<!-- ::: -->
-<!-- ::: -->
-
-<!-- ::: {.grid} -->
-<!-- ::: {.g-col-3} -->
-<!-- Oct 22 – Dec 22 -->
-<!-- ::: -->
-<!-- ::: {.g-col-6} -->
-<!-- **Internship**   -->
-<!-- Built a code library for various modeling and simulation approaches. Adjusted reporting tool for the code library.    -->
-<!-- ::: -->
-<!-- ::: {.g-col-3} -->
-<!-- *Boehringer Ingelheim, TMCP Data Science* -->
-<!-- ::: -->
-<!-- ::: -->
-
-<!-- ::: {.grid} -->
-<!-- ::: {.g-col-3} -->
-<!-- Nov 21 – Apr 22 -->
-<!-- ::: -->
-<!-- ::: {.g-col-6} -->
-<!-- **Short-term scholarship**    -->
-<!-- PBPK Modeling & Simulation for investigating drug-drug and gene-drug interactions of oxycodone. -->
-<!-- ::: -->
-<!-- ::: {.g-col-3} -->
-<!-- *Center for Pharmacometrics and Systems Physiology, University of Florida* -->
-<!-- ::: -->
-<!-- ::: -->
-
-<!-- ::: {.grid} -->
-<!-- ::: {.g-col-3} -->
-<!-- May 21 – Oct 21 -->
-<!-- ::: -->
-<!-- ::: {.g-col-6} -->
-<!-- **Pre-registration pharmacist**    -->
-<!-- Internship in a community pharmacy. -->
-<!-- ::: -->
-<!-- ::: {.g-col-3} -->
-<!-- *Medios Apotheke an der Charite* -->
-<!-- *Berlin* -->
-<!-- ::: -->
-<!-- ::: -->
-
-<!-- ::: {.grid} -->
-<!-- ::: {.g-col-3} -->
-<!-- Jul 20 – Mar 20 -->
-<!-- ::: -->
-<!-- ::: {.g-col-6} -->
-<!-- **Teaching assistant**   -->
-<!-- Supported lab exercises and oral exams in “Medical microbiology, virology and infection prevention”. -->
-<!-- ::: -->
-<!-- ::: {.g-col-3} -->
-<!-- *Charité University hospital* -->
-<!-- *Berlin*   -->
-<!-- ::: -->
-<!-- ::: -->
-
-<!-- ::: {.grid} -->
-<!-- ::: {.g-col-3} -->
-<!-- Dec 17 – Dec 19 -->
-<!-- ::: -->
-<!-- ::: {.g-col-6} -->
-<!-- **Student assistant**   -->
-<!-- Assisted in planning and implementing PharMetrX anniversary. Provided administrative support. -->
-<!-- ::: -->
-<!-- ::: {.g-col-3} -->
-<!-- *PharMetrX program* -->
-<!-- ::: -->
-<!-- ::: -->
-
-<!-- ::: {.grid} -->
-<!-- ::: {.g-col-3} -->
-<!-- Aug 19 – Sep 19 -->
-<!-- ::: -->
-<!-- ::: {.g-col-6} -->
-<!-- **University internship**   -->
-<!-- Modeled and simulated meropenem concentration-time profiles in critically ill patients   -->
-<!-- ::: -->
-<!-- ::: {.g-col-3} -->
-<!-- *PharMetrX program* -->
-<!-- ::: -->
-<!-- ::: -->
-
-<!-- ::: {.grid} -->
-<!-- ::: {.g-col-3} -->
-<!-- Sep 18 – Oct 18 -->
-<!-- ::: -->
-<!-- ::: {.g-col-6} -->
-<!-- **Internship**    -->
-<!-- Contributed to a white paper on challenges and opportunities of M&S in pediatric type 2 diabetes   -->
-<!-- ::: -->
-<!-- ::: {.g-col-3} -->
-<!-- *Sanofi* -->
-<!-- ::: -->
-<!-- ::: -->
-
-<!-- --- -->
-
-<!-- # Miscellaneous {.section-title} -->
-
-<!-- ::: {.grid} -->
-<!-- ::: {.g-col-3} -->
-<!-- 2017 – 2021 -->
-<!-- ::: -->
-<!-- ::: {.g-col-6} -->
-<!-- **Member of the institutes and students council**    -->
-<!-- Represented student interests   -->
-<!-- ::: -->
-<!-- ::: {.g-col-3} -->
-<!-- *Freie Universität Berlin* -->
-<!-- ::: -->
-<!-- ::: -->
-
-
-<!-- ::: {.grid} -->
-<!-- ::: {.g-col-3} -->
-<!-- 2017 – 2021 -->
-<!-- ::: -->
-<!-- ::: {.g-col-6} -->
-<!-- **Elected speaker of the semester and treasurer**    -->
-<!-- Organized semester affairs and finances, mediated between students and lecturers. -->
-<!-- ::: -->
-<!-- ::: {.g-col-3} -->
-<!-- *Freie Universität Berlin* -->
-<!-- ::: -->
-<!-- ::: -->
-
-
-<!-- ::: {.grid} -->
-<!-- ::: {.g-col-3} -->
-<!-- 2014 – 2015 -->
-<!-- ::: -->
-<!-- ::: {.g-col-6} -->
-<!-- **Work and Travel**    -->
-<!-- 12 months of work and travel -->
-<!-- ::: -->
-<!-- ::: {.g-col-3} -->
-<!-- *Australia, New Zealand, Singapore* -->
-<!-- ::: -->
-<!-- ::: -->
-
-
-<!-- --- -->
-
-<!-- # Language Skills {.section-title} -->
-
-<!-- ::: {.grid} -->
-<!-- ::: {.g-col-3} -->
-<!-- German  -->
-<!-- ::: -->
-<!-- ::: {.g-col-9} -->
-<!-- **Native** -->
-<!-- ::: -->
-<!-- ::: -->
-
-<!-- ::: {.grid} -->
-<!-- ::: {.g-col-3} -->
-<!-- English  -->
-<!-- ::: -->
-<!-- ::: {.g-col-9} -->
-<!-- **Fluent** -->
-<!-- ::: -->
-<!-- ::: -->
-
-
-<!-- --- -->
-
-<!-- # Computer Skills {.section-title} -->
-
-<!-- ::: {.grid} -->
-<!-- ::: {.g-col-3} -->
-<!-- Microsoft Office  -->
-<!-- ::: -->
-<!-- ::: {.g-col-9} -->
-<!-- **intermediate** -->
-<!-- ::: -->
-<!-- ::: -->
-
-
-<!-- ::: {.grid} -->
-<!-- ::: {.g-col-3} -->
-<!-- LaTeX -->
-<!-- ::: -->
-<!-- ::: {.g-col-9} -->
-<!-- **intermediate** -->
-<!-- ::: -->
-<!-- ::: -->
-
-
-<!-- ::: {.grid} -->
-<!-- ::: {.g-col-3} -->
-<!-- GastroPlus -->
-<!-- ::: -->
-<!-- ::: {.g-col-9} -->
-<!-- **intermediate** -->
-<!-- ::: -->
-<!-- ::: -->
-
-
-<!-- ::: {.grid} -->
-<!-- ::: {.g-col-3} -->
-<!-- NONMEM -->
-<!-- ::: -->
-<!-- ::: {.g-col-9} -->
-<!-- **intermediate** -->
-<!-- ::: -->
-<!-- ::: -->
-
-
-<!-- ::: {.grid} -->
-<!-- ::: {.g-col-3} -->
-<!-- R -->
-<!-- ::: -->
-<!-- ::: {.g-col-9} -->
-<!-- **intermediate** -->
-<!-- ::: -->
-<!-- ::: -->
-
-<!-- ::: {.grid} -->
-<!-- ::: {.g-col-3} -->
-<!-- Python -->
-<!-- ::: -->
-<!-- ::: {.g-col-9} -->
-<!-- **beginner** -->
-<!-- ::: -->
-<!-- :::  -->
-
-
-
-<!-- --- -->
-
-<!-- # Courses and Training {.section-title} -->
-
-
-<!-- ::: {.grid} -->
-<!-- ::: {.g-col-3} -->
-<!-- 2023 - 2024 -->
-<!-- ::: -->
-<!-- ::: {.g-col-9} -->
-<!-- PharMetrX A1 - A5 Modules -->
-<!-- ::: -->
-<!-- :::  -->
-
-<!-- ::: {.grid} -->
-<!-- ::: {.g-col-3} -->
-<!-- 2022 -->
-<!-- ::: -->
-<!-- ::: {.g-col-9} -->
-<!-- Pharmacometrics Spring School - Modeling Using MonolixSuite - Lixoft -->
-<!-- ::: -->
-<!-- :::  -->
-
-
-<!-- ::: {.grid} -->
-<!-- ::: {.g-col-3} -->
-<!-- 2022 -->
-<!-- ::: -->
-<!-- ::: {.g-col-9} -->
-<!-- MATLAB/SimBiology workshop – Introduction to PBPK modeling with SimBiology   -->
-<!-- ::: -->
-<!-- :::  -->
-
-
-<!-- ::: {.grid} -->
-<!-- ::: {.g-col-3} -->
-<!-- 2021 -->
-<!-- ::: -->
-<!-- ::: {.g-col-9} -->
-<!-- Python - Data Science, Machine Learning & Neural Networks - Udemy -->
-<!-- ::: -->
-<!-- :::  -->
 

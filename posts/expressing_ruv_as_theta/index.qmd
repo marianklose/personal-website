@@ -33,15 +33,6 @@ library(dplyr)
 library(kableExtra)
 ```
 
-::: {.callout-tip collapse="true" appearance="minimal"}
-## Summary
-- **Classical RUV Specification**: The classical way of specifying RUV in NONMEM involves directly specifying a variance in the `$SIGMA` block.
-- **Alternative RUV Specification**: Coding residual unexplained variability (RUV) via the `$THETA` block in NONMEM allows direct estimation of standard deviation or coefficient of variation, rather than variance.
-- **Fixed SIGMA Block**: In the "alternative" RUV coding method, `$SIGMA` is fixed to 1, making `EPS()` terms standard normal, which are then scaled by `$THETA` parameters representing standard deviations or coefficients of variation.
-- **Additive vs. Proportional Models**: In additive error models, `$THETA` represents a standard deviation. In proportional error models, `$THETA` represents a coefficient of variation (CV) relative to the predicted value (`IPRED`).
-- **Combining Error Components**: For combined proportional and additive error models, the joint standard deviation (`SD`) is computed as the square root of the sum of squared standard deviations, due to variance additivity rules.
-:::
-
 
 When I started my PhD in pharmacometrics, I wanted to try something fancy[^1]: specifying a combined proportional and additive error model in NONMEM for one of my projects. A colleague kindly sent me a reference model, and to my confusion, the code included a novel way (at least to me) of defining residual unexplained variability (RUV):
 
