@@ -4,9 +4,7 @@
 
 # Load packages
 import os
-import json
 import math
-import pandas as pd
 from docx import Document
 from openai import OpenAI
 
@@ -52,53 +50,12 @@ chunks = split_text(full_text, 5)
 system_message = "You are a professor reviewing a manuscript."
 base_user_message = (
     "Please review the following text excerpt for style, errors, conciseness, and understandability. "
-    "Provide detailed comments in JSON format according to the given schema."
+    "Provide detailed comments."
 )
-
-# Define the JSON schema for the response
-json_schema = {
-  "name": "review_comments",
-  "schema": {
-    "type": "object",
-    "properties": {
-      "comments": {
-        "type": "array",
-        "description": "A list of review comments with their respective positions in the text.",
-        "items": {
-          "type": "object",
-          "properties": {
-            "position": {
-              "type": "integer",
-              "description": "The position in the text where the comment should be placed."
-            },
-            "comment": {
-              "type": "string",
-              "description": "The actual review comment."
-            }
-          },
-          "required": [
-            "position",
-            "comment"
-          ],
-          "additionalProperties": False
-        }
-      }
-    },
-    "required": [
-      "comments"
-    ],
-    "additionalProperties": False
-  },
-  "strict": True
-}
 
 ##################################################################
 ##################### API CALL LOOP ##############################
 ##################################################################
-
-# Lists to store responses and structured responses
-responses = []
-structured_responses = []
 
 # Loop over each chunk, call the API, and process the response
 for idx, chunk in enumerate(chunks):
@@ -106,13 +63,9 @@ for idx, chunk in enumerate(chunks):
     user_message = f"{base_user_message}\n\nExcerpt:\n{chunk}"
 
     try:
-        # Make the API request with response_format using the defined JSON schema
+        # Make the API request
         completion = client.chat.completions.create(
             model=gpt_model,
-            response_format={
-                "type": "json_schema",
-                "json_schema": json_schema
-            },
             messages=[
                 {"role": "system", "content": system_message},
                 {"role": "user", "content": user_message}
@@ -122,22 +75,8 @@ for idx, chunk in enumerate(chunks):
         # Extract the response content
         response_text = completion.choices[0].message.content
 
-        # Parse the JSON response
-        response_json = json.loads(response_text)
-
-        # It's assumed that the response JSON adheres to the schema provided.
-        # Add the current chunk index to each comment for reference.
-        for comment in response_json.get("comments", []):
-            comment["chunk_index"] = idx
-
-        # Store raw response
-        responses.append(response_json)
-
-        # Structure the response for dataframe storage
-        structured_responses.append({
-            "chunk_index": idx,
-            "comments": response_json.get("comments", [])
-        })
+        # Add comments directly into the document with line breaks and '> xxx'
+        document.add_paragraph(f"\n> Feedback for chunk {idx + 1}:\n{response_text}")
 
         # Optional: Print progress
         print(f"Processed chunk {idx + 1}/{len(chunks)}")
@@ -149,15 +88,12 @@ for idx, chunk in enumerate(chunks):
 ##################### SAVE RESULTS ###############################
 ##################################################################
 
-# Create a DataFrame from the structured responses
-df = pd.DataFrame(structured_responses)
-
 # Define output directory and file name
 output_dir = "output_reviews"
 os.makedirs(output_dir, exist_ok=True)
-output_file = os.path.join(output_dir, "review_comments.csv")
+output_file = os.path.join(output_dir, "reviewed_document.docx")
 
-# Save the DataFrame to the specified output directory
-df.to_csv(output_file, index=False, encoding="utf-8-sig")
+# Save the updated document
+document.save(output_file)
 
-print(f"Review comments saved to {output_file}")
+print(f"Reviewed document saved to {output_file}")
