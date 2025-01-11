@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Marian Klose">
-<meta name="dcterms.date" content="2024-10-09">
+<meta name="dcterms.date" content="2024-11-09">
 <meta name="description" content="Have you ever been confused why some people use the $THETA block to code their RUV in NONMEM? You are not alone!">
 
 <title>Expressing RUV as $THETA in NONMEM – Marian Klose</title>
@@ -229,7 +229,7 @@ window.Quarto = {
       <div>
       <div class="quarto-title-meta-heading">Published</div>
       <div class="quarto-title-meta-contents">
-        <p class="date">October 9, 2024</p>
+        <p class="date">November 9, 2024</p>
       </div>
     </div>
     
@@ -245,13 +245,13 @@ window.Quarto = {
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#additive-error-models" id="toc-additive-error-models" class="nav-link active" data-scroll-target="#additive-error-models">Additive error models</a></li>
-  <li><a href="#proportional-error-models" id="toc-proportional-error-models" class="nav-link" data-scroll-target="#proportional-error-models">Proportional error models</a>
+  <li><a href="#additive-error-models" id="toc-additive-error-models" class="nav-link active" data-scroll-target="#additive-error-models"><span class="header-section-number">1</span> Additive error models</a></li>
+  <li><a href="#proportional-error-models" id="toc-proportional-error-models" class="nav-link" data-scroll-target="#proportional-error-models"><span class="header-section-number">2</span> Proportional error models</a>
   <ul class="collapse">
-  <li><a href="#an-example" id="toc-an-example" class="nav-link" data-scroll-target="#an-example">An example</a></li>
+  <li><a href="#an-example" id="toc-an-example" class="nav-link" data-scroll-target="#an-example"><span class="header-section-number">2.1</span> An example</a></li>
   </ul></li>
-  <li><a href="#combined-proportional-and-additive-error-models" id="toc-combined-proportional-and-additive-error-models" class="nav-link" data-scroll-target="#combined-proportional-and-additive-error-models">Combined proportional and additive error models</a></li>
-  <li><a href="#conclusion" id="toc-conclusion" class="nav-link" data-scroll-target="#conclusion">Conclusion</a></li>
+  <li><a href="#combined-proportional-and-additive-error-models" id="toc-combined-proportional-and-additive-error-models" class="nav-link" data-scroll-target="#combined-proportional-and-additive-error-models"><span class="header-section-number">3</span> Combined proportional and additive error models</a></li>
+  <li><a href="#conclusion" id="toc-conclusion" class="nav-link" data-scroll-target="#conclusion"><span class="header-section-number">4</span> Conclusion</a></li>
   </ul>
 </nav>
     </div>
@@ -325,8 +325,8 @@ window.Quarto = {
 </div>
 </div>
 <p>So, why use this “alternative”<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a> way of defining the error? Before we try to explain this way of writing a combined error model to ourselves, let’s break down the additive and proportional error model separately to understand what’s going on. Please note: most of this content can also be found elsewhere <span class="citation" data-cites="proostCombinedProportionalAdditive2017">(<a href="#ref-proostCombinedProportionalAdditive2017" role="doc-biblioref">Proost 2017</a>)</span>.</p>
-<section id="additive-error-models" class="level2">
-<h2 class="anchored" data-anchor-id="additive-error-models">Additive error models</h2>
+<section id="additive-error-models" class="level2" data-number="1">
+<h2 data-number="1" class="anchored" data-anchor-id="additive-error-models"><span class="header-section-number">1</span> Additive error models</h2>
 <p>The “classical” way (if I can call it that) of specifying an additive error model in NONMEM is as follows:</p>
 <div class="cell">
 <div class="code-with-filename">
@@ -431,8 +431,8 @@ window.Quarto = {
 <tbody>
 <tr class="odd">
 <td style="text-align: left;">unscaled</td>
-<td style="text-align: right;">0.999</td>
-<td style="text-align: right;">0.999</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">1</td>
 </tr>
 </tbody>
 </table>
@@ -569,8 +569,8 @@ Specifying additive RUV via $THETA gives us a standard deviation
 </div>
 </div>
 </section>
-<section id="proportional-error-models" class="level2">
-<h2 class="anchored" data-anchor-id="proportional-error-models">Proportional error models</h2>
+<section id="proportional-error-models" class="level2" data-number="2">
+<h2 data-number="2" class="anchored" data-anchor-id="proportional-error-models"><span class="header-section-number">2</span> Proportional error models</h2>
 <p>Now, let’s look at proportional error models. The <em>classical</em> way of specifying the proportional error model looks like this:</p>
 <div class="cell">
 <div class="code-with-filename">
@@ -613,8 +613,8 @@ Specifying additive RUV via $THETA gives us a standard deviation
 </div>
 </div>
 <p>This already gives us an understanding of the units of <code>THETA(1)</code>: it represents the coefficient of variation (CV) of the prediction <code>IPRED</code>. Why? A coefficient of variation represents the ratio of the standard deviation to the mean. This is why we end up with a standard deviation (<code>SD_PROP</code>) if we multiply the prediction (<code>IPRED</code>) with the CV (<code>THETA(1)</code>). So we always have a fraction of the prediction representing our standard deviation at that point.</p>
-<section id="an-example" class="level3">
-<h3 class="anchored" data-anchor-id="an-example">An example</h3>
+<section id="an-example" class="level3" data-number="2.1">
+<h3 data-number="2.1" class="anchored" data-anchor-id="an-example"><span class="header-section-number">2.1</span> An example</h3>
 <p>Suppose we have a prediction (<code>IPRED</code>) of 10 mg/L and we want to show the resulting distribution. For the <em>classical</em> approach, we would specify a variance (<code>EPS(1)</code>) of 0.0225, and for the <em>alternative</em> way, we would specify a CV (<code>THETA(1)</code>) of 0.15. What do you think? Will this be equivalent or not? Let’s find out!</p>
 <div class="cell">
 <details class="code-fold">
@@ -716,8 +716,8 @@ Specifying proportional RUV in $THETA gives us a coefficient of variation
 </div>
 </section>
 </section>
-<section id="combined-proportional-and-additive-error-models" class="level2">
-<h2 class="anchored" data-anchor-id="combined-proportional-and-additive-error-models">Combined proportional and additive error models</h2>
+<section id="combined-proportional-and-additive-error-models" class="level2" data-number="3">
+<h2 data-number="3" class="anchored" data-anchor-id="combined-proportional-and-additive-error-models"><span class="header-section-number">3</span> Combined proportional and additive error models</h2>
 <p>Finally, let’s combine our knowledge to understand the <em>alternative</em> way of specifying a combined proportional and additive error model:</p>
 <div class="cell">
 <div class="code-with-filename">
@@ -775,8 +775,8 @@ Combined error models
 </div>
 </div>
 </section>
-<section id="conclusion" class="level2">
-<h2 class="anchored" data-anchor-id="conclusion">Conclusion</h2>
+<section id="conclusion" class="level2" data-number="4">
+<h2 data-number="4" class="anchored" data-anchor-id="conclusion"><span class="header-section-number">4</span> Conclusion</h2>
 <p>This is a somewhat lengthy explanation of why and how we code the <em>alternative</em> approach in NONMEM. Personally, I wasn’t very familiar with how distributions behave when its random variable is being multiplying by a factor, and I didn’t realize that while variances are additive when combining two random processes, standard deviations are not. If you have a stronger background in statistics, this might have been obvious, but I hope this explanation was still helpful for some others.</p>
 
 
@@ -805,13 +805,13 @@ Soch, Joram. 2020. <span>“Variance of the Sum of Two Random Variables.”</spa
 </section><section class="quarto-appendix-contents" id="quarto-citation"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{klose2024,
   author = {Klose, Marian},
   title = {Expressing {RUV} as {\$THETA} in {NONMEM}},
-  date = {2024-10-09},
+  date = {2024-11-09},
   url = {https://marian-klose.com/posts/expressing_ruv_as_theta/index.html},
   langid = {en}
 }
 </code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre><div class="quarto-appendix-secondary-label">For attribution, please cite this work as:</div><div id="ref-klose2024" class="csl-entry quarto-appendix-citeas" role="listitem">
 Klose, Marian. 2024. <span>“Expressing RUV as $THETA in NONMEM.”</span>
-October 9, 2024. <a href="https://marian-klose.com/posts/expressing_ruv_as_theta/index.html">https://marian-klose.com/posts/expressing_ruv_as_theta/index.html</a>.
+November 9, 2024. <a href="https://marian-klose.com/posts/expressing_ruv_as_theta/index.html">https://marian-klose.com/posts/expressing_ruv_as_theta/index.html</a>.
 </div></div></section></div></main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
 window.document.addEventListener("DOMContentLoaded", function (event) {
@@ -1295,7 +1295,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a><span class="co">  - name: Marian Klose</span></span>
 <span id="cb24-6"><a href="#cb24-6" aria-hidden="true" tabindex="-1"></a><span class="co">    url: https://github.com/marianklose</span></span>
 <span id="cb24-7"><a href="#cb24-7" aria-hidden="true" tabindex="-1"></a><span class="co">    orcid: 0009-0005-1706-6289</span></span>
-<span id="cb24-8"><a href="#cb24-8" aria-hidden="true" tabindex="-1"></a><span class="an">date:</span><span class="co"> 10-09-2024</span></span>
+<span id="cb24-8"><a href="#cb24-8" aria-hidden="true" tabindex="-1"></a><span class="an">date:</span><span class="co"> 11-09-2024</span></span>
 <span id="cb24-9"><a href="#cb24-9" aria-hidden="true" tabindex="-1"></a><span class="an">categories:</span><span class="co"> [RUV, Error, NONMEM] </span></span>
 <span id="cb24-10"><a href="#cb24-10" aria-hidden="true" tabindex="-1"></a><span class="an">image:</span><span class="co"> preview.jpg</span></span>
 <span id="cb24-11"><a href="#cb24-11" aria-hidden="true" tabindex="-1"></a><span class="an">bibliography:</span><span class="co"> C:/Users/maria/Desktop/bibliography.bib</span></span>
@@ -1309,7 +1309,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb24-19"><a href="#cb24-19" aria-hidden="true" tabindex="-1"></a><span class="co">  url: https://marian-klose.com/posts/expressing_ruv_as_theta/index.html</span></span>
 <span id="cb24-20"><a href="#cb24-20" aria-hidden="true" tabindex="-1"></a><span class="an">format:</span></span>
 <span id="cb24-21"><a href="#cb24-21" aria-hidden="true" tabindex="-1"></a><span class="co">  html:</span></span>
-<span id="cb24-22"><a href="#cb24-22" aria-hidden="true" tabindex="-1"></a><span class="co">    number-sections: false</span></span>
+<span id="cb24-22"><a href="#cb24-22" aria-hidden="true" tabindex="-1"></a><span class="co">    number-sections: true</span></span>
 <span id="cb24-23"><a href="#cb24-23" aria-hidden="true" tabindex="-1"></a><span class="co">    toc: true</span></span>
 <span id="cb24-24"><a href="#cb24-24" aria-hidden="true" tabindex="-1"></a><span class="co">    code-fold: true</span></span>
 <span id="cb24-25"><a href="#cb24-25" aria-hidden="true" tabindex="-1"></a><span class="co">    code-tools: true</span></span>
