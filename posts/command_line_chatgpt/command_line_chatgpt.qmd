@@ -5,7 +5,7 @@ author:
   - name: Marian Klose
     url: https://github.com/marianklose
     orcid: 0009-0005-1706-6289
-date: 10-01-2025
+date: 01-12-2025
 categories: [ChatGPT, openai, LLM] 
 image: preview.png
 bibliography: C:/Users/maria/Desktop/bibliography.bib
@@ -25,5 +25,144 @@ format:
     code-tools: true
 ---
 
-Lorem ipsum dolor sit amet.
+# Prologue
 
+## Motivation
+
+## Why python
+
+- Openai provides packages (or so called Software Development Kits, SDKs) to interact with their API (Application Programming Interface) for different programming languages such as JavaScript and Python. 
+- However, you can also directly interact with openais API using raw HTTP requests. This allows you to use ChatGPT also in programming languages for which no offical packages / SDKs exist, such as R. 
+- Although I am more profound in R, I have anyways chosen to use python since I am already somewhat familiar with it through prior projects, and I personally prefer the convenience to have a pre-built package instead of dealing with raw HTTP requests.
+
+# Setup
+
+- For the setup, we will basically follow the quickstart guidance from openai for developers: https://platform.openai.com/docs/quickstart?language-preference=python
+
+## Creating an account
+
+- when we want to access ChatGPT from the command line, we need to have an openai account
+- We can simply go to https://platform.openai.com/signup and create ourselves an account
+
+## Retrieve your API key
+
+- API keys are long, random strings used to authenticate and authorize access to an API. You can view it as a password (and it should also be handled as such). Since you pay money per prompt you send (even if it is a small amount), you don't want to hand your password to a random person in the internet.
+- You can generate youreself an API key via https://platform.openai.com/api-keys once you have your account.
+
+xxxSCREENSHOTxxx
+
+- From the Screenshot you can see that I have a API key for my laptop starting with *sk-....YLUA*. 
+
+## Saving your API key as an environmental variable
+
+- We want to avoid to always type in this key or to save it in a script, since this would be similar to hard coding your password somewhere. Everyone who can see this script would also have you API key / password. 
+- One common way is to save the API key as an environmental variable on your windows machine. You can do so by searching "System environment variables" using the windows search function.
+- An alternative way would be to use PowerShell (so basically the command line in Windows) to set your environment variable
+
+```{r filename="powershell"}
+#| echo: true
+#| collapse: false
+#| code-fold: false
+#| eval: false
+
+setx OPENAI_API_KEY "your_api_key_here"
+```
+
+- Make sure to name your environmental variable exactly like this "OPENAI_API_KEY". The `openai` package in python looks for this specific name once you initialize it.
+- Great! Now we have our API key / password ready to use it in python.
+
+## Setting up Pyhton
+
+- I don't really want to go into the details how to set up python itself (there are enough great tutorials out there)
+- To install the openai package we would simply use the package installer for python, pip:
+
+
+```{r filename="powershell"}
+#| echo: true
+#| collapse: false
+#| code-fold: false
+#| eval: false
+
+pip install python
+```
+
+- With that we have now successfully installed the openai package to interact with the openai API and we also have our API key ready to be used as an environmental variable. We can now go on to have our first prompt.
+
+
+## Our first prompt
+
+- Sending an request to chatgpt is rather simple. Let's have a look at the code
+- First, we are going to load our packages and initialize the openai client
+
+```{python filename="python"}
+#| echo: true
+#| collapse: false
+#| code-fold: false
+
+# load packages
+from openai import OpenAI
+import json
+
+# initialize openai client
+client = OpenAI()
+```
+
+- Now we can already send the prompt to chatgpt. We are using the `gpt-4o` model for this, but there are many other models available. The available models should be available here: https://platform.openai.com/docs/models
+
+```{python filename="python"}
+#| echo: true
+#| collapse: false
+#| code-fold: false
+
+# send request
+completion = client.chat.completions.create(
+    model="gpt-4o",
+    messages=[
+        {
+          "role": "system",
+          "content": "You are a comedian with a PhD in pharmacometrics."
+        },
+        {
+          "role": "user",
+          "content": "Write a short joke about pharmacokinetics."
+        }
+    ]
+)
+```
+
+- Please note that we need to provide input for at least two roles: The *user* role ist more familiar to us as this is the actual prompt we are typically sending when using the webinterface of ChatGPT. Now we also provide input for the *sytem* role. The *system* role in ChatGPT defines the model's behavior, tone, and response style, guiding how it interacts with users. So we actually get some more degrees of freedom here and can already centrally define the general model behaviour. 
+- Let's see what the completion object is all about:
+
+
+```{python filename="python"}
+#| echo: true
+#| collapse: false
+#| code-fold: false
+
+# print full object
+print(completion)
+```
+
+- In many cases we are only interested in accessing the actual message, so we can retrieve this by writing:
+
+
+```{python filename="python"}
+#| echo: true
+#| collapse: false
+#| code-fold: false
+
+# print object
+print(completion.choices[0].message.content)
+```
+
+- Now we have successfully written our first prompt!
+
+
+
+# Use-Cases
+
+## Repetition
+
+## Scheduled content
+
+## Text revision
