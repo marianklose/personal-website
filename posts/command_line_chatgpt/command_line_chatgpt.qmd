@@ -9,7 +9,8 @@ date: 01-12-2025
 categories: [ChatGPT, openai, LLM] 
 image: preview.png
 bibliography: C:/Users/mklose/Desktop/bibliography.bib
-draft: true 
+draft: true
+draft-mode: "gone"
 echo: true
 execute:
   echo: true

@@ -1,6 +1,6 @@
 ---
 title: "My attempt to understand the NLME estimation algorithm behind NONMEM"
-description: "An R-based reproduction"
+description: "An R-based reproduction using straight-line equations."
 author:
   - name: "Marian Klose"
     url: https://github.com/marianklose
