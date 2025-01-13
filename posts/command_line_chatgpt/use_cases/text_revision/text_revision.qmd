@@ -1,0 +1,181 @@
+---
+title: "ChatGPT based comments on a scientific manuscript"
+author: "Marian Klose"
+date: now
+callout-appearance: minimal
+execute:
+  echo: true
+  message: false
+  warning: false
+format: 
+    docx: default
+---
+
+
+# Library
+
+```{python}
+# Load packages
+import math
+import nltk
+from nltk.tokenize import sent_tokenize
+from openai import OpenAI
+import json
+from docx import Document
+from pydantic import BaseModel
+from datetime import datetime
+```
+
+# NLTK options
+
+```{python}
+# download the punkt tokenizer
+nltk.download("punkt_tab")
+```
+
+# OpenAI options
+
+```{python}
+# Initialize OpenAI client
+client = OpenAI()
+
+# Define model
+gpt_model = "gpt-4o"
+```
+
+# Functions
+    
+```{python}
+# Function to split text into n nearly equal chunks
+def split_text_into_enumerated_sentences(text):
+    sentences = sent_tokenize(text)
+    enumerated_sentences = {i + 1: sentence for i, sentence in enumerate(sentences)}
+    return enumerated_sentences
+
+# Function to split the enumerated dictionary into n parts
+def split_enumerated_sentences_into_chunks(enumerated_sentences, n_chunks):
+    total_sentences = len(enumerated_sentences)
+    chunk_size = math.ceil(total_sentences / n_chunks)
+    chunks = []
+    keys = list(enumerated_sentences.keys())
+    for i in range(0, total_sentences, chunk_size):
+        chunk = {key: enumerated_sentences[key] for key in keys[i:i + chunk_size]}
+        chunks.append(chunk)
+    return chunks
+
+# Function to add a comment to a sentence in Word format (for quarto / pandoc)
+def add_word_comment(sentence, comment):
+    date = datetime.now().isoformat()
+    return f'[{comment}]{{.comment-start id="0" author="ChatGPT" date="{date}"}}{sentence}[]{{.comment-end id="0"}}'
+
+```
+
+# Read and process text
+
+```{python}
+# Load the document
+doc_path = "pharmacokinetics.docx"
+document = Document(doc_path)
+
+# Extract full text from the docx
+full_text = "\n".join([para.text for para in document.paragraphs])
+
+# Split the text into an enumerated dictionary of sentences
+enumerated_sentences = split_text_into_enumerated_sentences(full_text)
+
+# Display the result from element 0 to 5
+print(list(enumerated_sentences.items())[0:5])
+
+# Split the enumerated sentences into n chunks
+chunks = split_enumerated_sentences_into_chunks(enumerated_sentences, 2)
+```
+
+# System and user messages
+
+```{python}
+# Define system and base user messages for review
+system_message = "You are a professor reviewing a scientific manuscript. You receive a text excerpt for review and each sentence of the text has an unique identifier. Your job is to provide a structured output in a JSON style to indicate for which identifier you have feedback and what the feedback is."
+base_user_message = (
+    "Please review the following text excerpt for style, errors, conciseness, and understandability. "
+    "Provide concise (!) comments for single sentences. Your answer should be short. "
+    "Provide structured feedback in JSON format indicating for which sentence you have which feedback."
+    "It is very important that you do not have to provide feedback for every sentence and you should only provide feedback if you have something to say."
+)
+```
+
+# Define JSON structure
+
+```{python}
+# define the pydantic structure for a single sentence feedback
+class SingleSentenceFeedback(BaseModel):
+    sentence_id: int
+    feedback: str
+
+# define the pydantic structure for a list of feedbacks
+class MultipleSentencesFeedback(BaseModel):
+    feedback_list: list[SingleSentenceFeedback]
+```
+
+
+# Process each chunk
+
+```{python}
+# Collect feedback for all chunks
+all_feedback = []
+
+# Loop over each chunk, call the API, and process the response
+for idx, chunk in enumerate(chunks):
+    # print message to user
+    print(f"Processing chunk {idx + 1}/{len(chunks)}")
+
+    # Prepare user message for the current chunk as JSON
+    user_message = f"{base_user_message}\n\nExcerpt:\n{json.dumps(chunk)}"
+
+    try:
+        # Make the API request
+        completion = client.beta.chat.completions.parse(
+            model=gpt_model,
+            messages=[
+                {"role": "system", "content": system_message},
+                {"role": "user", "content": user_message}
+            ],
+            response_format=MultipleSentencesFeedback
+        )
+
+        # Extract the parsed response 
+        feedback = completion.choices[0].message.parsed
+
+        # Extend the all_feedback object
+        all_feedback.extend(feedback.feedback_list)
+
+    except Exception as e:
+        print(f"Error at chunk {idx}: {e}")
+
+```
+
+
+# Apply comments to the document
+
+```{python}
+# Apply comments to the sentences
+for feedback_item in all_feedback:
+    sentence_id = feedback_item.sentence_id
+    feedback_text = feedback_item.feedback
+    if sentence_id in enumerated_sentences:
+        original_sentence = enumerated_sentences[sentence_id]
+        commented_sentence = add_word_comment(original_sentence, feedback_text)
+        enumerated_sentences[sentence_id] = commented_sentence
+
+# Combine sentences back into full text
+commented_text = " ".join(enumerated_sentences.values())
+```
+
+
+# Print document
+
+```{python}
+#| output: asis
+
+# Print the commented text
+print(commented_text)
+```

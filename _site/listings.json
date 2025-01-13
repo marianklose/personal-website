@@ -2,6 +2,7 @@
   {
     "listing": "/posts.html",
     "items": [
+      "/posts/command_line_chatgpt/use_cases/text_revision/text_revision.docx",
       "/posts/understanding_nlme_estimation/index.html",
       "/posts/expressing_ruv_as_theta/index.html",
       "/posts/about_this_blog/index.html"

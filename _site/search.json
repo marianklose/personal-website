@@ -466,7 +466,7 @@
     "href": "posts.html",
     "title": "Blog",
     "section": "",
-    "text": "My attempt to understand the NLME estimation algorithm behind NONMEM\n\n\n\nEstimation\n\n\nNONMEM\n\n\nLaplacian\n\n\nR\n\n\n\nAn R-based reproduction using straight-line equations.\n\n\n\nMarian Klose\n\n\nJan 11, 2025\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nExpressing RUV as $THETA in NONMEM\n\n\n\nRUV\n\n\nError\n\n\nNONMEM\n\n\n\nHave you ever been confused why some people use the $THETA block to code their RUV in NONMEM? You are not alone!\n\n\n\nMarian Klose\n\n\nNov 9, 2024\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nAbout this blog\n\n\n\nMotivation\n\n\nDisclaimer\n\n\n\nSome motivations and disclaimers\n\n\n\nMarian Klose\n\n\nOct 5, 2024\n\n\n\n\n\n\n\n\nNo matching items"
+    "text": "ChatGPT based comments on a scientific manuscript\n\n\n\n\n\n\nMarian Klose\n\n\nJan 13, 2025\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nMy attempt to understand the NLME estimation algorithm behind NONMEM\n\n\n\nEstimation\n\n\nNONMEM\n\n\nLaplacian\n\n\nR\n\n\n\nAn R-based reproduction using straight-line equations.\n\n\n\nMarian Klose\n\n\nJan 11, 2025\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nExpressing RUV as $THETA in NONMEM\n\n\n\nRUV\n\n\nError\n\n\nNONMEM\n\n\n\nHave you ever been confused why some people use the $THETA block to code their RUV in NONMEM? You are not alone!\n\n\n\nMarian Klose\n\n\nNov 9, 2024\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nAbout this blog\n\n\n\nMotivation\n\n\nDisclaimer\n\n\n\nSome motivations and disclaimers\n\n\n\nMarian Klose\n\n\nOct 5, 2024\n\n\n\n\n\n\n\n\nNo matching items"
   },
   {
     "objectID": "publications/abstracts_docs/09-02-2021_microdosed_yohimbine.html",
