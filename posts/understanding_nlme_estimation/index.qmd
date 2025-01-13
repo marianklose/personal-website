@@ -39,13 +39,11 @@ library(xpose4)
 library(tidyr)
 library(plotly)
 
-# get system environment variable
-link_to_g <- Sys.getenv("LINK_TO_G")
-base_path <- paste0(link_to_g, "Mitarbeiter/Klose/Miscellaneous/NLME_reproduction_R/")
+# define base path
+base_path <- paste0(here::here(), "/posts/understanding_nlme_estimation/")
 
 # define function for html table output
 mytbl <- function(tbl){
-  # display table
   tbl |> 
     kable() |> 
     kable_styling()
