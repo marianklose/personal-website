@@ -8,7 +8,7 @@ author:
 date: 01-11-2025
 categories: [Estimation, NONMEM, Laplacian, R] 
 image: preview_reduced.jpg
-bibliography: C:/Users/maria/Desktop/bibliography.bib
+bibliography: C:/Users/mklose/Desktop/bibliography.bib
 draft: false 
 echo: true
 citation: 
@@ -142,7 +142,7 @@ $PROBLEM 1cmt_iv_sim
 
 $INPUT ID TIME EVID AMT RATE DV MDV
 
-$DATA C:\Users\maria\Desktop\G\Mitarbeiter\Klose\Miscellaneous\NLME_reproduction_R\data\input_for_sim\input_data.csv IGNORE=@
+$DATA C:\Users\mklose\Desktop\G\Mitarbeiter\Klose\Miscellaneous\NLME_reproduction_R\data\input_for_sim\input_data.csv IGNORE=@
 
 $SUBROUTINES ADVAN1 TRANS2
 
@@ -230,7 +230,7 @@ input_data |>
 
 # save data to file
 write_csv(input_data, paste0(base_path, "data/input_for_sim/input_data.csv"))
-# write_csv(input_data, "C:\\Users\\maria\\Desktop\\G\\Mitarbeiter\\Klose\\Miscellaneous\\NLME_reproduction_R\\data\\input_for_sim\\input_data.csv")
+# write_csv(input_data, "C:\\Users\\mklose\\Desktop\\G\\Mitarbeiter\\Klose\\Miscellaneous\\NLME_reproduction_R\\data\\input_for_sim\\input_data.csv")
 ```
 
 

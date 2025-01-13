@@ -8,7 +8,7 @@ author:
 date: 01-12-2025
 categories: [ChatGPT, openai, LLM] 
 image: preview.png
-bibliography: C:/Users/maria/Desktop/bibliography.bib
+bibliography: C:/Users/mklose/Desktop/bibliography.bib
 draft: true 
 echo: true
 execute:
