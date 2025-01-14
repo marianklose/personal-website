@@ -11,7 +11,8 @@ about:
         - icon: github
           text: Github
           url: https://github.com/marianklose
-        - text: "{{< fa envelope >}} Email"
+        - icon: envelope
+          text: Email
           url: mailto:marian.klose@fu-berlin.de
 image: img/profile_picture2.jpg
 comments: false
