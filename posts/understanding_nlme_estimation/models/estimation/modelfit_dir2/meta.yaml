@@ -78,3 +78,47 @@ tool_options:
   copy_data: 1
   prepend_options_to_lst: 0
   tail_output: 0
+R_version: 4.3.0
+R_system: x86_64, mingw32
+R_packages:
+  - cli-3.6.3 from CRAN (R 4.3.3)
+  - codetools-0.2-19 from CRAN (R 4.3.0)
+  - colorspace-2.1-0 from CRAN (R 4.3.1)
+  - digest-0.6.36 from CRAN (R 4.3.3)
+  - dplyr-1.1.4 from CRAN (R 4.3.2)
+  - evaluate-0.23 from CRAN (R 4.3.2)
+  - fansi-1.0.6 from CRAN (R 4.3.2)
+  - fastmap-1.1.1 from CRAN (R 4.3.1)
+  - foreach-1.5.2 from CRAN (R 4.3.1)
+  - gam-1.22-2 from CRAN (R 4.3.1)
+  - generics-0.1.3 from CRAN (R 4.3.1)
+  - ggplot2-3.5.1 from CRAN (R 4.3.3)
+  - glue-1.7.0 from CRAN (R 4.3.3)
+  - gtable-0.3.4 from CRAN (R 4.3.0)
+  - htmltools-0.5.8.1 from CRAN (R 4.3.3)
+  - htmlwidgets-1.6.4 from CRAN (R 4.3.2)
+  - iterators-1.0.14 from CRAN (R 4.3.1)
+  - jsonlite-1.8.8 from CRAN (R 4.3.2)
+  - knitr-1.46 from CRAN (R 4.3.3)
+  - lattice-0.21-8 from CRAN (R 4.3.0)
+  - lifecycle-1.0.4 from CRAN (R 4.3.2)
+  - magrittr-2.0.3 from CRAN (R 4.3.1)
+  - munsell-0.5.0 from CRAN (R 4.3.1)
+  - pillar-1.9.0 from CRAN (R 4.3.1)
+  - pkgconfig-2.0.3 from CRAN (R 4.3.1)
+  - PsNR-0.2.1 from Github (UUPharmacometrics/PsNR@12e42cc74c0962527212e6ae59e958c52b765a7e)
+  - R6-2.5.1 from CRAN (R 4.3.1)
+  - rlang-1.1.4 from CRAN (R 4.3.3)
+  - rmarkdown-2.26 from CRAN (R 4.3.3)
+  - scales-1.3.0 from CRAN (R 4.3.2)
+  - sessioninfo-1.2.2 from CRAN (R 4.3.1)
+  - tibble-3.2.1 from CRAN (R 4.3.1)
+  - tidyselect-1.2.1 from CRAN (R 4.3.3)
+  - utf8-1.2.4 from CRAN (R 4.3.1)
+  - vctrs-0.6.5 from CRAN (R 4.3.3)
+  - xfun-0.45 from CRAN (R 4.3.3)
+  - xpose4-4.7.2 from CRAN (R 4.3.1)
+  - yaml-2.3.9 from CRAN (R 4.3.3)
+R_LIB_PATHS:
+  - C:/Program Files/R/Library
+  - C:/Program Files/R/R-4.3.0/library

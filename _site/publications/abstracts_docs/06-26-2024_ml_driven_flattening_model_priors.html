@@ -166,24 +166,26 @@ ul.task-list li input[type="checkbox"] {
 <h2 class="anchored" data-anchor-id="url">URL</h2>
 <p><a href="https://www.page-meeting.org/default.asp?abstract=10858" class="uri">https://www.page-meeting.org/default.asp?abstract=10858</a></p>
 </section>
-<section id="introduction" class="level2">
-<h2 class="anchored" data-anchor-id="introduction">Introduction</h2>
+<section id="abstract" class="level2">
+<h2 class="anchored" data-anchor-id="abstract">Abstract</h2>
+<section id="introduction" class="level3">
+<h3 class="anchored" data-anchor-id="introduction">Introduction</h3>
 <p>Model-informed precision dosing (MIPD) supports clinical decision-making by leveraging mathematical models and individual drug or biomarker measurements [1]. A typical MIPD workflow involves estimating individual maximum a posteriori (MAP) values for parameters which include interindividual variability (IIV). MAP values represent the mode of the posterior distribution and are obtained by maximising the product of the likelihood of the data and the parameter’s prior distribution [2]. The selected prior distribution needs to properly reflect the uncertainty about the parameter and is often defined by a distribution around the covariate-adjusted typical parameter value with a variance given by the model’s IIV estimate. However, this representation of uncertainty is only accurate when the model closely represents the clinical population (CP). In reality, deviations between model and CP are expected [3]. This deviation gave rise to the method of machine learning (ML)-assisted flattening of model priors [4], where the variance of the prior is selectively increased to account for these deviations. While this method has shown considerable improvement in predictive performance for vancomycin [4], its potential benefit across other drugs has not been studied.</p>
 </section>
-<section id="objectives" class="level2">
-<h2 class="anchored" data-anchor-id="objectives">Objectives</h2>
+<section id="objectives" class="level3">
+<h3 class="anchored" data-anchor-id="objectives">Objectives</h3>
 <p>To assess the impact of ML-driven flattening of priors on the predictive performance for five compounds which are commonly applied in Therapeutic Drug Monitoring (TDM) programs by conducting a simulation study.</p>
 </section>
-<section id="methods" class="level2">
-<h2 class="anchored" data-anchor-id="methods">Methods</h2>
+<section id="methods" class="level3">
+<h3 class="anchored" data-anchor-id="methods">Methods</h3>
 <p>Five compounds were investigated: vancomycin (VAN), meropenem (MEM), methotrexate (MTX), infliximab (IFX), and tacrolimus (TAC). To have a plausible representation of the differences between model and CP to which the model is applied, two published models per drug [5-14] were selected and split into a data-generating model (DM) and an applied model (AM) used for Bayesian forecasting.</p>
 <p>A plausible TDM dataset was simulated with the DM (n=5000) using mrgsolve [15]. The PK-Sim® [16] population builder was used to generate demographically realistic virtual patients. All other covariates were drawn from lognormal distributions based on reported point estimates. Two administrations, each followed by a single drug concentration measurement, were simulated for each individual. RUV was included to account for the expected noise in clinical readouts.</p>
 <p>MAP estimation using the AM was performed with prior weights λ=1 and λ=1/8 for standard priors (SP) and flattened priors (FP), respectively. While the first concentration was included for MAP estimation, the second was used as a reference to evaluate the predictive performance. For each patient and λ, the residual between prediction and withheld datapoint was calculated.</p>
 <p>The labeled dataset was then split into a training/test cohort (75%/25%) to build a ML model which predicts whether FP or SP should be applied for a given individual. All ML steps were conducted using the tidymodels [17] framework in R. The XGBoost (XGB) algorithm [18] was employed, using a 5-fold cross-validation with 5 repeats and a grid search for hyperparameter tuning. Optimal hyperparameters were selected based on precision.</p>
 <p>To assess the impact of the method on the predictive performance of the model, the test dataset was bootstrapped (n=1000). For each sample, RMSE and MPE along with their relative improvement compared to SP were calculated across patients.</p>
 </section>
-<section id="results" class="level2">
-<h2 class="anchored" data-anchor-id="results">Results</h2>
+<section id="results" class="level3">
+<h3 class="anchored" data-anchor-id="results">Results</h3>
 <p>Results from the simulation study, presented as the median relative improvement (-) or deterioration (+) compared to SP, were:</p>
 <ul>
 <li>VAN
@@ -206,15 +208,17 @@ ul.task-list li input[type="checkbox"] {
 <li>TAC
 <ul>
 <li>RMSE: -32.6%</li>
-<li>MPE: +18.0% Overall, the simulated impact ranged from -40.8% to +1.06% (RMSE) and -16.0% to +18.0% (MPE). Precision for the test dataset was 72.1% (VAN), 25.8% (MEM), 32.8% (MTX), 37.9% (IFX), and 71.3% (TAC).</li>
+<li>MPE: +18.0%</li>
 </ul></li>
 </ul>
+<p>Overall, the simulated impact ranged from -40.8% to +1.06% (RMSE) and -16.0% to +18.0% (MPE). Precision for the test dataset was 72.1% (VAN), 25.8% (MEM), 32.8% (MTX), 37.9% (IFX), and 71.3% (TAC).</p>
 </section>
-<section id="conclusion" class="level2">
-<h2 class="anchored" data-anchor-id="conclusion">Conclusion</h2>
+<section id="conclusion" class="level3">
+<h3 class="anchored" data-anchor-id="conclusion">Conclusion</h3>
 <p>The predicted improvements in RMSE and MPE for VAN are in agreement with the reported values. However, the impact of ML driven-flattening of priors on the predictive performance for other drugs varied substantially: The largest reduction in RMSE/MPE was indeed found for VAN with heterogenous improvements and even deteriorations for the other compounds. Missing impact of modified priors was also previously reported [19]. Moving forward, we plan to extend the investigation to identify variables which potentially explain the observed differences.</p>
 
 
+</section>
 </section>
 
 </main> <!-- /main -->

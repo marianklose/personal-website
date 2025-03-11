@@ -26,19 +26,21 @@ comments: false
 ## Abstract
 
 ### Study objectives
+
 TLD-1 is a novel pegylated liposomal doxorubicin (PLD) formulation aiming to optimise the PLD efficacy-toxicity ratio. We aimed to characterise TLD-1’s population pharmacokinetics using non-compartmental analysis and nonlinear mixed-effects modelling.
 
 ### Methods
+
 The PK of TLD-1 was analysed by performing a non-compartmental analysis of longitudinal doxorubicin plasma concentration measurements obtained from a clinical trial in 30 patients with advanced solid tumours across a 4.5-fold dose range. Furthermore, a joint parent-metabolite PK model of doxorubicinentrapped, doxorubicinfree, and metabolite doxorubicinol was developed. Interindividual and interoccasion variability around the typical PK parameters and potential covariates to explain parts of this variability were explored.
 
 ### Results
-Medians 
- standard deviations of dose-normalised doxorubicinentrapped+free Cmax and AUC0−∞ were 0.342 
- 0.134 mg/L and 40.1 
- 18.9 mg·h/L, respectively. The median half-life (95 h) was 23.5 h longer than the half-life of currently marketed PLD. The novel joint parent-metabolite model comprised a one-compartment model with linear release (doxorubicinentrapped), a two-compartment model with linear elimination (doxorubicinfree), and a one-compartment model with linear elimination for doxorubicinol. Body surface area on the volumes of distribution for free doxorubicin was the only significant covariate.
+
+Medians $\pm$ standard deviations of dose-normalised doxorubicinentrapped+free Cmax and AUC0−∞ were 0.342 $\pm$ 0.134 mg/L and 40.1 $\pm$ 18.9 mg·h/L, respectively. The median half-life (95 h) was 23.5 h longer than the half-life of currently marketed PLD. The novel joint parent-metabolite model comprised a one-compartment model with linear release (doxorubicinentrapped), a two-compartment model with linear elimination (doxorubicinfree), and a one-compartment model with linear elimination for doxorubicinol. Body surface area on the volumes of distribution for free doxorubicin was the only significant covariate.
 
 ### Conclusion
+
 The population PK of TLD-1, including its release and main metabolite, were successfully characterised using non-compartmental and compartmental analyses. Based on its long half-life, TLD-1 presents a promising candidate for further clinical development. The PK characteristics form the basis to investigate TLD-1 exposure-response (i.e., clinical efficacy) and exposure-toxicity relationships in the future. Once such relationships have been established, the developed population PK model can be further used in model-informed precision dosing strategies.
 
 ### Clinical trial registration
+
 ClinicalTrials.gov–NCT03387917–January 2, 2018

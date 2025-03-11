@@ -1,0 +1,64 @@
+---
+title: "TLD-1 – A novel liposomal doxorubicin formulation, in patients with advanced solid tumors: Final results of a multicenter, open-label, cross-over phase I study (SAKK 65/16)"
+description: "ESMO TAT 2025"
+author:
+  - name: "M. Joerger, **M. Klose**, I. Colombo, K. Koster, K. Gobat, S. Haefliger, M. Rabaglio, S. Bastian, M. Schwitter, K. Eckhardt, S. Hayoz, S. Halbherr, C. Sessa, R. Michelet, A. Mc Laughlin, D. Hess, C. Kloft, A. Stathis"
+date: 03-03-2025 # dd mm yyyy
+categories: [Doxorubicin, TLD-1, Pegylated Liposomal Doxorubicin, Second author]
+Type: Abstract/Poster
+Journal: "*ESMO TAT 2025*"
+draft: false 
+echo: true
+execute:
+  echo: true
+  message: false
+  warning: false
+format:
+  html:
+    number-sections: false
+    toc: false
+    code-fold: false
+    code-tools: false
+comments: false
+---
+
+## URL
+
+<https://oncologypro.esmo.org/meeting-resources/esmo-targeted-anticancer-therapies-congress-2025/tld-1-a-novel-liposomal-doxorubicin-formulation-in-patients-with-advanced-solid-tumors-final-results-of-a-multicenter-open-label-cross-over-p>
+
+## Abstract
+
+### Background
+
+TLD-1 is a novel liposomal doxorubicin formulation with a small hydrodynamic liposome diameter of 60 nm (90 nm for Caelyx) and a high lipid-to-drug ratio. We present the final results of SAKK 65/16, a phase 1 first-in-human study to define TLD-1’s safety, recommended phase 2 dose (RP2D), preliminary activity and pharmacokinetics (PK) in patients with advanced solid tumors.
+
+### Methods
+
+We included patients with advanced or recurrent solid tumors who failed standard treatment. TLD-1 was administered intravenously every 3 weeks up to a maximum of 9 cycles (6 cycles for anthracycline-pretreated patients) starting at 10 mg/m2, using accelerated dose escalation and a modified continual reassessment design. A subsequent comparative PK part with a randomized cross-over design used TLD-1 at the RP2D and assigned patients to a single cycle of Caelyx (first or second cycle), comparing the PK of TLD-1 and Caelyx.
+
+### Results
+
+43 patients were enrolled between November 2018 and March 2023, incuding 30 patients in the dose-escalation part and 13 patients in the comparative PK part. Predominant tumor entities included breast cancer in 23 patients and gynecological cancers in 12 patients. TLD-1 RP2D was defined as 40 mg/m2 administered every 3 weeks. No treatment-related adverse events (TRAE) G4 or G5 were reported. TRAE G3 included cumulative hand-foot syndrome in 5 (12%) patients, stomatitis in 3 (7%) patients and anemia in 2 (5%) patients. Partial tumor response was documented in 4 (9%) patients. In the comparative PK part, median terminal half-life of encapsulated doxorubicin was 118 hours (TLD-1) and 70 hours (Caelyx), respectively, while median terminal half-life was 122 hours (TLD-1) and 81 hours (Caelyx) for unencapsulated doxorubicin, driven by the rate-limiting release from the liposomes.
+
+### Conclusions
+
+TLD-1 at 40 mg/m2 every 3 weeks was safe and showed preliminary activity in patients with heavily pretreated solid malignancies. TLD-1 exhibits a lower clearance and prolonged plasma half-life compared to conventional liposomal doxorubicin formulations such as Caelyx, potentially resulting from decreased degradation by the mononuclear phagocyte system.
+
+###  Clinical trial identification
+NCT03387917.
+
+### Editorial acknowledgement
+
+Legal entity responsible for the study
+Swiss Group for Clinical Cancer Research (SAKK).
+
+### Funding
+
+Innomedica.
+
+### Disclosure
+
+M. Joerger: Financial Interests, Institutional, Invited Speaker, Clinical study activity: Basilea, Bayer, BMS, Immunophotonics, Innomedica, MSD, Novartis, Roche; Financial Interests, Institutional, Other, Clinical study activity: DaiichySankyo; Financial Interests, Institutional, Invited Speaker: Anaveon; Non-Financial Interests, Personal, Advisory Role: Novartis, AstraZeneca, Basilea, Bayer, BMS, Debiopharm, MSD, Roche, Sanofi. I. Colombo: Financial Interests, Institutional, Expert Testimony: GSK, AstraZeneca, AbbVie; Financial Interests, Institutional, Advisory Board: GSK, MSD, AstraZeneca, Incyte; Financial Interests, Personal, Other, Travel grants: GSK; Financial Interests, Personal, Invited Speaker: GSK, MSD, Bayer, Vivesto, Incyte, AstraZeneca, Orion Pharma, Tolremo; Financial Interests, Personal, Other, Health Care Professional Consultancy: BionTech; Financial Interests, Personal, Full or part-time Employment, My husband is an employee of this biomedical company since 02.2022. His role is ‘Marketing Manager’ for the endoscopy division and he is in charge of the launchig program in the field of artificial intelligence applied to colonoscpy. I confirm that his job does not have any conflict of interest with my job and my role at ESMO: Medtronic; Financial Interests, Personal, Stocks/Shares: Medtronic; Non-Financial Interests, Personal, Leadership Role: Swiss Group for Clinical Cancer Research (SAKK); Non-Financial Interests, Personal, Advisory Role: European School of Oncology (ESO). S. Halbherr: Financial Interests, Personal, Stocks/Shares: Innomedica; Other, Personal, Full or part-time Employment: Innomedica. C. Sessa: Financial Interests, Personal, Other, ESO Consultant for gynaecological cancer: ESO (European School of Oncology); Financial Interests, Personal, Other, DMC member of the MK-3475-C93 studyDMC member of the MK-2870-005 study: Merck; Non-Financial Interests, Personal, Advisory Role, ESMO extended member women for oncology: ESMO; Non-Financial Interests, Personal, Advisory Role, Member of the compliance committee: ESMO. A. Mc Laughlin: Other, Personal, Full or part-time Employment: Pharmetheus AB. A. Stathis: Financial Interests, Institutional, Expert Testimony: Bayer, Eli Lilly; Financial Interests, Institutional, Advisory Board: Janssen, Roche, Incyte, Beigene; Financial Interests, Institutional, Other, Travel grant: AstraZeneca, Incyte; Financial Interests, Institutional, Other, Consultancy: Debiopharm, AstraZeneca, MSD; Financial Interests, Institutional, Invited Speaker: Janseen, Pfizer, Merck MSD, Roche, Novartis, ADC Therapeutics, AbbVie, Bayer, Philogen, Cellestia, AstraZeneca, Incyte, Amgen, Loxo Oncology, Debiopharm, BMS. All other authors have declared no conflicts of interest.
+
+
+

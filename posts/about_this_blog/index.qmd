@@ -11,6 +11,7 @@ image: preview.jpg
 draft: false 
 echo: true
 execute:
+  freeze: true # never re-render during project render (dependencies might change over time)
   echo: true
   message: false
   warning: false

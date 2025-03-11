@@ -25,13 +25,21 @@ comments: false
 
 ## Abstract
 
-**Background:** The MeroRisk-calculator, an easy-to-use tool to determine the risk of meropenem target non-attainment after standard dosing (1000 mg; q8h), uses a patient's creatinine clearance and the minimum inhibitory concentration (MIC) of the pathogen. In clinical practice, however, the MIC is rarely available. The objectives were to evaluate the MeroRisk-calculator and to extend risk assessment by including general pathogen sensitivity data.
+### Background 
 
-**Methods:** Using a clinical routine dataset (155 patients, 891 samples), a direct data-based evaluation was not feasible. Thus, in step 1, the performance of a pharmacokinetic model was determined for predicting the measured concentrations. In step 2, the PK model was used for a model-based evaluation of the MeroRisk-calculator: risk of target non-attainment was calculated using the PK model and agreement with the MeroRisk-calculator was determined by a visual and statistical (Lin's concordance correlation coefficient (CCC)) analysis for MIC values 0.125-16 mg/L. The MeroRisk-calculator was extended to include risk assessment based on EUCAST-MIC distributions and cumulative-fraction-of-response analysis.
+The MeroRisk-calculator, an easy-to-use tool to determine the risk of meropenem target non-attainment after standard dosing (1000 mg; q8h), uses a patient's creatinine clearance and the minimum inhibitory concentration (MIC) of the pathogen. In clinical practice, however, the MIC is rarely available. The objectives were to evaluate the MeroRisk-calculator and to extend risk assessment by including general pathogen sensitivity data.
 
-**Results:** Step 1 showed a negligible bias of the PK model to underpredict concentrations (-0.84 mg/L). Step 2 revealed a high level of agreement between risk of target non-attainment predictions for creatinine clearances >50 mL/min (CCC = 0.990), but considerable deviations for patients <50 mL/min. For 27% of EUCAST-listed pathogens the median cumulative-fraction-of-response for the observed patients receiving standard dosing was < 90%.
+### Methods
 
-**Conclusions:** The MeroRisk-calculator was successfully evaluated: For patients with maintained renal function it allows a reliable and user-friendly risk assessment. The integration of pathogen-based risk assessment substantially increases the applicability of the tool.
+Using a clinical routine dataset (155 patients, 891 samples), a direct data-based evaluation was not feasible. Thus, in step 1, the performance of a pharmacokinetic model was determined for predicting the measured concentrations. In step 2, the PK model was used for a model-based evaluation of the MeroRisk-calculator: risk of target non-attainment was calculated using the PK model and agreement with the MeroRisk-calculator was determined by a visual and statistical (Lin's concordance correlation coefficient (CCC)) analysis for MIC values 0.125-16 mg/L. The MeroRisk-calculator was extended to include risk assessment based on EUCAST-MIC distributions and cumulative-fraction-of-response analysis.
+
+### Results 
+
+Step 1 showed a negligible bias of the PK model to underpredict concentrations (-0.84 mg/L). Step 2 revealed a high level of agreement between risk of target non-attainment predictions for creatinine clearances >50 mL/min (CCC = 0.990), but considerable deviations for patients <50 mL/min. For 27% of EUCAST-listed pathogens the median cumulative-fraction-of-response for the observed patients receiving standard dosing was < 90%.
+
+### Conclusions
+
+The MeroRisk-calculator was successfully evaluated: For patients with maintained renal function it allows a reliable and user-friendly risk assessment. The integration of pathogen-based risk assessment substantially increases the applicability of the tool.
 
 
 

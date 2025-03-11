@@ -293,6 +293,16 @@ Python
 
 ::: {.grid}
 ::: {.g-col-3}
+2025
+:::
+::: {.g-col-9}
+Nonlinear Mixed Effects Modeling Workflows using Pumas
+:::
+:::
+
+
+::: {.grid}
+::: {.g-col-3}
 2023 – 2024
 :::
 ::: {.g-col-9}
