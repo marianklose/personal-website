@@ -1,0 +1,308 @@
+---
+title: "Bayesian MAP estimation in R"
+description: "Understanding the Bayesian idea and reproducing a MAP estimation in R"
+author:
+  - name: Marian Klose
+    url: https://github.com/marianklose
+    orcid: 0009-0005-1706-6289
+date: 03-29-2025  # MM-DD-YYYY
+categories: [NONMEM, Bayes, MAP] 
+image: preview.gif
+bibliography: C:/Users/maria/Desktop/bibliography.bib
+draft: false 
+echo: true
+execute:
+  freeze: false # never re-render during project render (dependencies might change over time)
+  echo: true
+  message: false
+  warning: false
+citation: 
+  url: https://marian-klose.com/posts/bayes_map_estimation_r/index.html
+format:
+  html:
+    number-sections: true
+    toc: true
+    code-fold: true
+    code-tools: true
+---
+
+```{r}
+# load packages
+library(dplyr)
+library(ggplot2)
+library(readr)
+library(kableExtra)
+library(xpose4)
+library(tidyr)
+```
+
+
+
+# Motivation
+
+## Why Bayesian estimation is important
+
+Bayesian estimation is a commonly applied and powerful method in pharmacometrics. Often the calculation happens kind of automatically when we fit a pharmacometric model using e.g., NONMEM. So it is quite easy to use them without dealing the underlying concepts and the actual computation of e.g., the individual parameter estimates provided as an output in NONMEM: Given that diagnostics relying on IPRED (the individual predictions obtained through simulating with the MAP parameter estimate) are commonly reported, and individual parameters are often used for covariate screening, the importance of this topic is clear. The most commonly applied Bayesian tool are so called MAP or EBE estimates, which represent the mode of the posterior distribution (we will talk about the posterior later). However, also the full posterior distribution can be of interest, although it is harder to calculate. In this blogpost, I want to shortly describe my own understanding of the Bayesian ideas and concepts and then show how to reproduce the MAP estimates and its resulting individual predictions (IPRED) in R. An equation-based reproduction is typically the best way to understand and learn about the underlying concept.
+
+## Disclaimer
+
+I just share my personal thoughts and understanding of some Bayesian ideas and I can't promise that you won't find flaws in my explanations or equations. 
+
+
+
+# Structure
+
+Lorem ipsum dolor sit amet.
+
+# The Bayesian Idea: Updating Beliefs
+
+## Starting with an example
+
+I would say that most people in their daily life think Bayesian (although not everyone wants to admit it). The core idea of Bayesian statistics is to update your beliefs once new data or information becomes available. One simple example: Assume you commute to work every day by using your car. If someone would ask you "How long do you think you will need to get to work tomorrow?", you would probably have a very good idea about how long it will take you, simply based on your experience. You might say that 30 minutes is a good estimate, but would you bet money that it will be exactly 30 minutes? Most likely not, it might be your best guess but there will be some uncertainly associated to it. You might be willing to bet money that it will be between 20 and 40 minutes. Now assuming that you get into your car the next morning and traffic is a state so that after 25 minutes you made it half-way through.
+
+[IMAGE]
+
+Would you still stick to your initial belief that it will take you 30 minutes? Probably not, you would update your belief. Would you then just multiply the 25 minutes by two and say that it will take you 50 minutes? Probably not, given that all your experience tells you that you nearly always made it within 40 minutes. So your updated belief will be something between 30 minutes (initial guess) and 50 minutes (what the data suggests). This updated belief (let's say 38 minutes) is what Bayesian statistics is all about. And since we apply this Bayesian idea in our daily life, I personally find it quite an intuitive way of thinking statistics. 
+
+
+## Nomenclature
+
+The real-life example defined above allows us to define some Bayesian nomenclature:
+
+- The **prior** is the initial belief, in our example the 30 minutes and the uncertainty around it.
+- The **likelihood** represents the new data (or evidence), in our example the 25 minutes for 1/2 of the way.
+- The **posterior** is the updated belief after the data became available, in our example the 38 minutes.
+
+So the Bayesian workflow is always based on the idea that you have a prior belief, which you update once new data (likelihood) becomes available. The updated belief is then called the posterior. There are some differences if we talk about MAP estimation and full posterior estimation:
+
+- MAP: the *maximum a-posteriori* estimate, which is the mode of the posterior distribution
+- full Bayesian: the full posterior distribution and not only the mode / a point estimate
+
+Most pharmacometricians focus on the mode of the posterior (MAP/EBE) and neglect the uncertainty captured in the full distribution. The main reason for this is that the MAP estimates are easy to calculate while the full posterior is more challenging to obtain.
+
+It goes without a saying that this is a simple example and everything is just based on a gut-feeling than on equations. While the core-idea remains the same, Bayesian statistics provide a framework to calculate the posterior in a more formal way. This is what we are tackling next.
+
+
+## Our goal in pharmacometrics
+
+But what is now the goal of Bayesian stats in pharmacometrics? Actually not to better plan your daily commute to work. Instead, we typically use Bayesian estimation to individualize the model parameters for a given individual $i$, which has a set of observations $Y_{i}$. Now we want to use this individual data to find the best parameter estimates for this individual. On the one hand this happens during model building, at each iteration step and then after the actual estimation has finished, at the posthoc step. On the other hand, it also happens in so called model-informed precision dosing scenarios (MIPD) where we want to predict the future concentration-time profile and we have obtained some historic concentrations through therapeutic drug monitoring. 
+
+
+# Pharmacokinetic example and reference solution
+
+## Data
+
+Without data no Bayesian parameter individualization. As we do this MAP estimation on an individual level, we are going to pick one single ID from the dataset we have defined in the previous blogpost [REF]and use this as as our example. Let's first load the simulated concentration-time data and show the head of it:
+
+```{r}
+# read in simulated dataset from previous blogpost
+sim_data <- read_csv("~/GitHub/personal-website/posts/understanding_nlme_estimation/data/output_from_sim/sim_data.csv")
+
+# show data 
+sim_data |> 
+  head() |> 
+  kable() |> 
+  kable_styling()
+```
+
+These is the previously simulated data with which we have built the model. We will focus on one single ID (ID 5) which is rather at the lower end of the simulated concentrations. 
+
+
+```{r}
+#| label: fig-sim-vis
+#| fig-cap: "Simulated concentration-time profiles for 10 individuals with ID 5 being our examplaratory ID."
+
+# show individual profiles
+sim_data |> 
+  filter(EVID == 0) |> 
+  mutate(flag = if_else(ID == 5, "Reference", "Others")) |>
+  ggplot(aes(x=TIME, y=DV, group=ID, color=as.factor(flag))) +
+  geom_point()+
+  geom_line()+
+  theme_bw()+
+  scale_y_continuous(limits=c(0,NA))+
+  labs(x="Time after last dose [h]", y="Concentration [mg/L]")+
+  scale_color_manual("Individual", values=c("grey", "darkblue"))+
+  ggtitle("Simulated data")
+```
+
+We will later need this data when running NONMEM, so we have to save it to file. 
+
+```{r}
+# save data for NONMEM
+sim_data |> 
+  filter(ID == 5) |> 
+  write_csv("~/GitHub/personal-website/posts/bayes_map_estimation_r/data/sim_data_ID5.csv") 
+```
+
+
+## NLME model structure
+
+For a little example and the reference solution, we will use the same simple one-compartment i.v. model with first order disposition processes we have fitted to some data here [REF]. This was the model structure:
+
+![Model structure of our simple 1 cmt i.v. bolus model.](media/model_structure.png)
+
+We assume to have an already fitted model and our only task is to individualize the parameters for our given individual. The model parameter estimates which we are using are taken from the previous blogpost [REF]:
+
+- $CL$ = 0.247 L/h
+- $V$ = 3.15 L
+- $\omega^2_{CL}$ = 0.11
+- $\sigma^2_{RUV}$ = 0.10 * 100 = 10
+
+This is what we are now going to translate into a NONMEM model. Please note that we assume a much higher RUV for the MAP estimation than in the previous blogpost (variance of 10 instead of 0.1). This just helps to make a point, as we have quite dense sampling and the likelihood of the data is quickly dominating the prior. By decreasing the "trust" into the data, we can better see the interplay between prior, likelihood and posterior. More to that later!
+
+## NONMEM model
+
+The NONMEM model is based on the previous blogpost, but we have made some minor edits:
+
+```{.r filename="1cmt_iv_map_est.mod"}
+$PROBLEM 1cmt_iv_map_est
+
+$INPUT ID TIME EVID AMT RATE DV MDV
+
+$DATA C:\Users\maria\Documents\GitHub\personal-website\posts\bayes_map_estimation_r\data\sim_data_ID5.csv IGNORE=@
+
+$SUBROUTINES ADVAN1 TRANS2
+
+$PK
+; define fixed effects parameters
+CL = THETA(1) * EXP(ETA(1))
+V = THETA(2)
+
+; scaling
+S1=V
+
+$THETA
+0.247 FIX               ; 1 TVCL
+3.15 FIX                ; 2 TVV
+
+$OMEGA 
+0.11 FIX                ; 1 OM_CL
+
+$SIGMA
+10 FIX                ; 1 SIG_ADD
+
+$ERROR 
+; add additive error
+IPRED = F
+Y = IPRED + EPS(1)
+
+; store error for table output
+ERR1 = EPS(1)
+
+$ESTIMATION METHOD=COND LAPLACIAN MAXEVAL=0 SIGDIG=3 PRINT=1 NOABORT POSTHOC
+
+$TABLE ID TIME EVID AMT RATE DV PRED IPRED MDV ETA1 ERR1 CL NOAPPEND ONEHEADER NOPRINT FILE=map_estim_out
+```
+
+
+We have updated the initial parameter estimates to the estimates listed above. Furthermore, we run with $MAXEVAL=0$ as we don't need a full estimation but only a MAP estimation. The $POSTHOC$ option will force NONMEM to calculate the individual MAP estimates. We can now go ahead and run it.
+
+After executing the model, we can read in `map_estim_out`:
+
+```{r}
+# load simulated data
+nm_out <- read_nm_table("~/GitHub/personal-website/posts/bayes_map_estimation_r/models/map_estim_out")
+
+# show simulated data
+nm_out |> 
+  head() |> 
+  kable() |> 
+  kable_styling()
+```
+
+
+`ETA1` (or $\eta_i$) is the individual random effect for the individual and `CL` (better $CL_i$) represents the resulting individual MAP estimate for the clearance. `CL_i` can be obtained by
+
+$$CL_i = \theta_{TVCL} \cdot \exp(\eta_i)$$
+
+We can confirm this by calculating:
+
+$$CL_i = 0.247 \cdot \exp(0.72446) = 0.50971$$
+
+or directly in R:
+
+```{r}
+#| code-fold: FALSE
+
+# calculate individual MAP estimate
+0.247*exp(0.72446)
+```
+
+Great! Now we have our reference solution for the parameter individualization. We not only got the individualized parameter estimates but also the individual predictions (`IPRED`). We can now compare both visually:
+
+```{r}
+# plot DV, PRED, IPRED
+nm_out |> 
+  pivot_longer(cols=c(PRED, IPRED, DV), names_to="variable", values_to="value") |>
+  ggplot(aes(x=TIME, y=value, group=variable, color=variable))+
+  geom_point()+
+  geom_line()+
+  theme_bw() 
+```
+
+
+
+## Bayesian Theory
+
+### General form
+
+As described above, the main goal of a Bayesian attempt is to obtain the posterior distribution (either the mode or the full distribution). Often you find this formula to describe the Bayes theorem: 
+
+$$P(A|B) = \frac{P(A) \cdot P(B|A)}{P(B)}$$
+
+Here, conditional probabilities are used and $P(A|B)$ is the probability of event A given that event B has occurred. This remains quite theoretical. Let's directly translate it into the context of a pharmacokinetic NLME model. 
+
+### Pharmacometric context
+
+Our use-case in the world of pharmacometrics is to find the most likely parameter $\eta$ given our individual's concentration data $Y_{i}$:
+
+$$p(\eta|Y_{i}) = \frac{p(\eta) \cdot p(Y_{i}|\eta)}{p(Y_i)}$$
+
+with 
+
+- $p(\eta|Y_{ij})$: the posterior distribution of the parameter $\eta$ given the data of our ith individual $Y_{i}$
+- $p(\eta)$: the prior distribution of the parameter $\eta$
+- $p(Y_{i}|\eta)$: the likelihood of the data $Y_{i}$ given the parameter $\eta$
+- $p(Y_{i})$: the marginal likelihood of the data $Y_{i}$
+
+The marginal likelihood of the data $Y_{i}$ is often neglected since it is just a scaling factor, does not depend on the parameter $\eta$ and is typically hard to calculate as it contains a high-dimensional integral. That is why you often see the formula written as:
+
+$$p(\eta|Y_{i}) \propto p(\eta) \cdot p(Y_{i}|\eta)$$
+
+Here, we got rid of the marginal likelihood in the denominator. As we are now missing out the scaling factor, we now deal with an unnormalized posterior distribution and indicate this by using the proportional sign. Dealing with unnormalized posteriors is not a problem if we are only interested in the mode of the posterior distribution (MAP estimate) as the normalization factor is not needed for this. But how can we calculate the MAP estimate for a given individual? 
+
+
+### MAP estimation
+
+If we are interested to find the most likely parameter for our individual, we have to find the maximum of the posterior distribution (MAP estimate). Mathematically we can define this by finding the parameter $\eta_i^*$ that maximizes the posterior distribution:
+
+$$\eta_i^* = \underset{\eta_i}{\mathrm{argmax}}~ p(\eta_i|Y_{i}) = \underset{\eta_i}{\mathrm{argmax}}~ p(\eta_i) \cdot p(Y_{i}|\eta_i)$$
+
+In the end, we would have to use a numerical optimizer function to search the parameter space of $\eta_i$ to find the maximum of the posterior distribution ($\eta_i^*$). But how to define 
+
+
+
+
+
+# Reproducing Bayesian MAP Estimation in R
+
+- Outline steps to perform Bayesian estimation manually in R.
+
+
+# Full Bayesian Estimation
+
+- Introduce Markov Chain Monte Carlo (MCMC) briefly (e.g., using rstan or similar tools).
+
+
+# Conclusion
+
+- Summarize benefits of performing Bayesian estimation explicitly.
+
+- Encourage pharmacometricians to reproduce standard software results occasionally to enhance intuition.
+
+# Epilogue / Acknowledgments
+
+- xxx
+
+

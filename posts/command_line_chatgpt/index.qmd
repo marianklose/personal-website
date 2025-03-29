@@ -8,7 +8,7 @@ author:
 date: 01-12-2025
 categories: [ChatGPT, openai, LLM] 
 image: preview.png
-bibliography: C:/Users/mklose/Desktop/bibliography.bib
+bibliography: C:/Users/maria/Desktop/bibliography.bib
 draft: true
 draft-mode: "gone"
 echo: true
@@ -36,6 +36,7 @@ format:
 - Openai provides packages (or so called Software Development Kits, SDKs) to interact with their API (Application Programming Interface) for different programming languages such as JavaScript and Python. 
 - However, you can also directly interact with openais API using raw HTTP requests. This allows you to use ChatGPT also in programming languages for which no offical packages / SDKs exist, such as R. 
 - Although I am more profound in R, I have anyways chosen to use python since I am already somewhat familiar with it through prior projects, and I personally prefer the convenience to have a pre-built package instead of dealing with raw HTTP requests.
+- xxx
 
 # Setup
 
