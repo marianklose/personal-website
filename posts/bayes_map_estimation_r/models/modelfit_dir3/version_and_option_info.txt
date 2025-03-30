@@ -1,6 +1,5 @@
 PsN version: 5.4.0
-Run started: 2025-03-29 at 14:39:21
-Run finished: 2025-03-29 at 14:39:31
+Run started: 2025-03-30 at 21:42:14
 version_and_option_info.txt is overwitten if the run is restarted later using option -directory.
 The original file from the first call is saved as original_version_and_option_info.txt.
 
@@ -61,7 +60,7 @@ Actual values optional PsN (common) options (undefined values not listed):
 -run_on_torque=0
 -run_on_ud=0
 -run_on_zink=0
--seed=240918
+-seed=238314
 -send_email=0
 -shrinkage=0
 -sign_digits_off_diagonals=2

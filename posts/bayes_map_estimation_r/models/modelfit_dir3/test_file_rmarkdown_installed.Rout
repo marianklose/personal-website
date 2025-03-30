@@ -7,4 +7,6 @@ processing file: test_file_rmarkdown_installed.Rmd
 output file: test_file_rmarkdown_installed.knit.md
 
 "C:/PSN-54~1.0/STRAWB~1/perl/bin/pandoc" +RTS -K512m -RTS test_file_rmarkdown_installed.knit.md --to latex --from markdown+autolink_bare_uris+tex_math_single_backslash --output test_file_rmarkdown_installed.tex --lua-filter "C:\PsN-5.4.0\Rlib\rmarkdown\rmarkdown\lua\pagebreak.lua" --lua-filter "C:\PsN-5.4.0\Rlib\rmarkdown\rmarkdown\lua\latex-div.lua" --self-contained --highlight-style tango --pdf-engine pdflatex --variable graphics --variable "geometry:margin=1in" 
-^C^C
+
+Output created: test_file_rmarkdown_installed.pdf
+^C

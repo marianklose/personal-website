@@ -247,12 +247,17 @@ window.Quarto = {
   <li><a href="#general-form" id="toc-general-form" class="nav-link" data-scroll-target="#general-form"><span class="header-section-number">4.4.1</span> General form</a></li>
   <li><a href="#pharmacometric-context" id="toc-pharmacometric-context" class="nav-link" data-scroll-target="#pharmacometric-context"><span class="header-section-number">4.4.2</span> Pharmacometric context</a></li>
   <li><a href="#map-estimation" id="toc-map-estimation" class="nav-link" data-scroll-target="#map-estimation"><span class="header-section-number">4.4.3</span> MAP estimation</a></li>
+  <li><a href="#combining-both-terms" id="toc-combining-both-terms" class="nav-link" data-scroll-target="#combining-both-terms"><span class="header-section-number">4.4.4</span> Combining both terms</a></li>
   </ul></li>
   </ul></li>
-  <li><a href="#reproducing-bayesian-map-estimation-in-r" id="toc-reproducing-bayesian-map-estimation-in-r" class="nav-link" data-scroll-target="#reproducing-bayesian-map-estimation-in-r"><span class="header-section-number">5</span> Reproducing Bayesian MAP Estimation in R</a></li>
-  <li><a href="#full-bayesian-estimation" id="toc-full-bayesian-estimation" class="nav-link" data-scroll-target="#full-bayesian-estimation"><span class="header-section-number">6</span> Full Bayesian Estimation</a></li>
-  <li><a href="#conclusion" id="toc-conclusion" class="nav-link" data-scroll-target="#conclusion"><span class="header-section-number">7</span> Conclusion</a></li>
-  <li><a href="#epilogue-acknowledgments" id="toc-epilogue-acknowledgments" class="nav-link" data-scroll-target="#epilogue-acknowledgments"><span class="header-section-number">8</span> Epilogue / Acknowledgments</a></li>
+  <li><a href="#r-based-map-reproduction" id="toc-r-based-map-reproduction" class="nav-link" data-scroll-target="#r-based-map-reproduction"><span class="header-section-number">5</span> R-based MAP reproduction</a>
+  <ul class="collapse">
+  <li><a href="#prior-term-1" id="toc-prior-term-1" class="nav-link" data-scroll-target="#prior-term-1"><span class="header-section-number">5.1</span> Prior term</a></li>
+  <li><a href="#likelihood-term-1" id="toc-likelihood-term-1" class="nav-link" data-scroll-target="#likelihood-term-1"><span class="header-section-number">5.2</span> Likelihood term</a></li>
+  <li><a href="#map-estimation-1" id="toc-map-estimation-1" class="nav-link" data-scroll-target="#map-estimation-1"><span class="header-section-number">5.3</span> MAP estimation</a></li>
+  </ul></li>
+  <li><a href="#conclusion" id="toc-conclusion" class="nav-link" data-scroll-target="#conclusion"><span class="header-section-number">6</span> Conclusion</a></li>
+  <li><a href="#epilogue-acknowledgments" id="toc-epilogue-acknowledgments" class="nav-link" data-scroll-target="#epilogue-acknowledgments"><span class="header-section-number">7</span> Epilogue / Acknowledgments</a></li>
   </ul>
 </nav>
     </div>
@@ -331,7 +336,7 @@ window.Quarto = {
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>sim_data <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"~/GitHub/personal-website/posts/understanding_nlme_estimation/data/output_from_sim/sim_data.csv"</span>)</span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="co"># show data </span></span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>sim_data <span class="sc">|&gt;</span> </span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>sim_data <span class="sc">|&gt;</span>  </span>
 <span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">head</span>() <span class="sc">|&gt;</span> </span>
 <span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable</span>() <span class="sc">|&gt;</span> </span>
 <span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable_styling</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -410,7 +415,7 @@ window.Quarto = {
 
 </div>
 </div>
-<p>These is the previously simulated data with which we have built the model. We will focus on one single ID (ID 5) which is rather at the lower end of the simulated concentrations.</p>
+<p>These is the previously simulated data with which we have built the model. We will focus on one single ID (ID 5) which is rather at the lower end of the simulated concentrations. We did this as it allows us to better see the differences between the typical individual and the individualized one. Let’s plot the data to get a better understanding of the concentration-time profiles:</p>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
@@ -444,10 +449,13 @@ Figure&nbsp;1: Simulated concentration-time profiles for 10 individuals with ID 
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># save data for NONMEM</span></span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>sim_data <span class="sc">|&gt;</span> </span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(ID <span class="sc">==</span> <span class="dv">5</span>) <span class="sc">|&gt;</span> </span>
-<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">write_csv</span>(<span class="st">"~/GitHub/personal-website/posts/bayes_map_estimation_r/data/sim_data_ID5.csv"</span>) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># define sim_data with ID == 5</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>sim_data_id5 <span class="ot">&lt;-</span> sim_data <span class="sc">|&gt;</span> </span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(ID <span class="sc">==</span> <span class="dv">5</span>)</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="co"># save data for NONMEM</span></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>sim_data_id5 <span class="sc">|&gt;</span> </span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">write_csv</span>(<span class="st">"~/GitHub/personal-website/posts/bayes_map_estimation_r/data/sim_data_ID5.csv"</span>) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
 </section>
@@ -460,14 +468,15 @@ Figure&nbsp;1: Simulated concentration-time profiles for 10 individuals with ID 
 <figcaption>Model structure of our simple 1 cmt i.v. bolus model.</figcaption>
 </figure>
 </div>
-<p>We assume to have an already fitted model and our only task is to individualize the parameters for our given individual. The model parameter estimates which we are using are taken from the previous blogpost [REF]:</p>
+<p>We assume to have an already fitted model and our only task is to individualize the parameters for our given individual. The model parameter estimates which we are using are mainly taken from the previous blogpost [REF]:</p>
 <ul>
 <li><span class="math inline">\(CL\)</span> = 0.247 L/h</li>
 <li><span class="math inline">\(V\)</span> = 3.15 L</li>
 <li><span class="math inline">\(\omega^2_{CL}\)</span> = 0.11</li>
-<li><span class="math inline">\(\sigma^2_{RUV}\)</span> = 0.10 * 100 = 10</li>
+<li><span class="math inline">\(\sigma^2_{RUV\_ADD}\)</span> = 0.10</li>
+<li><span class="math inline">\(\sigma^2_{RUV\_PROP}\)</span> = 0.10</li>
 </ul>
-<p>This is what we are now going to translate into a NONMEM model. Please note that we assume a much higher RUV for the MAP estimation than in the previous blogpost (variance of 10 instead of 0.1). This just helps to make a point, as we have quite dense sampling and the likelihood of the data is quickly dominating the prior. By decreasing the “trust” into the data, we can better see the interplay between prior, likelihood and posterior. More to that later!</p>
+<p>This is what we are now going to translate into a NONMEM model. Please note that we added a proportional error term to the previously used model to better make a point when comparing prior, likelihood and posterior.</p>
 </section>
 <section id="nonmem-model" class="level2" data-number="4.3">
 <h2 data-number="4.3" class="anchored" data-anchor-id="nonmem-model"><span class="header-section-number">4.3</span> NONMEM model</h2>
@@ -500,21 +509,19 @@ Figure&nbsp;1: Simulated concentration-time profiles for 10 individuals with ID 
 <span id="cb5-22"><a href="#cb5-22" aria-hidden="true" tabindex="-1"></a><span class="fl">0.11</span> FIX                ; <span class="dv">1</span> OM_CL</span>
 <span id="cb5-23"><a href="#cb5-23" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb5-24"><a href="#cb5-24" aria-hidden="true" tabindex="-1"></a><span class="sc">$</span>SIGMA</span>
-<span id="cb5-25"><a href="#cb5-25" aria-hidden="true" tabindex="-1"></a><span class="dv">10</span> FIX                ; <span class="dv">1</span> SIG_ADD</span>
-<span id="cb5-26"><a href="#cb5-26" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-27"><a href="#cb5-27" aria-hidden="true" tabindex="-1"></a><span class="sc">$</span>ERROR </span>
-<span id="cb5-28"><a href="#cb5-28" aria-hidden="true" tabindex="-1"></a>; add additive error</span>
-<span id="cb5-29"><a href="#cb5-29" aria-hidden="true" tabindex="-1"></a>IPRED <span class="ot">=</span> F</span>
-<span id="cb5-30"><a href="#cb5-30" aria-hidden="true" tabindex="-1"></a>Y <span class="ot">=</span> IPRED <span class="sc">+</span> <span class="fu">EPS</span>(<span class="dv">1</span>)</span>
-<span id="cb5-31"><a href="#cb5-31" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-32"><a href="#cb5-32" aria-hidden="true" tabindex="-1"></a>; store error <span class="cf">for</span> table output</span>
-<span id="cb5-33"><a href="#cb5-33" aria-hidden="true" tabindex="-1"></a>ERR1 <span class="ot">=</span> <span class="fu">EPS</span>(<span class="dv">1</span>)</span>
+<span id="cb5-25"><a href="#cb5-25" aria-hidden="true" tabindex="-1"></a><span class="fl">0.10</span> FIX                ; <span class="dv">1</span> SIG_PROP</span>
+<span id="cb5-26"><a href="#cb5-26" aria-hidden="true" tabindex="-1"></a><span class="fl">0.10</span> FIX                ; <span class="dv">2</span> SIG_ADD</span>
+<span id="cb5-27"><a href="#cb5-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-28"><a href="#cb5-28" aria-hidden="true" tabindex="-1"></a><span class="sc">$</span>ERROR </span>
+<span id="cb5-29"><a href="#cb5-29" aria-hidden="true" tabindex="-1"></a>; add residual unexplained variability</span>
+<span id="cb5-30"><a href="#cb5-30" aria-hidden="true" tabindex="-1"></a>IPRED <span class="ot">=</span> F</span>
+<span id="cb5-31"><a href="#cb5-31" aria-hidden="true" tabindex="-1"></a>Y <span class="ot">=</span> IPRED <span class="sc">+</span> IPRED <span class="sc">*</span> <span class="fu">EPS</span>(<span class="dv">1</span>) <span class="sc">+</span> <span class="fu">EPS</span>(<span class="dv">2</span>)</span>
+<span id="cb5-32"><a href="#cb5-32" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-33"><a href="#cb5-33" aria-hidden="true" tabindex="-1"></a><span class="sc">$</span>ESTIMATION METHOD<span class="ot">=</span>COND LAPLACIAN MAXEVAL<span class="ot">=</span><span class="dv">0</span> SIGDIG<span class="ot">=</span><span class="dv">3</span> PRINT<span class="ot">=</span><span class="dv">1</span> NOABORT POSTHOC</span>
 <span id="cb5-34"><a href="#cb5-34" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-35"><a href="#cb5-35" aria-hidden="true" tabindex="-1"></a><span class="sc">$</span>ESTIMATION METHOD<span class="ot">=</span>COND LAPLACIAN MAXEVAL<span class="ot">=</span><span class="dv">0</span> SIGDIG<span class="ot">=</span><span class="dv">3</span> PRINT<span class="ot">=</span><span class="dv">1</span> NOABORT POSTHOC</span>
-<span id="cb5-36"><a href="#cb5-36" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-37"><a href="#cb5-37" aria-hidden="true" tabindex="-1"></a><span class="sc">$</span>TABLE ID TIME EVID AMT RATE DV PRED IPRED MDV ETA1 ERR1 CL NOAPPEND ONEHEADER NOPRINT FILE<span class="ot">=</span>map_estim_out</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb5-35"><a href="#cb5-35" aria-hidden="true" tabindex="-1"></a><span class="sc">$</span>TABLE ID TIME EVID AMT RATE DV PRED IPRED MDV ETA1 CL NOAPPEND ONEHEADER NOPRINT FILE<span class="ot">=</span>map_estim_out</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p>We have updated the initial parameter estimates to the estimates listed above. Furthermore, we run with <span class="math inline">\(MAXEVAL=0\)</span> as we don’t need a full estimation but only a MAP estimation. The <span class="math inline">\(POSTHOC\)</span> option will force NONMEM to calculate the individual MAP estimates. We can now go ahead and run it.</p>
+<p>We have updated the initial parameter estimates to the estimates listed above. Furthermore, we run with <code>MAXEVAL=0</code> as we don’t need a full estimation but only a MAP estimation. The <code>POSTHOC</code> option will force NONMEM to calculate the individual MAP estimates. We can now go ahead and run it.</p>
 <p>After executing the model, we can read in <code>map_estim_out</code>:</p>
 <div class="cell">
 <details class="code-fold">
@@ -542,7 +549,6 @@ Figure&nbsp;1: Simulated concentration-time profiles for 10 individuals with ID 
 <th style="text-align: right;" data-quarto-table-cell-role="th">IPRED</th>
 <th style="text-align: right;" data-quarto-table-cell-role="th">MDV</th>
 <th style="text-align: right;" data-quarto-table-cell-role="th">ETA1</th>
-<th style="text-align: right;" data-quarto-table-cell-role="th">ERR1</th>
 <th style="text-align: right;" data-quarto-table-cell-role="th">CL</th>
 </tr>
 </thead>
@@ -557,9 +563,8 @@ Figure&nbsp;1: Simulated concentration-time profiles for 10 individuals with ID 
 <td style="text-align: right;">31.7460</td>
 <td style="text-align: right;">31.7460</td>
 <td style="text-align: right;">1</td>
-<td style="text-align: right;">0.56596</td>
-<td style="text-align: right;">0</td>
-<td style="text-align: right;">0.435</td>
+<td style="text-align: right;">0.47652</td>
+<td style="text-align: right;">0.39778</td>
 </tr>
 <tr class="even">
 <td style="text-align: right;">5</td>
@@ -569,11 +574,10 @@ Figure&nbsp;1: Simulated concentration-time profiles for 10 individuals with ID 
 <td style="text-align: right;">0</td>
 <td style="text-align: right;">31.61900</td>
 <td style="text-align: right;">31.7210</td>
-<td style="text-align: right;">31.7020</td>
+<td style="text-align: right;">31.7060</td>
 <td style="text-align: right;">0</td>
-<td style="text-align: right;">0.56596</td>
-<td style="text-align: right;">0</td>
-<td style="text-align: right;">0.435</td>
+<td style="text-align: right;">0.47652</td>
+<td style="text-align: right;">0.39778</td>
 </tr>
 <tr class="odd">
 <td style="text-align: right;">5</td>
@@ -583,11 +587,10 @@ Figure&nbsp;1: Simulated concentration-time profiles for 10 individuals with ID 
 <td style="text-align: right;">0</td>
 <td style="text-align: right;">19.66000</td>
 <td style="text-align: right;">25.0920</td>
-<td style="text-align: right;">20.9780</td>
+<td style="text-align: right;">21.7350</td>
 <td style="text-align: right;">0</td>
-<td style="text-align: right;">0.56596</td>
-<td style="text-align: right;">0</td>
-<td style="text-align: right;">0.435</td>
+<td style="text-align: right;">0.47652</td>
+<td style="text-align: right;">0.39778</td>
 </tr>
 <tr class="even">
 <td style="text-align: right;">5</td>
@@ -597,11 +600,10 @@ Figure&nbsp;1: Simulated concentration-time profiles for 10 individuals with ID 
 <td style="text-align: right;">0</td>
 <td style="text-align: right;">12.00700</td>
 <td style="text-align: right;">19.8320</td>
-<td style="text-align: right;">13.8630</td>
+<td style="text-align: right;">14.8810</td>
 <td style="text-align: right;">0</td>
-<td style="text-align: right;">0.56596</td>
-<td style="text-align: right;">0</td>
-<td style="text-align: right;">0.435</td>
+<td style="text-align: right;">0.47652</td>
+<td style="text-align: right;">0.39778</td>
 </tr>
 <tr class="odd">
 <td style="text-align: right;">5</td>
@@ -611,11 +613,10 @@ Figure&nbsp;1: Simulated concentration-time profiles for 10 individuals with ID 
 <td style="text-align: right;">0</td>
 <td style="text-align: right;">4.33360</td>
 <td style="text-align: right;">12.3890</td>
-<td style="text-align: right;">6.0534</td>
+<td style="text-align: right;">6.9755</td>
 <td style="text-align: right;">0</td>
-<td style="text-align: right;">0.56596</td>
-<td style="text-align: right;">0</td>
-<td style="text-align: right;">0.435</td>
+<td style="text-align: right;">0.47652</td>
+<td style="text-align: right;">0.39778</td>
 </tr>
 <tr class="even">
 <td style="text-align: right;">5</td>
@@ -625,11 +626,10 @@ Figure&nbsp;1: Simulated concentration-time profiles for 10 individuals with ID 
 <td style="text-align: right;">0</td>
 <td style="text-align: right;">0.78148</td>
 <td style="text-align: right;">4.8349</td>
-<td style="text-align: right;">1.1543</td>
+<td style="text-align: right;">1.5327</td>
 <td style="text-align: right;">0</td>
-<td style="text-align: right;">0.56596</td>
-<td style="text-align: right;">0</td>
-<td style="text-align: right;">0.435</td>
+<td style="text-align: right;">0.47652</td>
+<td style="text-align: right;">0.39778</td>
 </tr>
 </tbody>
 </table>
@@ -640,13 +640,13 @@ Figure&nbsp;1: Simulated concentration-time profiles for 10 individuals with ID 
 <p><code>ETA1</code> (or <span class="math inline">\(\eta_i\)</span>) is the individual random effect for the individual and <code>CL</code> (better <span class="math inline">\(CL_i\)</span>) represents the resulting individual MAP estimate for the clearance. <code>CL_i</code> can be obtained by</p>
 <p><span class="math display">\[CL_i = \theta_{TVCL} \cdot \exp(\eta_i)\]</span></p>
 <p>We can confirm this by calculating:</p>
-<p><span class="math display">\[CL_i = 0.247 \cdot \exp(0.72446) = 0.50971\]</span></p>
+<p><span class="math display">\[CL_i = 0.247 \cdot \exp(0.4763) = 0.3977\]</span></p>
 <p>or directly in R:</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># calculate individual MAP estimate</span></span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="fl">0.247</span><span class="sc">*</span><span class="fu">exp</span>(<span class="fl">0.72446</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="fl">0.247</span><span class="sc">*</span><span class="fu">exp</span>(<span class="fl">0.4763</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 0.5097133</code></pre>
+<pre><code>[1] 0.3976962</code></pre>
 </div>
 </div>
 <p>Great! Now we have our reference solution for the parameter individualization. We not only got the individualized parameter estimates but also the individual predictions (<code>IPRED</code>). We can now compare both visually:</p>
@@ -655,11 +655,17 @@ Figure&nbsp;1: Simulated concentration-time profiles for 10 individuals with ID 
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co"># plot DV, PRED, IPRED</span></span>
 <span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>nm_out <span class="sc">|&gt;</span> </span>
-<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(<span class="at">cols=</span><span class="fu">c</span>(PRED, IPRED, DV), <span class="at">names_to=</span><span class="st">"variable"</span>, <span class="at">values_to=</span><span class="st">"value"</span>) <span class="sc">|&gt;</span></span>
-<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x=</span>TIME, <span class="at">y=</span>value, <span class="at">group=</span>variable, <span class="at">color=</span>variable))<span class="sc">+</span></span>
-<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>()<span class="sc">+</span></span>
-<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>()<span class="sc">+</span></span>
-<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_bw</span>() </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(TIME <span class="sc">&gt;</span> <span class="dv">0</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(<span class="at">cols=</span><span class="fu">c</span>(PRED, IPRED, DV), <span class="at">names_to=</span><span class="st">"variable"</span>, <span class="at">values_to=</span><span class="st">"value"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x=</span>TIME, <span class="at">y=</span>value, <span class="at">group=</span>variable, <span class="at">color=</span>variable))<span class="sc">+</span></span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>()<span class="sc">+</span></span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>()<span class="sc">+</span></span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"Concentration [mg/L]"</span>,</span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">"Time after last dose [h]"</span>,</span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"Comparison of DV, PRED and IPRED"</span></span>
+<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_bw</span>() </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
 <div>
@@ -669,6 +675,7 @@ Figure&nbsp;1: Simulated concentration-time profiles for 10 individuals with ID 
 </div>
 </div>
 </div>
+<p>We can see at a first glance that our reference individual (red, <code>DV</code>) differs substantially from our typical individual (blue, <code>PRED</code>). The individual predictions (green, <code>IPRED</code>), which are based on our MAP estimate for CL (<code>CL_i</code>), are in between. Let’s have a closer look how to get there.</p>
 </section>
 <section id="bayesian-theory" class="level2" data-number="4.4">
 <h2 data-number="4.4" class="anchored" data-anchor-id="bayesian-theory"><span class="header-section-number">4.4</span> Bayesian Theory</h2>
@@ -680,7 +687,7 @@ Figure&nbsp;1: Simulated concentration-time profiles for 10 individuals with ID 
 </section>
 <section id="pharmacometric-context" class="level3" data-number="4.4.2">
 <h3 data-number="4.4.2" class="anchored" data-anchor-id="pharmacometric-context"><span class="header-section-number">4.4.2</span> Pharmacometric context</h3>
-<p>Our use-case in the world of pharmacometrics is to find the most likely parameter <span class="math inline">\(\eta\)</span> given our individual’s concentration data <span class="math inline">\(Y_{i}\)</span>:</p>
+<p>Our use-case in the world of pharmacometrics is to find the most likely parameter <span class="math inline">\(\eta_i\)</span> (which then translates to <span class="math inline">\(CL_i\)</span>) given our individual’s concentration data <span class="math inline">\(Y_{i}\)</span>:</p>
 <p><span class="math display">\[p(\eta|Y_{i}) = \frac{p(\eta) \cdot p(Y_{i}|\eta)}{p(Y_i)}\]</span></p>
 <p>with</p>
 <ul>
@@ -696,32 +703,309 @@ Figure&nbsp;1: Simulated concentration-time profiles for 10 individuals with ID 
 <section id="map-estimation" class="level3" data-number="4.4.3">
 <h3 data-number="4.4.3" class="anchored" data-anchor-id="map-estimation"><span class="header-section-number">4.4.3</span> MAP estimation</h3>
 <p>If we are interested to find the most likely parameter for our individual, we have to find the maximum of the posterior distribution (MAP estimate). Mathematically we can define this by finding the parameter <span class="math inline">\(\eta_i^*\)</span> that maximizes the posterior distribution:</p>
-<p><span class="math display">\[\eta_i^* = \underset{\eta_i}{\mathrm{argmax}}~ p(\eta_i|Y_{i}) = \underset{\eta_i}{\mathrm{argmax}}~ p(\eta_i) \cdot p(Y_{i}|\eta_i)\]</span></p>
-<p>In the end, we would have to use a numerical optimizer function to search the parameter space of <span class="math inline">\(\eta_i\)</span> to find the maximum of the posterior distribution (<span class="math inline">\(\eta_i^*\)</span>). But how to define</p>
+<p><span class="math display">\[\eta_i^* = \underset{\eta_i}{\mathrm{argmax}}~ p(\eta_i|Y_{i}) = \underset{\eta_i}{\mathrm{argmax}}~ p(\eta_i) \cdot \prod_{j=1}^{m} p(Y_{ij}|\eta_i)\]</span></p>
+<p>Dealing with the product of probabilities is often not very handy and we can simplify this by taking the log of the posterior distribution:</p>
+<p><span class="math display">\[\eta_i^* = \underset{\eta_i}{\mathrm{argmax}}~ \log(p(\eta_i|Y_{i})) = \underset{\eta_i}{\mathrm{argmax}}~ \log(p(\eta_i)) + \sum_{j=1}^{m} \log(p(Y_{ij}|\eta_i))\]</span></p>
+<p>In the end, we would have to use a numerical optimizer function to search the parameter space of <span class="math inline">\(\eta_i\)</span> to find the maximum of the posterior distribution (<span class="math inline">\(\eta_i^*\)</span>). To write out the full equation we need to define both terms, <span class="math inline">\(p(\eta_i)\)</span> and <span class="math inline">\(p(Y_{ij}|\eta_i)\)</span>. Let’s go through them step by step.</p>
+<section id="prior-term" class="level4" data-number="4.4.3.1">
+<h4 data-number="4.4.3.1" class="anchored" data-anchor-id="prior-term"><span class="header-section-number">4.4.3.1</span> Prior term</h4>
+<p>The prior distribution for <span class="math inline">\(p(\eta_i)\)</span> needs to incorporate our beliefs and uncertainty about <span class="math inline">\(\eta_i\)</span> before we have seen the data. Bayesian estimation actually allows us to incorporate our prior information through different distributions and parameters (which is sometimes being criticized being too subjective). In pharmacometrics, you will often see that people use the same distribution based on a previously estimates model. This is usually a normal distribution with mean 0 and a variance <span class="math inline">\(\omega^2_{CL}\)</span> estimated by the NLME model. What is the intuition behind this? When searching the space of <span class="math inline">\(\eta_i\)</span> during <span class="math inline">\(\underset{\eta_i}{\mathrm{argmax}}\)</span>, we need to evaluate at each point how likely the given <span class="math inline">\(\eta_i\)</span> is given the prior distribution. This means that individual random effects at the boundaries of the prior distribution are discouraged while those in the center are encouraged. Or in other words: We only want to move away from the typical individual estimate when we get a substantial gain in explaining the data. To calculate the contribution of the prior term, we rely on the probability density function of the normal distribution:</p>
+<p><span class="math display">\[p(\eta_i) = \frac{1}{\sqrt{2\pi\omega^2}} \cdot \exp\left(-\frac{(\eta_i-\mu)^2}{2\omega^2}\right)\]</span></p>
+<p>As <span class="math inline">\(\mu\)</span> is typically 0, we can simplify this to:</p>
+<p><span class="math display">\[p(\eta_i) = \frac{1}{\sqrt{2\pi\omega^2}} \cdot \exp\left(-\frac{\eta_i^2}{2\omega^2}\right)\]</span></p>
+<p>Taking the log yields:</p>
+<p><span class="math display">\[\log(p(\eta_i)) = -0.5 \log(2\pi\omega^2) - \frac{\eta_i^2}{2\omega^2} \]</span></p>
+<p>Now we are able to calculate the contribution of the prior term for a given individual <span class="math inline">\(\eta_i\)</span>, as we know the variance <span class="math inline">\(\omega^2_{CL}\)</span> (0.11) from our NLME model.</p>
 </section>
-</section>
-</section>
-<section id="reproducing-bayesian-map-estimation-in-r" class="level1" data-number="5">
-<h1 data-number="5"><span class="header-section-number">5</span> Reproducing Bayesian MAP Estimation in R</h1>
+<section id="likelihood-term" class="level4" data-number="4.4.3.2">
+<h4 data-number="4.4.3.2" class="anchored" data-anchor-id="likelihood-term"><span class="header-section-number">4.4.3.2</span> Likelihood term</h4>
+<p>The likelihood term <span class="math inline">\(p(Y_{ij}|\eta_i)\)</span> is the probability of observing the data point <span class="math inline">\(Y_{ij}\)</span> given the parameter <span class="math inline">\(\eta_i\)</span>. As we usually also assume that the residuals of our model predictions are normally distributed, we can also use the probability density function of the normal distribution to calculate this term. The likelihood term is then:</p>
+<p><span class="math display">\[p(Y_{ij}|\eta_i) = \frac{1}{\sqrt{2\pi\sigma^2}} \cdot \exp\left(-\frac{(Y_{ij}-f(x_{ij}; \eta_i))^2}{2\sigma^2}\right)\]</span> where</p>
 <ul>
-<li>Outline steps to perform Bayesian estimation manually in R.</li>
+<li><span class="math inline">\(Y_{ij}\)</span> is the observed data point of the individual <span class="math inline">\(i\)</span> at time <span class="math inline">\(j\)</span></li>
+<li><span class="math inline">\(f(x_{ij}; \eta_i)\)</span> is the model prediction for the individual <span class="math inline">\(i\)</span> at time <span class="math inline">\(j\)</span> given the individual random effect <span class="math inline">\(\eta_i\)</span> (for CL)</li>
+<li><span class="math inline">\(\sigma^2\)</span> is the variance of the residual unexplained variability of the model</li>
 </ul>
+<p>Please note that in our case, where we have a combined additive and proportional RUV model, <span class="math inline">\(\sigma^2\)</span> is the sum of both variances at time <span class="math inline">\(j\)</span>. We can take the log and get:</p>
+<p><span class="math display">\[\log(p(Y_{ij}|\eta_i)) = -0.5 \log(2\pi\sigma^2) - \frac{(Y_{ij}-f(x_{ij}; \eta_i))^2}{2\sigma^2}\]</span></p>
 </section>
-<section id="full-bayesian-estimation" class="level1" data-number="6">
-<h1 data-number="6"><span class="header-section-number">6</span> Full Bayesian Estimation</h1>
-<ul>
-<li>Introduce Markov Chain Monte Carlo (MCMC) briefly (e.g., using rstan or similar tools).</li>
-</ul>
 </section>
-<section id="conclusion" class="level1" data-number="7">
-<h1 data-number="7"><span class="header-section-number">7</span> Conclusion</h1>
+<section id="combining-both-terms" class="level3" data-number="4.4.4">
+<h3 data-number="4.4.4" class="anchored" data-anchor-id="combining-both-terms"><span class="header-section-number">4.4.4</span> Combining both terms</h3>
+<p>Now we can combine both terms:</p>
+<p><span class="math display">\[\eta_i^* = \underset{\eta_i}{\mathrm{argmax}}~\left(\left[-0.5 \log(2\pi\omega^2) - \frac{\eta_i^2}{2\omega^2}\right] ~ + \left[-0.5 \log(2\pi\sigma^2) - \frac{(Y_{ij}-f(x_{ij}; \eta_i))^2}{2\sigma^2}\right]\right)\]</span></p>
+<p>This is the equation for which our numerical optimizer needs to find the maximum (or minimum if negated) to obtain the individual MAP estimate. Let’s define some functions and reproduce our NONMEM reference solution in R.</p>
+</section>
+</section>
+</section>
+<section id="r-based-map-reproduction" class="level1" data-number="5">
+<h1 data-number="5"><span class="header-section-number">5</span> R-based MAP reproduction</h1>
+<section id="prior-term-1" class="level2" data-number="5.1">
+<h2 data-number="5.1" class="anchored" data-anchor-id="prior-term-1"><span class="header-section-number">5.1</span> Prior term</h2>
+<p>We will start to define a function with the prior term</p>
+<div class="cell">
+<div class="code-with-filename">
+<div class="code-with-filename-file">
+<pre><strong>function: prior_fun()</strong></pre>
+</div>
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co"># define prior term function</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>prior_fun <span class="ot">&lt;-</span> <span class="cf">function</span>(eta_i, omega2){</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>  <span class="co"># calculate probability</span></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>  log_prob <span class="ot">&lt;-</span> <span class="sc">-</span> <span class="fl">0.5</span> <span class="sc">*</span> <span class="fu">log</span>(<span class="dv">2</span><span class="sc">*</span>pi<span class="sc">*</span>omega2) <span class="sc">-</span> eta_i<span class="sc">^</span><span class="dv">2</span><span class="sc">/</span>(<span class="dv">2</span><span class="sc">*</span>omega2)</span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>  <span class="co"># return log probability</span></span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(log_prob)</span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div>
+<p>We can now test this function and illustrate the prior term for a range of <span class="math inline">\(\eta_i\)</span> values:</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co"># define range</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>eta_i <span class="ot">&lt;-</span> <span class="fu">seq</span>(<span class="sc">-</span><span class="dv">2</span>, <span class="dv">2</span>, <span class="fl">0.01</span>)</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a><span class="co"># calculate prior term</span></span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>prior <span class="ot">&lt;-</span> <span class="fu">prior_fun</span>(<span class="at">eta_i =</span> eta_i, <span class="at">omega2 =</span> <span class="fl">0.11</span>)</span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a><span class="co"># create tibble</span></span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a>prior_tibble <span class="ot">&lt;-</span> <span class="fu">tibble</span>(</span>
+<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">eta_i =</span> eta_i,</span>
+<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">exp_prior =</span> <span class="fu">exp</span>(prior),</span>
+<span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">source =</span> <span class="st">"prior"</span></span>
+<span id="cb11-12"><a href="#cb11-12" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb11-13"><a href="#cb11-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-14"><a href="#cb11-14" aria-hidden="true" tabindex="-1"></a><span class="co"># plot prior term</span></span>
+<span id="cb11-15"><a href="#cb11-15" aria-hidden="true" tabindex="-1"></a>prior_tibble <span class="sc">|&gt;</span> </span>
+<span id="cb11-16"><a href="#cb11-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x=</span>eta_i, <span class="at">y=</span>exp_prior))<span class="sc">+</span></span>
+<span id="cb11-17"><a href="#cb11-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>()<span class="sc">+</span></span>
+<span id="cb11-18"><a href="#cb11-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb11-19"><a href="#cb11-19" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="fu">expression</span>(eta[i]),</span>
+<span id="cb11-20"><a href="#cb11-20" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="fu">expression</span>(<span class="fu">p</span>(eta[i])),</span>
+<span id="cb11-21"><a href="#cb11-21" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"Prior term (Random effect)"</span></span>
+<span id="cb11-22"><a href="#cb11-22" aria-hidden="true" tabindex="-1"></a>  )<span class="sc">+</span></span>
+<span id="cb11-23"><a href="#cb11-23" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_bw</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="index_files/figure-html/unnamed-chunk-9-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>and this is how the <span class="math inline">\(\eta_i\)</span> values translate to the Clearance domain:</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co"># plot prior term</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>prior_tibble <span class="sc">|&gt;</span> </span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x=</span><span class="fl">0.247</span><span class="sc">*</span><span class="fu">exp</span>(eta_i), <span class="at">y=</span>exp_prior))<span class="sc">+</span></span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>()<span class="sc">+</span></span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="fu">expression</span>(CL[i]),</span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="fu">expression</span>(<span class="fu">p</span>(CL[i])),</span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"Prior term (Clearance)"</span></span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a>  )<span class="sc">+</span></span>
+<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_bw</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="index_files/figure-html/unnamed-chunk-10-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>We can see that some values of <span class="math inline">\(\eta_i\)</span> and <span class="math inline">\(CL_i\)</span> are more likely than others. Based on the results of the fitted NLME model, these distributions represent our prior beliefs before we see the data of the given individual.</p>
+</section>
+<section id="likelihood-term-1" class="level2" data-number="5.2">
+<h2 data-number="5.2" class="anchored" data-anchor-id="likelihood-term-1"><span class="header-section-number">5.2</span> Likelihood term</h2>
+<p>For the Likelihood term described in [IREF] we need to define the model prediction function. The simple 1 cmt model structure we are using allows us to use a closed-form expression of the model instead of relying on ODE-based numerical solutions (see [REF]). But the concepts remain the same and you could apply this also if you have an ODE-based system. Let’s first define the model prediction function:</p>
+<div class="cell">
+<div class="code-with-filename">
+<div class="code-with-filename-file">
+<pre><strong>function: model_fun()</strong></pre>
+</div>
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="co"># define model function</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>model_fun <span class="ot">&lt;-</span> <span class="cf">function</span>(eta_i, dose, vd, theta_tvcl, t) {</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>  exp_eta_i <span class="ot">&lt;-</span> <span class="fu">exp</span>(eta_i)</span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>  exponent <span class="ot">&lt;-</span> <span class="sc">-</span><span class="dv">1</span> <span class="sc">*</span> (theta_tvcl <span class="sc">*</span> exp_eta_i <span class="sc">/</span> vd) <span class="sc">*</span> t</span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>  result <span class="ot">&lt;-</span> (dose <span class="sc">/</span> vd) <span class="sc">*</span> <span class="fu">exp</span>(exponent)</span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(result)</span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div>
+<p>We can now use the prediction function and build the likelihood term function:</p>
+<div class="cell">
+<div class="code-with-filename">
+<div class="code-with-filename-file">
+<pre><strong>function: likelihood_fun()</strong></pre>
+</div>
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="co"># define likelihood term function</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>likelihood_fun <span class="ot">&lt;-</span> <span class="cf">function</span>(eta_i, dose, vd, theta_tvcl, t, Y_i, sigma2_add, sigma2_prop){</span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>  <span class="co"># get model predictions</span></span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>  f_i <span class="ot">&lt;-</span> <span class="fu">model_fun</span>(eta_i, dose, vd, theta_tvcl, t)</span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>  <span class="co"># calculate resulting sigma2 for each timepoint (prop variance is scaled based on f_i^2)</span></span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a>  sigma2 <span class="ot">&lt;-</span> sigma2_prop <span class="sc">*</span> f_i<span class="sc">^</span><span class="dv">2</span> <span class="sc">+</span> sigma2_add</span>
+<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a>  <span class="co"># calculate probability</span></span>
+<span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a>  log_lik <span class="ot">&lt;-</span> <span class="sc">-</span> <span class="fl">0.5</span> <span class="sc">*</span> <span class="fu">log</span>(<span class="dv">2</span><span class="sc">*</span>pi<span class="sc">*</span>sigma2) <span class="sc">-</span> (Y_i <span class="sc">-</span> f_i)<span class="sc">^</span><span class="dv">2</span><span class="sc">/</span>(<span class="dv">2</span><span class="sc">*</span>sigma2)</span>
+<span id="cb14-12"><a href="#cb14-12" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb14-13"><a href="#cb14-13" aria-hidden="true" tabindex="-1"></a>  <span class="co"># take sum of likelihoods</span></span>
+<span id="cb14-14"><a href="#cb14-14" aria-hidden="true" tabindex="-1"></a>  log_lik_sum <span class="ot">&lt;-</span> <span class="fu">sum</span>(log_lik)</span>
+<span id="cb14-15"><a href="#cb14-15" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb14-16"><a href="#cb14-16" aria-hidden="true" tabindex="-1"></a>  <span class="co"># return log likelihood</span></span>
+<span id="cb14-17"><a href="#cb14-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(log_lik_sum)</span>
+<span id="cb14-18"><a href="#cb14-18" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div>
+<p>We can now test this function and illustrate the likelihood term for a range of <span class="math inline">\(\eta_i\)</span> values:</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="co"># define range</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>eta_i <span class="ot">&lt;-</span> <span class="fu">seq</span>(<span class="sc">-</span><span class="dv">2</span>, <span class="dv">2</span>, <span class="fl">0.01</span>)</span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a><span class="co"># empty list</span></span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>ll_list <span class="ot">&lt;-</span> <span class="fu">list</span>()</span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a><span class="co"># loop over each element of eta_i</span></span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span>(cur_eta_i <span class="cf">in</span> eta_i){</span>
+<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a>  <span class="co"># calculate likelihood term</span></span>
+<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a>  ll_list[[<span class="fu">as.character</span>(cur_eta_i)]] <span class="ot">&lt;-</span> <span class="fu">likelihood_fun</span>(</span>
+<span id="cb15-11"><a href="#cb15-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">eta_i =</span> cur_eta_i, </span>
+<span id="cb15-12"><a href="#cb15-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">dose =</span> nm_out <span class="sc">|&gt;</span> <span class="fu">filter</span>(EVID <span class="sc">==</span> <span class="dv">1</span>) <span class="sc">|&gt;</span> <span class="fu">pull</span>(AMT), </span>
+<span id="cb15-13"><a href="#cb15-13" aria-hidden="true" tabindex="-1"></a>    <span class="at">vd =</span> <span class="fl">3.15</span>, </span>
+<span id="cb15-14"><a href="#cb15-14" aria-hidden="true" tabindex="-1"></a>    <span class="at">theta_tvcl =</span> <span class="fl">0.247</span>, </span>
+<span id="cb15-15"><a href="#cb15-15" aria-hidden="true" tabindex="-1"></a>    <span class="at">t =</span> nm_out <span class="sc">|&gt;</span> <span class="fu">filter</span>(EVID <span class="sc">==</span> <span class="dv">0</span>) <span class="sc">|&gt;</span> <span class="fu">pull</span>(TIME), </span>
+<span id="cb15-16"><a href="#cb15-16" aria-hidden="true" tabindex="-1"></a>    <span class="at">Y_i =</span> nm_out <span class="sc">|&gt;</span> <span class="fu">filter</span>(EVID <span class="sc">==</span> <span class="dv">0</span>) <span class="sc">|&gt;</span> <span class="fu">pull</span>(DV), </span>
+<span id="cb15-17"><a href="#cb15-17" aria-hidden="true" tabindex="-1"></a>    <span class="at">sigma2_add =</span> <span class="fl">0.10</span>, </span>
+<span id="cb15-18"><a href="#cb15-18" aria-hidden="true" tabindex="-1"></a>    <span class="at">sigma2_prop =</span> <span class="fl">0.10</span></span>
+<span id="cb15-19"><a href="#cb15-19" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb15-20"><a href="#cb15-20" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb15-21"><a href="#cb15-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-22"><a href="#cb15-22" aria-hidden="true" tabindex="-1"></a><span class="co"># convert to vector</span></span>
+<span id="cb15-23"><a href="#cb15-23" aria-hidden="true" tabindex="-1"></a>ll_vector <span class="ot">&lt;-</span> ll_list <span class="sc">|&gt;</span> <span class="fu">unlist</span>() <span class="sc">|&gt;</span> <span class="fu">unname</span>()</span>
+<span id="cb15-24"><a href="#cb15-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-25"><a href="#cb15-25" aria-hidden="true" tabindex="-1"></a><span class="co"># create tibble</span></span>
+<span id="cb15-26"><a href="#cb15-26" aria-hidden="true" tabindex="-1"></a>likelihood_tibble <span class="ot">&lt;-</span> <span class="fu">tibble</span>(</span>
+<span id="cb15-27"><a href="#cb15-27" aria-hidden="true" tabindex="-1"></a>  <span class="at">eta_i =</span> eta_i,</span>
+<span id="cb15-28"><a href="#cb15-28" aria-hidden="true" tabindex="-1"></a>  <span class="at">likelihood =</span> ll_vector,</span>
+<span id="cb15-29"><a href="#cb15-29" aria-hidden="true" tabindex="-1"></a>  <span class="at">source =</span> <span class="st">"likelihood"</span></span>
+<span id="cb15-30"><a href="#cb15-30" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb15-31"><a href="#cb15-31" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-32"><a href="#cb15-32" aria-hidden="true" tabindex="-1"></a><span class="co"># plot likelihood term</span></span>
+<span id="cb15-33"><a href="#cb15-33" aria-hidden="true" tabindex="-1"></a>likelihood_tibble <span class="sc">|&gt;</span> </span>
+<span id="cb15-34"><a href="#cb15-34" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x=</span>eta_i, <span class="at">y=</span><span class="fu">exp</span>(likelihood)))<span class="sc">+</span></span>
+<span id="cb15-35"><a href="#cb15-35" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>()<span class="sc">+</span></span>
+<span id="cb15-36"><a href="#cb15-36" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb15-37"><a href="#cb15-37" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="fu">expression</span>(eta[i]),</span>
+<span id="cb15-38"><a href="#cb15-38" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="fu">expression</span>(<span class="fu">p</span>(Y[i] <span class="sc">|</span> eta[i])),</span>
+<span id="cb15-39"><a href="#cb15-39" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"Likelihood term"</span></span>
+<span id="cb15-40"><a href="#cb15-40" aria-hidden="true" tabindex="-1"></a>  )<span class="sc">+</span></span>
+<span id="cb15-41"><a href="#cb15-41" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_bw</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="index_files/figure-html/unnamed-chunk-13-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Here we can see which values of <span class="math inline">\(\eta_i\)</span> are more and less likely to describe the observed data <span class="math inline">\(Y_i\)</span> of our example individual. Now we can go ahead and combine both terms to calculate the MAP estimate for our individual.</p>
+</section>
+<section id="map-estimation-1" class="level2" data-number="5.3">
+<h2 data-number="5.3" class="anchored" data-anchor-id="map-estimation-1"><span class="header-section-number">5.3</span> MAP estimation</h2>
+<p>We now have to define an objective function for the numerical optimizer which will maximize the posterior distribution as defined in [IREF]. We simply have to put together both terms:</p>
+<div class="cell">
+<div class="code-with-filename">
+<div class="code-with-filename-file">
+<pre><strong>function: map_obj_fun()</strong></pre>
+</div>
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="co"># define MAP estimation objective function</span></span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>map_obj_fun <span class="ot">&lt;-</span> <span class="cf">function</span>(eta_i, omega2, dose, vd, theta_tvcl, t, Y_i, sigma2_add, sigma2_prop){</span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>  <span class="co"># calculate log prior term</span></span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>  log_prior_term <span class="ot">&lt;-</span> <span class="fu">prior_fun</span>(</span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">eta_i =</span> eta_i, </span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">omega2 =</span> omega2</span>
+<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb16-10"><a href="#cb16-10" aria-hidden="true" tabindex="-1"></a>  <span class="co"># calculate log likelihood term</span></span>
+<span id="cb16-11"><a href="#cb16-11" aria-hidden="true" tabindex="-1"></a>  log_likelihood_term <span class="ot">&lt;-</span> <span class="fu">likelihood_fun</span>(</span>
+<span id="cb16-12"><a href="#cb16-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">eta_i =</span> eta_i, </span>
+<span id="cb16-13"><a href="#cb16-13" aria-hidden="true" tabindex="-1"></a>    <span class="at">dose =</span> dose, </span>
+<span id="cb16-14"><a href="#cb16-14" aria-hidden="true" tabindex="-1"></a>    <span class="at">vd =</span> vd, </span>
+<span id="cb16-15"><a href="#cb16-15" aria-hidden="true" tabindex="-1"></a>    <span class="at">theta_tvcl =</span> theta_tvcl, </span>
+<span id="cb16-16"><a href="#cb16-16" aria-hidden="true" tabindex="-1"></a>    <span class="at">t =</span> t, </span>
+<span id="cb16-17"><a href="#cb16-17" aria-hidden="true" tabindex="-1"></a>    <span class="at">Y_i =</span> Y_i, </span>
+<span id="cb16-18"><a href="#cb16-18" aria-hidden="true" tabindex="-1"></a>    <span class="at">sigma2_add =</span> sigma2_add, </span>
+<span id="cb16-19"><a href="#cb16-19" aria-hidden="true" tabindex="-1"></a>    <span class="at">sigma2_prop =</span> sigma2_prop</span>
+<span id="cb16-20"><a href="#cb16-20" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb16-21"><a href="#cb16-21" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb16-22"><a href="#cb16-22" aria-hidden="true" tabindex="-1"></a>  <span class="co"># combine both</span></span>
+<span id="cb16-23"><a href="#cb16-23" aria-hidden="true" tabindex="-1"></a>  log_posterior <span class="ot">&lt;-</span> log_prior_term <span class="sc">+</span> log_likelihood_term</span>
+<span id="cb16-24"><a href="#cb16-24" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb16-25"><a href="#cb16-25" aria-hidden="true" tabindex="-1"></a>  <span class="co"># return negative log posterior</span></span>
+<span id="cb16-26"><a href="#cb16-26" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(<span class="sc">-</span>log_posterior)</span>
+<span id="cb16-27"><a href="#cb16-27" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div>
+<p>Please note that we are returning the negative log posterior as it is easier to minimize a function than to maximize it. We can now use this objective function to find the MAP estimate for our individual using the <code>optim</code> function in R. We want to find the particular value of <span class="math inline">\(\eta_i\)</span> which minimizes our <code>map_obj_fun()</code> function.</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="co"># run optimization</span></span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>map_est <span class="ot">&lt;-</span> <span class="fu">optim</span>(</span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">par =</span> <span class="dv">0</span>, </span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">fn =</span> map_obj_fun, </span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">omega2 =</span> <span class="fl">0.11</span>, </span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">dose =</span> nm_out <span class="sc">|&gt;</span> <span class="fu">filter</span>(EVID <span class="sc">==</span> <span class="dv">1</span>) <span class="sc">|&gt;</span> <span class="fu">pull</span>(AMT), </span>
+<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">vd =</span> <span class="fl">3.15</span>, </span>
+<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">theta_tvcl =</span> <span class="fl">0.247</span>, </span>
+<span id="cb17-9"><a href="#cb17-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">t =</span> nm_out <span class="sc">|&gt;</span> <span class="fu">filter</span>(EVID <span class="sc">==</span> <span class="dv">0</span>) <span class="sc">|&gt;</span> <span class="fu">pull</span>(TIME), </span>
+<span id="cb17-10"><a href="#cb17-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">Y_i =</span> nm_out <span class="sc">|&gt;</span> <span class="fu">filter</span>(EVID <span class="sc">==</span> <span class="dv">0</span>) <span class="sc">|&gt;</span> <span class="fu">pull</span>(DV), </span>
+<span id="cb17-11"><a href="#cb17-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">sigma2_add =</span> <span class="fl">0.10</span>, </span>
+<span id="cb17-12"><a href="#cb17-12" aria-hidden="true" tabindex="-1"></a>  <span class="at">sigma2_prop =</span> <span class="fl">0.10</span>,</span>
+<span id="cb17-13"><a href="#cb17-13" aria-hidden="true" tabindex="-1"></a>  <span class="at">method =</span> <span class="st">"BFGS"</span></span>
+<span id="cb17-14"><a href="#cb17-14" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb17-15"><a href="#cb17-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-16"><a href="#cb17-16" aria-hidden="true" tabindex="-1"></a><span class="co"># show estimation results</span></span>
+<span id="cb17-17"><a href="#cb17-17" aria-hidden="true" tabindex="-1"></a>map_est </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>$par
+[1] 0.6869381
+
+$value
+[1] 11.6776
+
+$counts
+function gradient 
+      30        7 
+
+$convergence
+[1] 0
+
+$message
+NULL</code></pre>
+</div>
+</div>
+</section>
+</section>
+<section id="conclusion" class="level1" data-number="6">
+<h1 data-number="6"><span class="header-section-number">6</span> Conclusion</h1>
 <ul>
 <li><p>Summarize benefits of performing Bayesian estimation explicitly.</p></li>
 <li><p>Encourage pharmacometricians to reproduce standard software results occasionally to enhance intuition.</p></li>
 </ul>
 </section>
-<section id="epilogue-acknowledgments" class="level1" data-number="8">
-<h1 data-number="8"><span class="header-section-number">8</span> Epilogue / Acknowledgments</h1>
+<section id="epilogue-acknowledgments" class="level1" data-number="7">
+<h1 data-number="7"><span class="header-section-number">7</span> Epilogue / Acknowledgments</h1>
 <ul>
 <li>xxx</li>
 </ul>
@@ -1217,313 +1501,583 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 </script>
 <input type="hidden" id="giscus-base-theme" value="light">
 <input type="hidden" id="giscus-alt-theme" value="dark"><div class="modal fade" id="quarto-embedded-source-code-modal" tabindex="-1" aria-labelledby="quarto-embedded-source-code-modal-label" aria-hidden="true"><div class="modal-dialog modal-dialog-scrollable"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="quarto-embedded-source-code-modal-label">Source Code</h5><button class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><div class="">
-<div class="sourceCode" id="cb10" data-shortcodes="false"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
-<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="an">title:</span><span class="co"> "Bayesian MAP estimation in R"</span></span>
-<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a><span class="an">description:</span><span class="co"> "Understanding the Bayesian idea and reproducing a MAP estimation in R"</span></span>
-<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a><span class="an">author:</span></span>
-<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a><span class="co">  - name: Marian Klose</span></span>
-<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a><span class="co">    url: https://github.com/marianklose</span></span>
-<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a><span class="co">    orcid: 0009-0005-1706-6289</span></span>
-<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a><span class="an">date:</span><span class="co"> 03-29-2025  # MM-DD-YYYY</span></span>
-<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a><span class="an">categories:</span><span class="co"> [NONMEM, Bayes, MAP] </span></span>
-<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a><span class="an">image:</span><span class="co"> preview.gif</span></span>
-<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a><span class="an">bibliography:</span><span class="co"> C:/Users/maria/Desktop/bibliography.bib</span></span>
-<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a><span class="an">draft:</span><span class="co"> false </span></span>
-<span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a><span class="an">echo:</span><span class="co"> true</span></span>
-<span id="cb10-14"><a href="#cb10-14" aria-hidden="true" tabindex="-1"></a><span class="an">execute:</span></span>
-<span id="cb10-15"><a href="#cb10-15" aria-hidden="true" tabindex="-1"></a><span class="co">  freeze: false # never re-render during project render (dependencies might change over time)</span></span>
-<span id="cb10-16"><a href="#cb10-16" aria-hidden="true" tabindex="-1"></a><span class="co">  echo: true</span></span>
-<span id="cb10-17"><a href="#cb10-17" aria-hidden="true" tabindex="-1"></a><span class="co">  message: false</span></span>
-<span id="cb10-18"><a href="#cb10-18" aria-hidden="true" tabindex="-1"></a><span class="co">  warning: false</span></span>
-<span id="cb10-19"><a href="#cb10-19" aria-hidden="true" tabindex="-1"></a><span class="an">citation:</span><span class="co"> </span></span>
-<span id="cb10-20"><a href="#cb10-20" aria-hidden="true" tabindex="-1"></a><span class="co">  url: https://marian-klose.com/posts/bayes_map_estimation_r/index.html</span></span>
-<span id="cb10-21"><a href="#cb10-21" aria-hidden="true" tabindex="-1"></a><span class="an">format:</span></span>
-<span id="cb10-22"><a href="#cb10-22" aria-hidden="true" tabindex="-1"></a><span class="co">  html:</span></span>
-<span id="cb10-23"><a href="#cb10-23" aria-hidden="true" tabindex="-1"></a><span class="co">    number-sections: true</span></span>
-<span id="cb10-24"><a href="#cb10-24" aria-hidden="true" tabindex="-1"></a><span class="co">    toc: true</span></span>
-<span id="cb10-25"><a href="#cb10-25" aria-hidden="true" tabindex="-1"></a><span class="co">    code-fold: true</span></span>
-<span id="cb10-26"><a href="#cb10-26" aria-hidden="true" tabindex="-1"></a><span class="co">    code-tools: true</span></span>
-<span id="cb10-27"><a href="#cb10-27" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
-<span id="cb10-28"><a href="#cb10-28" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-31"><a href="#cb10-31" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb10-32"><a href="#cb10-32" aria-hidden="true" tabindex="-1"></a><span class="co"># load packages</span></span>
-<span id="cb10-33"><a href="#cb10-33" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span>
-<span id="cb10-34"><a href="#cb10-34" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
-<span id="cb10-35"><a href="#cb10-35" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(readr)</span>
-<span id="cb10-36"><a href="#cb10-36" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(kableExtra)</span>
-<span id="cb10-37"><a href="#cb10-37" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(xpose4)</span>
-<span id="cb10-38"><a href="#cb10-38" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyr)</span>
-<span id="cb10-39"><a href="#cb10-39" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb10-40"><a href="#cb10-40" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-41"><a href="#cb10-41" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-42"><a href="#cb10-42" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-43"><a href="#cb10-43" aria-hidden="true" tabindex="-1"></a><span class="fu"># Motivation</span></span>
-<span id="cb10-44"><a href="#cb10-44" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-45"><a href="#cb10-45" aria-hidden="true" tabindex="-1"></a><span class="fu">## Why Bayesian estimation is important</span></span>
-<span id="cb10-46"><a href="#cb10-46" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-47"><a href="#cb10-47" aria-hidden="true" tabindex="-1"></a>Bayesian estimation is a commonly applied and powerful method in pharmacometrics. Often the calculation happens kind of automatically when we fit a pharmacometric model using e.g., NONMEM. So it is quite easy to use them without dealing the underlying concepts and the actual computation of e.g., the individual parameter estimates provided as an output in NONMEM: Given that diagnostics relying on IPRED (the individual predictions obtained through simulating with the MAP parameter estimate) are commonly reported, and individual parameters are often used for covariate screening, the importance of this topic is clear. The most commonly applied Bayesian tool are so called MAP or EBE estimates, which represent the mode of the posterior distribution (we will talk about the posterior later). However, also the full posterior distribution can be of interest, although it is harder to calculate. In this blogpost, I want to shortly describe my own understanding of the Bayesian ideas and concepts and then show how to reproduce the MAP estimates and its resulting individual predictions (IPRED) in R. An equation-based reproduction is typically the best way to understand and learn about the underlying concept.</span>
-<span id="cb10-48"><a href="#cb10-48" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-49"><a href="#cb10-49" aria-hidden="true" tabindex="-1"></a><span class="fu">## Disclaimer</span></span>
-<span id="cb10-50"><a href="#cb10-50" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-51"><a href="#cb10-51" aria-hidden="true" tabindex="-1"></a>I just share my personal thoughts and understanding of some Bayesian ideas and I can't promise that you won't find flaws in my explanations or equations. </span>
-<span id="cb10-52"><a href="#cb10-52" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-53"><a href="#cb10-53" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-54"><a href="#cb10-54" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-55"><a href="#cb10-55" aria-hidden="true" tabindex="-1"></a><span class="fu"># Structure</span></span>
-<span id="cb10-56"><a href="#cb10-56" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-57"><a href="#cb10-57" aria-hidden="true" tabindex="-1"></a>Lorem ipsum dolor sit amet.</span>
-<span id="cb10-58"><a href="#cb10-58" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-59"><a href="#cb10-59" aria-hidden="true" tabindex="-1"></a><span class="fu"># The Bayesian Idea: Updating Beliefs</span></span>
-<span id="cb10-60"><a href="#cb10-60" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-61"><a href="#cb10-61" aria-hidden="true" tabindex="-1"></a><span class="fu">## Starting with an example</span></span>
-<span id="cb10-62"><a href="#cb10-62" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-63"><a href="#cb10-63" aria-hidden="true" tabindex="-1"></a>I would say that most people in their daily life think Bayesian (although not everyone wants to admit it). The core idea of Bayesian statistics is to update your beliefs once new data or information becomes available. One simple example: Assume you commute to work every day by using your car. If someone would ask you "How long do you think you will need to get to work tomorrow?", you would probably have a very good idea about how long it will take you, simply based on your experience. You might say that 30 minutes is a good estimate, but would you bet money that it will be exactly 30 minutes? Most likely not, it might be your best guess but there will be some uncertainly associated to it. You might be willing to bet money that it will be between 20 and 40 minutes. Now assuming that you get into your car the next morning and traffic is a state so that after 25 minutes you made it half-way through.</span>
-<span id="cb10-64"><a href="#cb10-64" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-65"><a href="#cb10-65" aria-hidden="true" tabindex="-1"></a><span class="co">[</span><span class="ot">IMAGE</span><span class="co">]</span></span>
-<span id="cb10-66"><a href="#cb10-66" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-67"><a href="#cb10-67" aria-hidden="true" tabindex="-1"></a>Would you still stick to your initial belief that it will take you 30 minutes? Probably not, you would update your belief. Would you then just multiply the 25 minutes by two and say that it will take you 50 minutes? Probably not, given that all your experience tells you that you nearly always made it within 40 minutes. So your updated belief will be something between 30 minutes (initial guess) and 50 minutes (what the data suggests). This updated belief (let's say 38 minutes) is what Bayesian statistics is all about. And since we apply this Bayesian idea in our daily life, I personally find it quite an intuitive way of thinking statistics. </span>
-<span id="cb10-68"><a href="#cb10-68" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-69"><a href="#cb10-69" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-70"><a href="#cb10-70" aria-hidden="true" tabindex="-1"></a><span class="fu">## Nomenclature</span></span>
-<span id="cb10-71"><a href="#cb10-71" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-72"><a href="#cb10-72" aria-hidden="true" tabindex="-1"></a>The real-life example defined above allows us to define some Bayesian nomenclature:</span>
-<span id="cb10-73"><a href="#cb10-73" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-74"><a href="#cb10-74" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>The **prior** is the initial belief, in our example the 30 minutes and the uncertainty around it.</span>
-<span id="cb10-75"><a href="#cb10-75" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>The **likelihood** represents the new data (or evidence), in our example the 25 minutes for 1/2 of the way.</span>
-<span id="cb10-76"><a href="#cb10-76" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>The **posterior** is the updated belief after the data became available, in our example the 38 minutes.</span>
-<span id="cb10-77"><a href="#cb10-77" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-78"><a href="#cb10-78" aria-hidden="true" tabindex="-1"></a>So the Bayesian workflow is always based on the idea that you have a prior belief, which you update once new data (likelihood) becomes available. The updated belief is then called the posterior. There are some differences if we talk about MAP estimation and full posterior estimation:</span>
-<span id="cb10-79"><a href="#cb10-79" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-80"><a href="#cb10-80" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>MAP: the *maximum a-posteriori* estimate, which is the mode of the posterior distribution</span>
-<span id="cb10-81"><a href="#cb10-81" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>full Bayesian: the full posterior distribution and not only the mode / a point estimate</span>
-<span id="cb10-82"><a href="#cb10-82" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-83"><a href="#cb10-83" aria-hidden="true" tabindex="-1"></a>Most pharmacometricians focus on the mode of the posterior (MAP/EBE) and neglect the uncertainty captured in the full distribution. The main reason for this is that the MAP estimates are easy to calculate while the full posterior is more challenging to obtain.</span>
-<span id="cb10-84"><a href="#cb10-84" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-85"><a href="#cb10-85" aria-hidden="true" tabindex="-1"></a>It goes without a saying that this is a simple example and everything is just based on a gut-feeling than on equations. While the core-idea remains the same, Bayesian statistics provide a framework to calculate the posterior in a more formal way. This is what we are tackling next.</span>
-<span id="cb10-86"><a href="#cb10-86" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-87"><a href="#cb10-87" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-88"><a href="#cb10-88" aria-hidden="true" tabindex="-1"></a><span class="fu">## Our goal in pharmacometrics</span></span>
-<span id="cb10-89"><a href="#cb10-89" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-90"><a href="#cb10-90" aria-hidden="true" tabindex="-1"></a>But what is now the goal of Bayesian stats in pharmacometrics? Actually not to better plan your daily commute to work. Instead, we typically use Bayesian estimation to individualize the model parameters for a given individual $i$, which has a set of observations $Y_{i}$. Now we want to use this individual data to find the best parameter estimates for this individual. On the one hand this happens during model building, at each iteration step and then after the actual estimation has finished, at the posthoc step. On the other hand, it also happens in so called model-informed precision dosing scenarios (MIPD) where we want to predict the future concentration-time profile and we have obtained some historic concentrations through therapeutic drug monitoring. </span>
-<span id="cb10-91"><a href="#cb10-91" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-92"><a href="#cb10-92" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-93"><a href="#cb10-93" aria-hidden="true" tabindex="-1"></a><span class="fu"># Pharmacokinetic example and reference solution</span></span>
-<span id="cb10-94"><a href="#cb10-94" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-95"><a href="#cb10-95" aria-hidden="true" tabindex="-1"></a><span class="fu">## Data</span></span>
-<span id="cb10-96"><a href="#cb10-96" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-97"><a href="#cb10-97" aria-hidden="true" tabindex="-1"></a>Without data no Bayesian parameter individualization. As we do this MAP estimation on an individual level, we are going to pick one single ID from the dataset we have defined in the previous blogpost <span class="co">[</span><span class="ot">REF</span><span class="co">]</span>and use this as as our example. Let's first load the simulated concentration-time data and show the head of it:</span>
-<span id="cb10-98"><a href="#cb10-98" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-101"><a href="#cb10-101" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb10-102"><a href="#cb10-102" aria-hidden="true" tabindex="-1"></a><span class="co"># read in simulated dataset from previous blogpost</span></span>
-<span id="cb10-103"><a href="#cb10-103" aria-hidden="true" tabindex="-1"></a>sim_data <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"~/GitHub/personal-website/posts/understanding_nlme_estimation/data/output_from_sim/sim_data.csv"</span>)</span>
-<span id="cb10-104"><a href="#cb10-104" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-105"><a href="#cb10-105" aria-hidden="true" tabindex="-1"></a><span class="co"># show data </span></span>
-<span id="cb10-106"><a href="#cb10-106" aria-hidden="true" tabindex="-1"></a>sim_data <span class="sc">|&gt;</span> </span>
-<span id="cb10-107"><a href="#cb10-107" aria-hidden="true" tabindex="-1"></a>  <span class="fu">head</span>() <span class="sc">|&gt;</span> </span>
-<span id="cb10-108"><a href="#cb10-108" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable</span>() <span class="sc">|&gt;</span> </span>
-<span id="cb10-109"><a href="#cb10-109" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable_styling</span>()</span>
-<span id="cb10-110"><a href="#cb10-110" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb10-111"><a href="#cb10-111" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-112"><a href="#cb10-112" aria-hidden="true" tabindex="-1"></a>These is the previously simulated data with which we have built the model. We will focus on one single ID (ID 5) which is rather at the lower end of the simulated concentrations. </span>
-<span id="cb10-113"><a href="#cb10-113" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-114"><a href="#cb10-114" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-117"><a href="#cb10-117" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb10-118"><a href="#cb10-118" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: fig-sim-vis</span></span>
-<span id="cb10-119"><a href="#cb10-119" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-cap: "Simulated concentration-time profiles for 10 individuals with ID 5 being our examplaratory ID."</span></span>
-<span id="cb10-120"><a href="#cb10-120" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-121"><a href="#cb10-121" aria-hidden="true" tabindex="-1"></a><span class="co"># show individual profiles</span></span>
-<span id="cb10-122"><a href="#cb10-122" aria-hidden="true" tabindex="-1"></a>sim_data <span class="sc">|&gt;</span> </span>
-<span id="cb10-123"><a href="#cb10-123" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(EVID <span class="sc">==</span> <span class="dv">0</span>) <span class="sc">|&gt;</span> </span>
-<span id="cb10-124"><a href="#cb10-124" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">flag =</span> <span class="fu">if_else</span>(ID <span class="sc">==</span> <span class="dv">5</span>, <span class="st">"Reference"</span>, <span class="st">"Others"</span>)) <span class="sc">|&gt;</span></span>
-<span id="cb10-125"><a href="#cb10-125" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x=</span>TIME, <span class="at">y=</span>DV, <span class="at">group=</span>ID, <span class="at">color=</span><span class="fu">as.factor</span>(flag))) <span class="sc">+</span></span>
-<span id="cb10-126"><a href="#cb10-126" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>()<span class="sc">+</span></span>
-<span id="cb10-127"><a href="#cb10-127" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>()<span class="sc">+</span></span>
-<span id="cb10-128"><a href="#cb10-128" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_bw</span>()<span class="sc">+</span></span>
-<span id="cb10-129"><a href="#cb10-129" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous</span>(<span class="at">limits=</span><span class="fu">c</span>(<span class="dv">0</span>,<span class="cn">NA</span>))<span class="sc">+</span></span>
-<span id="cb10-130"><a href="#cb10-130" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x=</span><span class="st">"Time after last dose [h]"</span>, <span class="at">y=</span><span class="st">"Concentration [mg/L]"</span>)<span class="sc">+</span></span>
-<span id="cb10-131"><a href="#cb10-131" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_color_manual</span>(<span class="st">"Individual"</span>, <span class="at">values=</span><span class="fu">c</span>(<span class="st">"grey"</span>, <span class="st">"darkblue"</span>))<span class="sc">+</span></span>
-<span id="cb10-132"><a href="#cb10-132" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggtitle</span>(<span class="st">"Simulated data"</span>)</span>
-<span id="cb10-133"><a href="#cb10-133" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb10-134"><a href="#cb10-134" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-135"><a href="#cb10-135" aria-hidden="true" tabindex="-1"></a>We will later need this data when running NONMEM, so we have to save it to file. </span>
-<span id="cb10-136"><a href="#cb10-136" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-139"><a href="#cb10-139" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb10-140"><a href="#cb10-140" aria-hidden="true" tabindex="-1"></a><span class="co"># save data for NONMEM</span></span>
-<span id="cb10-141"><a href="#cb10-141" aria-hidden="true" tabindex="-1"></a>sim_data <span class="sc">|&gt;</span> </span>
-<span id="cb10-142"><a href="#cb10-142" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(ID <span class="sc">==</span> <span class="dv">5</span>) <span class="sc">|&gt;</span> </span>
-<span id="cb10-143"><a href="#cb10-143" aria-hidden="true" tabindex="-1"></a>  <span class="fu">write_csv</span>(<span class="st">"~/GitHub/personal-website/posts/bayes_map_estimation_r/data/sim_data_ID5.csv"</span>) </span>
-<span id="cb10-144"><a href="#cb10-144" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb10-145"><a href="#cb10-145" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-146"><a href="#cb10-146" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-147"><a href="#cb10-147" aria-hidden="true" tabindex="-1"></a><span class="fu">## NLME model structure</span></span>
-<span id="cb10-148"><a href="#cb10-148" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-149"><a href="#cb10-149" aria-hidden="true" tabindex="-1"></a>For a little example and the reference solution, we will use the same simple one-compartment i.v. model with first order disposition processes we have fitted to some data here <span class="co">[</span><span class="ot">REF</span><span class="co">]</span>. This was the model structure:</span>
-<span id="cb10-150"><a href="#cb10-150" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-151"><a href="#cb10-151" aria-hidden="true" tabindex="-1"></a><span class="al">![Model structure of our simple 1 cmt i.v. bolus model.](media/model_structure.png)</span></span>
-<span id="cb10-152"><a href="#cb10-152" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-153"><a href="#cb10-153" aria-hidden="true" tabindex="-1"></a>We assume to have an already fitted model and our only task is to individualize the parameters for our given individual. The model parameter estimates which we are using are taken from the previous blogpost <span class="co">[</span><span class="ot">REF</span><span class="co">]</span>:</span>
-<span id="cb10-154"><a href="#cb10-154" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-155"><a href="#cb10-155" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>$CL$ = 0.247 L/h</span>
-<span id="cb10-156"><a href="#cb10-156" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>$V$ = 3.15 L</span>
-<span id="cb10-157"><a href="#cb10-157" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>$\omega^2_{CL}$ = 0.11</span>
-<span id="cb10-158"><a href="#cb10-158" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>$\sigma^2_{RUV}$ = 0.10 * 100 = 10</span>
-<span id="cb10-159"><a href="#cb10-159" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-160"><a href="#cb10-160" aria-hidden="true" tabindex="-1"></a>This is what we are now going to translate into a NONMEM model. Please note that we assume a much higher RUV for the MAP estimation than in the previous blogpost (variance of 10 instead of 0.1). This just helps to make a point, as we have quite dense sampling and the likelihood of the data is quickly dominating the prior. By decreasing the "trust" into the data, we can better see the interplay between prior, likelihood and posterior. More to that later!</span>
-<span id="cb10-161"><a href="#cb10-161" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-162"><a href="#cb10-162" aria-hidden="true" tabindex="-1"></a><span class="fu">## NONMEM model</span></span>
-<span id="cb10-163"><a href="#cb10-163" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-164"><a href="#cb10-164" aria-hidden="true" tabindex="-1"></a>The NONMEM model is based on the previous blogpost, but we have made some minor edits:</span>
-<span id="cb10-165"><a href="#cb10-165" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-166"><a href="#cb10-166" aria-hidden="true" tabindex="-1"></a><span class="in">```{.r filename="1cmt_iv_map_est.mod"}</span></span>
-<span id="cb10-167"><a href="#cb10-167" aria-hidden="true" tabindex="-1"></a><span class="in">$PROBLEM 1cmt_iv_map_est</span></span>
-<span id="cb10-168"><a href="#cb10-168" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-169"><a href="#cb10-169" aria-hidden="true" tabindex="-1"></a><span class="in">$INPUT ID TIME EVID AMT RATE DV MDV</span></span>
-<span id="cb10-170"><a href="#cb10-170" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-171"><a href="#cb10-171" aria-hidden="true" tabindex="-1"></a><span class="in">$DATA C:\Users\maria\Documents\GitHub\personal-website\posts\bayes_map_estimation_r\data\sim_data_ID5.csv IGNORE=@</span></span>
-<span id="cb10-172"><a href="#cb10-172" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-173"><a href="#cb10-173" aria-hidden="true" tabindex="-1"></a><span class="in">$SUBROUTINES ADVAN1 TRANS2</span></span>
-<span id="cb10-174"><a href="#cb10-174" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-175"><a href="#cb10-175" aria-hidden="true" tabindex="-1"></a><span class="in">$PK</span></span>
-<span id="cb10-176"><a href="#cb10-176" aria-hidden="true" tabindex="-1"></a><span class="in">; define fixed effects parameters</span></span>
-<span id="cb10-177"><a href="#cb10-177" aria-hidden="true" tabindex="-1"></a><span class="in">CL = THETA(1) * EXP(ETA(1))</span></span>
-<span id="cb10-178"><a href="#cb10-178" aria-hidden="true" tabindex="-1"></a><span class="in">V = THETA(2)</span></span>
-<span id="cb10-179"><a href="#cb10-179" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-180"><a href="#cb10-180" aria-hidden="true" tabindex="-1"></a><span class="in">; scaling</span></span>
-<span id="cb10-181"><a href="#cb10-181" aria-hidden="true" tabindex="-1"></a><span class="in">S1=V</span></span>
-<span id="cb10-182"><a href="#cb10-182" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-183"><a href="#cb10-183" aria-hidden="true" tabindex="-1"></a><span class="in">$THETA</span></span>
-<span id="cb10-184"><a href="#cb10-184" aria-hidden="true" tabindex="-1"></a><span class="in">0.247 FIX               ; 1 TVCL</span></span>
-<span id="cb10-185"><a href="#cb10-185" aria-hidden="true" tabindex="-1"></a><span class="in">3.15 FIX                ; 2 TVV</span></span>
-<span id="cb10-186"><a href="#cb10-186" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-187"><a href="#cb10-187" aria-hidden="true" tabindex="-1"></a><span class="in">$OMEGA </span></span>
-<span id="cb10-188"><a href="#cb10-188" aria-hidden="true" tabindex="-1"></a><span class="in">0.11 FIX                ; 1 OM_CL</span></span>
-<span id="cb10-189"><a href="#cb10-189" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-190"><a href="#cb10-190" aria-hidden="true" tabindex="-1"></a><span class="in">$SIGMA</span></span>
-<span id="cb10-191"><a href="#cb10-191" aria-hidden="true" tabindex="-1"></a><span class="in">10 FIX                ; 1 SIG_ADD</span></span>
-<span id="cb10-192"><a href="#cb10-192" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-193"><a href="#cb10-193" aria-hidden="true" tabindex="-1"></a><span class="in">$ERROR </span></span>
-<span id="cb10-194"><a href="#cb10-194" aria-hidden="true" tabindex="-1"></a><span class="in">; add additive error</span></span>
-<span id="cb10-195"><a href="#cb10-195" aria-hidden="true" tabindex="-1"></a><span class="in">IPRED = F</span></span>
-<span id="cb10-196"><a href="#cb10-196" aria-hidden="true" tabindex="-1"></a><span class="in">Y = IPRED + EPS(1)</span></span>
-<span id="cb10-197"><a href="#cb10-197" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-198"><a href="#cb10-198" aria-hidden="true" tabindex="-1"></a><span class="in">; store error for table output</span></span>
-<span id="cb10-199"><a href="#cb10-199" aria-hidden="true" tabindex="-1"></a><span class="in">ERR1 = EPS(1)</span></span>
-<span id="cb10-200"><a href="#cb10-200" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-201"><a href="#cb10-201" aria-hidden="true" tabindex="-1"></a><span class="in">$ESTIMATION METHOD=COND LAPLACIAN MAXEVAL=0 SIGDIG=3 PRINT=1 NOABORT POSTHOC</span></span>
-<span id="cb10-202"><a href="#cb10-202" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-203"><a href="#cb10-203" aria-hidden="true" tabindex="-1"></a><span class="in">$TABLE ID TIME EVID AMT RATE DV PRED IPRED MDV ETA1 ERR1 CL NOAPPEND ONEHEADER NOPRINT FILE=map_estim_out</span></span>
-<span id="cb10-204"><a href="#cb10-204" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb10-205"><a href="#cb10-205" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-206"><a href="#cb10-206" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-207"><a href="#cb10-207" aria-hidden="true" tabindex="-1"></a>We have updated the initial parameter estimates to the estimates listed above. Furthermore, we run with $MAXEVAL=0$ as we don't need a full estimation but only a MAP estimation. The $POSTHOC$ option will force NONMEM to calculate the individual MAP estimates. We can now go ahead and run it.</span>
-<span id="cb10-208"><a href="#cb10-208" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-209"><a href="#cb10-209" aria-hidden="true" tabindex="-1"></a>After executing the model, we can read in <span class="in">`map_estim_out`</span>:</span>
-<span id="cb10-210"><a href="#cb10-210" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-213"><a href="#cb10-213" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb10-214"><a href="#cb10-214" aria-hidden="true" tabindex="-1"></a><span class="co"># load simulated data</span></span>
-<span id="cb10-215"><a href="#cb10-215" aria-hidden="true" tabindex="-1"></a>nm_out <span class="ot">&lt;-</span> <span class="fu">read_nm_table</span>(<span class="st">"~/GitHub/personal-website/posts/bayes_map_estimation_r/models/map_estim_out"</span>)</span>
-<span id="cb10-216"><a href="#cb10-216" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-217"><a href="#cb10-217" aria-hidden="true" tabindex="-1"></a><span class="co"># show simulated data</span></span>
-<span id="cb10-218"><a href="#cb10-218" aria-hidden="true" tabindex="-1"></a>nm_out <span class="sc">|&gt;</span> </span>
-<span id="cb10-219"><a href="#cb10-219" aria-hidden="true" tabindex="-1"></a>  <span class="fu">head</span>() <span class="sc">|&gt;</span> </span>
-<span id="cb10-220"><a href="#cb10-220" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable</span>() <span class="sc">|&gt;</span> </span>
-<span id="cb10-221"><a href="#cb10-221" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable_styling</span>()</span>
-<span id="cb10-222"><a href="#cb10-222" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb10-223"><a href="#cb10-223" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-224"><a href="#cb10-224" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-225"><a href="#cb10-225" aria-hidden="true" tabindex="-1"></a><span class="in">`ETA1`</span> (or $\eta_i$) is the individual random effect for the individual and <span class="in">`CL`</span> (better $CL_i$) represents the resulting individual MAP estimate for the clearance. <span class="in">`CL_i`</span> can be obtained by</span>
-<span id="cb10-226"><a href="#cb10-226" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-227"><a href="#cb10-227" aria-hidden="true" tabindex="-1"></a>$$CL_i = \theta_{TVCL} \cdot \exp(\eta_i)$$</span>
-<span id="cb10-228"><a href="#cb10-228" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-229"><a href="#cb10-229" aria-hidden="true" tabindex="-1"></a>We can confirm this by calculating:</span>
-<span id="cb10-230"><a href="#cb10-230" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-231"><a href="#cb10-231" aria-hidden="true" tabindex="-1"></a>$$CL_i = 0.247 \cdot \exp(0.72446) = 0.50971$$</span>
-<span id="cb10-232"><a href="#cb10-232" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-233"><a href="#cb10-233" aria-hidden="true" tabindex="-1"></a>or directly in R:</span>
-<span id="cb10-234"><a href="#cb10-234" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-237"><a href="#cb10-237" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb10-238"><a href="#cb10-238" aria-hidden="true" tabindex="-1"></a><span class="co">#| code-fold: FALSE</span></span>
-<span id="cb10-239"><a href="#cb10-239" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-240"><a href="#cb10-240" aria-hidden="true" tabindex="-1"></a><span class="co"># calculate individual MAP estimate</span></span>
-<span id="cb10-241"><a href="#cb10-241" aria-hidden="true" tabindex="-1"></a><span class="fl">0.247</span><span class="sc">*</span><span class="fu">exp</span>(<span class="fl">0.72446</span>)</span>
-<span id="cb10-242"><a href="#cb10-242" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb10-243"><a href="#cb10-243" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-244"><a href="#cb10-244" aria-hidden="true" tabindex="-1"></a>Great! Now we have our reference solution for the parameter individualization. We not only got the individualized parameter estimates but also the individual predictions (<span class="in">`IPRED`</span>). We can now compare both visually:</span>
-<span id="cb10-245"><a href="#cb10-245" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-248"><a href="#cb10-248" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb10-249"><a href="#cb10-249" aria-hidden="true" tabindex="-1"></a><span class="co"># plot DV, PRED, IPRED</span></span>
-<span id="cb10-250"><a href="#cb10-250" aria-hidden="true" tabindex="-1"></a>nm_out <span class="sc">|&gt;</span> </span>
-<span id="cb10-251"><a href="#cb10-251" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(<span class="at">cols=</span><span class="fu">c</span>(PRED, IPRED, DV), <span class="at">names_to=</span><span class="st">"variable"</span>, <span class="at">values_to=</span><span class="st">"value"</span>) <span class="sc">|&gt;</span></span>
-<span id="cb10-252"><a href="#cb10-252" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x=</span>TIME, <span class="at">y=</span>value, <span class="at">group=</span>variable, <span class="at">color=</span>variable))<span class="sc">+</span></span>
-<span id="cb10-253"><a href="#cb10-253" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>()<span class="sc">+</span></span>
-<span id="cb10-254"><a href="#cb10-254" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>()<span class="sc">+</span></span>
-<span id="cb10-255"><a href="#cb10-255" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_bw</span>() </span>
-<span id="cb10-256"><a href="#cb10-256" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb10-257"><a href="#cb10-257" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-258"><a href="#cb10-258" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-259"><a href="#cb10-259" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-260"><a href="#cb10-260" aria-hidden="true" tabindex="-1"></a><span class="fu">## Bayesian Theory</span></span>
-<span id="cb10-261"><a href="#cb10-261" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-262"><a href="#cb10-262" aria-hidden="true" tabindex="-1"></a><span class="fu">### General form</span></span>
-<span id="cb10-263"><a href="#cb10-263" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-264"><a href="#cb10-264" aria-hidden="true" tabindex="-1"></a>As described above, the main goal of a Bayesian attempt is to obtain the posterior distribution (either the mode or the full distribution). Often you find this formula to describe the Bayes theorem: </span>
-<span id="cb10-265"><a href="#cb10-265" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-266"><a href="#cb10-266" aria-hidden="true" tabindex="-1"></a>$$P(A|B) = \frac{P(A) \cdot P(B|A)}{P(B)}$$</span>
-<span id="cb10-267"><a href="#cb10-267" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-268"><a href="#cb10-268" aria-hidden="true" tabindex="-1"></a>Here, conditional probabilities are used and $P(A|B)$ is the probability of event A given that event B has occurred. This remains quite theoretical. Let's directly translate it into the context of a pharmacokinetic NLME model. </span>
-<span id="cb10-269"><a href="#cb10-269" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-270"><a href="#cb10-270" aria-hidden="true" tabindex="-1"></a><span class="fu">### Pharmacometric context</span></span>
-<span id="cb10-271"><a href="#cb10-271" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-272"><a href="#cb10-272" aria-hidden="true" tabindex="-1"></a>Our use-case in the world of pharmacometrics is to find the most likely parameter $\eta$ given our individual's concentration data $Y_{i}$:</span>
-<span id="cb10-273"><a href="#cb10-273" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-274"><a href="#cb10-274" aria-hidden="true" tabindex="-1"></a>$$p(\eta|Y_{i}) = \frac{p(\eta) \cdot p(Y_{i}|\eta)}{p(Y_i)}$$</span>
-<span id="cb10-275"><a href="#cb10-275" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-276"><a href="#cb10-276" aria-hidden="true" tabindex="-1"></a>with </span>
-<span id="cb10-277"><a href="#cb10-277" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-278"><a href="#cb10-278" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>$p(\eta|Y_{ij})$: the posterior distribution of the parameter $\eta$ given the data of our ith individual $Y_{i}$</span>
-<span id="cb10-279"><a href="#cb10-279" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>$p(\eta)$: the prior distribution of the parameter $\eta$</span>
-<span id="cb10-280"><a href="#cb10-280" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>$p(Y_{i}|\eta)$: the likelihood of the data $Y_{i}$ given the parameter $\eta$</span>
-<span id="cb10-281"><a href="#cb10-281" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>$p(Y_{i})$: the marginal likelihood of the data $Y_{i}$</span>
-<span id="cb10-282"><a href="#cb10-282" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-283"><a href="#cb10-283" aria-hidden="true" tabindex="-1"></a>The marginal likelihood of the data $Y_{i}$ is often neglected since it is just a scaling factor, does not depend on the parameter $\eta$ and is typically hard to calculate as it contains a high-dimensional integral. That is why you often see the formula written as:</span>
-<span id="cb10-284"><a href="#cb10-284" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-285"><a href="#cb10-285" aria-hidden="true" tabindex="-1"></a>$$p(\eta|Y_{i}) \propto p(\eta) \cdot p(Y_{i}|\eta)$$</span>
-<span id="cb10-286"><a href="#cb10-286" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-287"><a href="#cb10-287" aria-hidden="true" tabindex="-1"></a>Here, we got rid of the marginal likelihood in the denominator. As we are now missing out the scaling factor, we now deal with an unnormalized posterior distribution and indicate this by using the proportional sign. Dealing with unnormalized posteriors is not a problem if we are only interested in the mode of the posterior distribution (MAP estimate) as the normalization factor is not needed for this. But how can we calculate the MAP estimate for a given individual? </span>
-<span id="cb10-288"><a href="#cb10-288" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-289"><a href="#cb10-289" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-290"><a href="#cb10-290" aria-hidden="true" tabindex="-1"></a><span class="fu">### MAP estimation</span></span>
-<span id="cb10-291"><a href="#cb10-291" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-292"><a href="#cb10-292" aria-hidden="true" tabindex="-1"></a>If we are interested to find the most likely parameter for our individual, we have to find the maximum of the posterior distribution (MAP estimate). Mathematically we can define this by finding the parameter $\eta_i^*$ that maximizes the posterior distribution:</span>
-<span id="cb10-293"><a href="#cb10-293" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-294"><a href="#cb10-294" aria-hidden="true" tabindex="-1"></a>$$\eta_i^* = \underset{\eta_i}{\mathrm{argmax}}~ p(\eta_i|Y_{i}) = \underset{\eta_i}{\mathrm{argmax}}~ p(\eta_i) \cdot p(Y_{i}|\eta_i)$$</span>
-<span id="cb10-295"><a href="#cb10-295" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-296"><a href="#cb10-296" aria-hidden="true" tabindex="-1"></a>In the end, we would have to use a numerical optimizer function to search the parameter space of $\eta_i$ to find the maximum of the posterior distribution ($\eta_i^*$). But how to define </span>
-<span id="cb10-297"><a href="#cb10-297" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-298"><a href="#cb10-298" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-299"><a href="#cb10-299" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-300"><a href="#cb10-300" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-301"><a href="#cb10-301" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-302"><a href="#cb10-302" aria-hidden="true" tabindex="-1"></a><span class="fu"># Reproducing Bayesian MAP Estimation in R</span></span>
-<span id="cb10-303"><a href="#cb10-303" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-304"><a href="#cb10-304" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Outline steps to perform Bayesian estimation manually in R.</span>
-<span id="cb10-305"><a href="#cb10-305" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-306"><a href="#cb10-306" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-307"><a href="#cb10-307" aria-hidden="true" tabindex="-1"></a><span class="fu"># Full Bayesian Estimation</span></span>
-<span id="cb10-308"><a href="#cb10-308" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-309"><a href="#cb10-309" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Introduce Markov Chain Monte Carlo (MCMC) briefly (e.g., using rstan or similar tools).</span>
-<span id="cb10-310"><a href="#cb10-310" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-311"><a href="#cb10-311" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-312"><a href="#cb10-312" aria-hidden="true" tabindex="-1"></a><span class="fu"># Conclusion</span></span>
-<span id="cb10-313"><a href="#cb10-313" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-314"><a href="#cb10-314" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Summarize benefits of performing Bayesian estimation explicitly.</span>
-<span id="cb10-315"><a href="#cb10-315" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-316"><a href="#cb10-316" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Encourage pharmacometricians to reproduce standard software results occasionally to enhance intuition.</span>
-<span id="cb10-317"><a href="#cb10-317" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-318"><a href="#cb10-318" aria-hidden="true" tabindex="-1"></a><span class="fu"># Epilogue / Acknowledgments</span></span>
-<span id="cb10-319"><a href="#cb10-319" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-320"><a href="#cb10-320" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>xxx</span>
-<span id="cb10-321"><a href="#cb10-321" aria-hidden="true" tabindex="-1"></a></span>
+<div class="sourceCode" id="cb19" data-shortcodes="false"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a><span class="an">title:</span><span class="co"> "Bayesian MAP estimation in R"</span></span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a><span class="an">description:</span><span class="co"> "Understanding the Bayesian idea and reproducing a MAP estimation in R"</span></span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a><span class="an">author:</span></span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a><span class="co">  - name: Marian Klose</span></span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a><span class="co">    url: https://github.com/marianklose</span></span>
+<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a><span class="co">    orcid: 0009-0005-1706-6289</span></span>
+<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a><span class="an">date:</span><span class="co"> 03-29-2025  # MM-DD-YYYY</span></span>
+<span id="cb19-9"><a href="#cb19-9" aria-hidden="true" tabindex="-1"></a><span class="an">categories:</span><span class="co"> [NONMEM, Bayes, MAP] </span></span>
+<span id="cb19-10"><a href="#cb19-10" aria-hidden="true" tabindex="-1"></a><span class="an">image:</span><span class="co"> preview.gif</span></span>
+<span id="cb19-11"><a href="#cb19-11" aria-hidden="true" tabindex="-1"></a><span class="an">bibliography:</span><span class="co"> C:/Users/maria/Desktop/bibliography.bib</span></span>
+<span id="cb19-12"><a href="#cb19-12" aria-hidden="true" tabindex="-1"></a><span class="an">draft:</span><span class="co"> false </span></span>
+<span id="cb19-13"><a href="#cb19-13" aria-hidden="true" tabindex="-1"></a><span class="an">echo:</span><span class="co"> true</span></span>
+<span id="cb19-14"><a href="#cb19-14" aria-hidden="true" tabindex="-1"></a><span class="an">execute:</span></span>
+<span id="cb19-15"><a href="#cb19-15" aria-hidden="true" tabindex="-1"></a><span class="co">  freeze: false # never re-render during project render (dependencies might change over time)</span></span>
+<span id="cb19-16"><a href="#cb19-16" aria-hidden="true" tabindex="-1"></a><span class="co">  echo: true</span></span>
+<span id="cb19-17"><a href="#cb19-17" aria-hidden="true" tabindex="-1"></a><span class="co">  message: false</span></span>
+<span id="cb19-18"><a href="#cb19-18" aria-hidden="true" tabindex="-1"></a><span class="co">  warning: false</span></span>
+<span id="cb19-19"><a href="#cb19-19" aria-hidden="true" tabindex="-1"></a><span class="an">citation:</span><span class="co"> </span></span>
+<span id="cb19-20"><a href="#cb19-20" aria-hidden="true" tabindex="-1"></a><span class="co">  url: https://marian-klose.com/posts/bayes_map_estimation_r/index.html</span></span>
+<span id="cb19-21"><a href="#cb19-21" aria-hidden="true" tabindex="-1"></a><span class="an">format:</span></span>
+<span id="cb19-22"><a href="#cb19-22" aria-hidden="true" tabindex="-1"></a><span class="co">  html:</span></span>
+<span id="cb19-23"><a href="#cb19-23" aria-hidden="true" tabindex="-1"></a><span class="co">    number-sections: true</span></span>
+<span id="cb19-24"><a href="#cb19-24" aria-hidden="true" tabindex="-1"></a><span class="co">    toc: true</span></span>
+<span id="cb19-25"><a href="#cb19-25" aria-hidden="true" tabindex="-1"></a><span class="co">    code-fold: true</span></span>
+<span id="cb19-26"><a href="#cb19-26" aria-hidden="true" tabindex="-1"></a><span class="co">    code-tools: true</span></span>
+<span id="cb19-27"><a href="#cb19-27" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb19-28"><a href="#cb19-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-31"><a href="#cb19-31" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb19-32"><a href="#cb19-32" aria-hidden="true" tabindex="-1"></a><span class="co"># load packages</span></span>
+<span id="cb19-33"><a href="#cb19-33" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span>
+<span id="cb19-34"><a href="#cb19-34" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
+<span id="cb19-35"><a href="#cb19-35" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(readr)</span>
+<span id="cb19-36"><a href="#cb19-36" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(kableExtra)</span>
+<span id="cb19-37"><a href="#cb19-37" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(xpose4)</span>
+<span id="cb19-38"><a href="#cb19-38" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyr)</span>
+<span id="cb19-39"><a href="#cb19-39" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb19-40"><a href="#cb19-40" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-41"><a href="#cb19-41" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-42"><a href="#cb19-42" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-43"><a href="#cb19-43" aria-hidden="true" tabindex="-1"></a><span class="fu"># Motivation</span></span>
+<span id="cb19-44"><a href="#cb19-44" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-45"><a href="#cb19-45" aria-hidden="true" tabindex="-1"></a><span class="fu">## Why Bayesian estimation is important</span></span>
+<span id="cb19-46"><a href="#cb19-46" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-47"><a href="#cb19-47" aria-hidden="true" tabindex="-1"></a>Bayesian estimation is a commonly applied and powerful method in pharmacometrics. Often the calculation happens kind of automatically when we fit a pharmacometric model using e.g., NONMEM. So it is quite easy to use them without dealing the underlying concepts and the actual computation of e.g., the individual parameter estimates provided as an output in NONMEM: Given that diagnostics relying on IPRED (the individual predictions obtained through simulating with the MAP parameter estimate) are commonly reported, and individual parameters are often used for covariate screening, the importance of this topic is clear. The most commonly applied Bayesian tool are so called MAP or EBE estimates, which represent the mode of the posterior distribution (we will talk about the posterior later). However, also the full posterior distribution can be of interest, although it is harder to calculate. In this blogpost, I want to shortly describe my own understanding of the Bayesian ideas and concepts and then show how to reproduce the MAP estimates and its resulting individual predictions (IPRED) in R. An equation-based reproduction is typically the best way to understand and learn about the underlying concept.</span>
+<span id="cb19-48"><a href="#cb19-48" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-49"><a href="#cb19-49" aria-hidden="true" tabindex="-1"></a><span class="fu">## Disclaimer</span></span>
+<span id="cb19-50"><a href="#cb19-50" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-51"><a href="#cb19-51" aria-hidden="true" tabindex="-1"></a>I just share my personal thoughts and understanding of some Bayesian ideas and I can't promise that you won't find flaws in my explanations or equations. </span>
+<span id="cb19-52"><a href="#cb19-52" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-53"><a href="#cb19-53" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-54"><a href="#cb19-54" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-55"><a href="#cb19-55" aria-hidden="true" tabindex="-1"></a><span class="fu"># Structure</span></span>
+<span id="cb19-56"><a href="#cb19-56" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-57"><a href="#cb19-57" aria-hidden="true" tabindex="-1"></a>Lorem ipsum dolor sit amet.</span>
+<span id="cb19-58"><a href="#cb19-58" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-59"><a href="#cb19-59" aria-hidden="true" tabindex="-1"></a><span class="fu"># The Bayesian Idea: Updating Beliefs</span></span>
+<span id="cb19-60"><a href="#cb19-60" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-61"><a href="#cb19-61" aria-hidden="true" tabindex="-1"></a><span class="fu">## Starting with an example</span></span>
+<span id="cb19-62"><a href="#cb19-62" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-63"><a href="#cb19-63" aria-hidden="true" tabindex="-1"></a>I would say that most people in their daily life think Bayesian (although not everyone wants to admit it). The core idea of Bayesian statistics is to update your beliefs once new data or information becomes available. One simple example: Assume you commute to work every day by using your car. If someone would ask you "How long do you think you will need to get to work tomorrow?", you would probably have a very good idea about how long it will take you, simply based on your experience. You might say that 30 minutes is a good estimate, but would you bet money that it will be exactly 30 minutes? Most likely not, it might be your best guess but there will be some uncertainly associated to it. You might be willing to bet money that it will be between 20 and 40 minutes. Now assuming that you get into your car the next morning and traffic is a state so that after 25 minutes you made it half-way through.</span>
+<span id="cb19-64"><a href="#cb19-64" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-65"><a href="#cb19-65" aria-hidden="true" tabindex="-1"></a><span class="co">[</span><span class="ot">IMAGE</span><span class="co">]</span></span>
+<span id="cb19-66"><a href="#cb19-66" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-67"><a href="#cb19-67" aria-hidden="true" tabindex="-1"></a>Would you still stick to your initial belief that it will take you 30 minutes? Probably not, you would update your belief. Would you then just multiply the 25 minutes by two and say that it will take you 50 minutes? Probably not, given that all your experience tells you that you nearly always made it within 40 minutes. So your updated belief will be something between 30 minutes (initial guess) and 50 minutes (what the data suggests). This updated belief (let's say 38 minutes) is what Bayesian statistics is all about. And since we apply this Bayesian idea in our daily life, I personally find it quite an intuitive way of thinking statistics. </span>
+<span id="cb19-68"><a href="#cb19-68" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-69"><a href="#cb19-69" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-70"><a href="#cb19-70" aria-hidden="true" tabindex="-1"></a><span class="fu">## Nomenclature</span></span>
+<span id="cb19-71"><a href="#cb19-71" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-72"><a href="#cb19-72" aria-hidden="true" tabindex="-1"></a>The real-life example defined above allows us to define some Bayesian nomenclature:</span>
+<span id="cb19-73"><a href="#cb19-73" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-74"><a href="#cb19-74" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>The **prior** is the initial belief, in our example the 30 minutes and the uncertainty around it.</span>
+<span id="cb19-75"><a href="#cb19-75" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>The **likelihood** represents the new data (or evidence), in our example the 25 minutes for 1/2 of the way.</span>
+<span id="cb19-76"><a href="#cb19-76" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>The **posterior** is the updated belief after the data became available, in our example the 38 minutes.</span>
+<span id="cb19-77"><a href="#cb19-77" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-78"><a href="#cb19-78" aria-hidden="true" tabindex="-1"></a>So the Bayesian workflow is always based on the idea that you have a prior belief, which you update once new data (likelihood) becomes available. The updated belief is then called the posterior. There are some differences if we talk about MAP estimation and full posterior estimation:</span>
+<span id="cb19-79"><a href="#cb19-79" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-80"><a href="#cb19-80" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>MAP: the *maximum a-posteriori* estimate, which is the mode of the posterior distribution</span>
+<span id="cb19-81"><a href="#cb19-81" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>full Bayesian: the full posterior distribution and not only the mode / a point estimate</span>
+<span id="cb19-82"><a href="#cb19-82" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-83"><a href="#cb19-83" aria-hidden="true" tabindex="-1"></a>Most pharmacometricians focus on the mode of the posterior (MAP/EBE) and neglect the uncertainty captured in the full distribution. The main reason for this is that the MAP estimates are easy to calculate while the full posterior is more challenging to obtain.</span>
+<span id="cb19-84"><a href="#cb19-84" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-85"><a href="#cb19-85" aria-hidden="true" tabindex="-1"></a>It goes without a saying that this is a simple example and everything is just based on a gut-feeling than on equations. While the core-idea remains the same, Bayesian statistics provide a framework to calculate the posterior in a more formal way. This is what we are tackling next.</span>
+<span id="cb19-86"><a href="#cb19-86" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-87"><a href="#cb19-87" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-88"><a href="#cb19-88" aria-hidden="true" tabindex="-1"></a><span class="fu">## Our goal in pharmacometrics</span></span>
+<span id="cb19-89"><a href="#cb19-89" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-90"><a href="#cb19-90" aria-hidden="true" tabindex="-1"></a>But what is now the goal of Bayesian stats in pharmacometrics? Actually not to better plan your daily commute to work. Instead, we typically use Bayesian estimation to individualize the model parameters for a given individual $i$, which has a set of observations $Y_{i}$. Now we want to use this individual data to find the best parameter estimates for this individual. On the one hand this happens during model building, at each iteration step and then after the actual estimation has finished, at the posthoc step. On the other hand, it also happens in so called model-informed precision dosing scenarios (MIPD) where we want to predict the future concentration-time profile and we have obtained some historic concentrations through therapeutic drug monitoring. </span>
+<span id="cb19-91"><a href="#cb19-91" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-92"><a href="#cb19-92" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-93"><a href="#cb19-93" aria-hidden="true" tabindex="-1"></a><span class="fu"># Pharmacokinetic example and reference solution</span></span>
+<span id="cb19-94"><a href="#cb19-94" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-95"><a href="#cb19-95" aria-hidden="true" tabindex="-1"></a><span class="fu">## Data</span></span>
+<span id="cb19-96"><a href="#cb19-96" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-97"><a href="#cb19-97" aria-hidden="true" tabindex="-1"></a>Without data no Bayesian parameter individualization. As we do this MAP estimation on an individual level, we are going to pick one single ID from the dataset we have defined in the previous blogpost <span class="co">[</span><span class="ot">REF</span><span class="co">]</span>and use this as as our example. Let's first load the simulated concentration-time data and show the head of it:</span>
+<span id="cb19-98"><a href="#cb19-98" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-101"><a href="#cb19-101" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb19-102"><a href="#cb19-102" aria-hidden="true" tabindex="-1"></a><span class="co"># read in simulated dataset from previous blogpost</span></span>
+<span id="cb19-103"><a href="#cb19-103" aria-hidden="true" tabindex="-1"></a>sim_data <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"~/GitHub/personal-website/posts/understanding_nlme_estimation/data/output_from_sim/sim_data.csv"</span>)</span>
+<span id="cb19-104"><a href="#cb19-104" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-105"><a href="#cb19-105" aria-hidden="true" tabindex="-1"></a><span class="co"># show data </span></span>
+<span id="cb19-106"><a href="#cb19-106" aria-hidden="true" tabindex="-1"></a>sim_data <span class="sc">|&gt;</span>  </span>
+<span id="cb19-107"><a href="#cb19-107" aria-hidden="true" tabindex="-1"></a>  <span class="fu">head</span>() <span class="sc">|&gt;</span> </span>
+<span id="cb19-108"><a href="#cb19-108" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable</span>() <span class="sc">|&gt;</span> </span>
+<span id="cb19-109"><a href="#cb19-109" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable_styling</span>()</span>
+<span id="cb19-110"><a href="#cb19-110" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb19-111"><a href="#cb19-111" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-112"><a href="#cb19-112" aria-hidden="true" tabindex="-1"></a>These is the previously simulated data with which we have built the model. We will focus on one single ID (ID 5) which is rather at the lower end of the simulated concentrations. We did this as it allows us to better see the differences between the typical individual and the individualized one. Let's plot the data to get a better understanding of the concentration-time profiles:</span>
+<span id="cb19-113"><a href="#cb19-113" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-114"><a href="#cb19-114" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-117"><a href="#cb19-117" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb19-118"><a href="#cb19-118" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: fig-sim-vis</span></span>
+<span id="cb19-119"><a href="#cb19-119" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-cap: "Simulated concentration-time profiles for 10 individuals with ID 5 being our examplaratory ID."</span></span>
+<span id="cb19-120"><a href="#cb19-120" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-121"><a href="#cb19-121" aria-hidden="true" tabindex="-1"></a><span class="co"># show individual profiles</span></span>
+<span id="cb19-122"><a href="#cb19-122" aria-hidden="true" tabindex="-1"></a>sim_data <span class="sc">|&gt;</span> </span>
+<span id="cb19-123"><a href="#cb19-123" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(EVID <span class="sc">==</span> <span class="dv">0</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb19-124"><a href="#cb19-124" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">flag =</span> <span class="fu">if_else</span>(ID <span class="sc">==</span> <span class="dv">5</span>, <span class="st">"Reference"</span>, <span class="st">"Others"</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb19-125"><a href="#cb19-125" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x=</span>TIME, <span class="at">y=</span>DV, <span class="at">group=</span>ID, <span class="at">color=</span><span class="fu">as.factor</span>(flag))) <span class="sc">+</span></span>
+<span id="cb19-126"><a href="#cb19-126" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>()<span class="sc">+</span></span>
+<span id="cb19-127"><a href="#cb19-127" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>()<span class="sc">+</span></span>
+<span id="cb19-128"><a href="#cb19-128" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_bw</span>()<span class="sc">+</span></span>
+<span id="cb19-129"><a href="#cb19-129" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous</span>(<span class="at">limits=</span><span class="fu">c</span>(<span class="dv">0</span>,<span class="cn">NA</span>))<span class="sc">+</span></span>
+<span id="cb19-130"><a href="#cb19-130" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x=</span><span class="st">"Time after last dose [h]"</span>, <span class="at">y=</span><span class="st">"Concentration [mg/L]"</span>)<span class="sc">+</span></span>
+<span id="cb19-131"><a href="#cb19-131" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_color_manual</span>(<span class="st">"Individual"</span>, <span class="at">values=</span><span class="fu">c</span>(<span class="st">"grey"</span>, <span class="st">"darkblue"</span>))<span class="sc">+</span></span>
+<span id="cb19-132"><a href="#cb19-132" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggtitle</span>(<span class="st">"Simulated data"</span>)</span>
+<span id="cb19-133"><a href="#cb19-133" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb19-134"><a href="#cb19-134" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-135"><a href="#cb19-135" aria-hidden="true" tabindex="-1"></a>We will later need this data when running NONMEM, so we have to save it to file. </span>
+<span id="cb19-136"><a href="#cb19-136" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-139"><a href="#cb19-139" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb19-140"><a href="#cb19-140" aria-hidden="true" tabindex="-1"></a><span class="co"># define sim_data with ID == 5</span></span>
+<span id="cb19-141"><a href="#cb19-141" aria-hidden="true" tabindex="-1"></a>sim_data_id5 <span class="ot">&lt;-</span> sim_data <span class="sc">|&gt;</span> </span>
+<span id="cb19-142"><a href="#cb19-142" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(ID <span class="sc">==</span> <span class="dv">5</span>)</span>
+<span id="cb19-143"><a href="#cb19-143" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-144"><a href="#cb19-144" aria-hidden="true" tabindex="-1"></a><span class="co"># save data for NONMEM</span></span>
+<span id="cb19-145"><a href="#cb19-145" aria-hidden="true" tabindex="-1"></a>sim_data_id5 <span class="sc">|&gt;</span> </span>
+<span id="cb19-146"><a href="#cb19-146" aria-hidden="true" tabindex="-1"></a>  <span class="fu">write_csv</span>(<span class="st">"~/GitHub/personal-website/posts/bayes_map_estimation_r/data/sim_data_ID5.csv"</span>) </span>
+<span id="cb19-147"><a href="#cb19-147" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb19-148"><a href="#cb19-148" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-149"><a href="#cb19-149" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-150"><a href="#cb19-150" aria-hidden="true" tabindex="-1"></a><span class="fu">## NLME model structure</span></span>
+<span id="cb19-151"><a href="#cb19-151" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-152"><a href="#cb19-152" aria-hidden="true" tabindex="-1"></a>For a little example and the reference solution, we will use the same simple one-compartment i.v. model with first order disposition processes we have fitted to some data here <span class="co">[</span><span class="ot">REF</span><span class="co">]</span>. This was the model structure:</span>
+<span id="cb19-153"><a href="#cb19-153" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-154"><a href="#cb19-154" aria-hidden="true" tabindex="-1"></a><span class="al">![Model structure of our simple 1 cmt i.v. bolus model.](media/model_structure.png)</span></span>
+<span id="cb19-155"><a href="#cb19-155" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-156"><a href="#cb19-156" aria-hidden="true" tabindex="-1"></a>We assume to have an already fitted model and our only task is to individualize the parameters for our given individual. The model parameter estimates which we are using are mainly taken from the previous blogpost <span class="co">[</span><span class="ot">REF</span><span class="co">]</span>:</span>
+<span id="cb19-157"><a href="#cb19-157" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-158"><a href="#cb19-158" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>$CL$ = 0.247 L/h</span>
+<span id="cb19-159"><a href="#cb19-159" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>$V$ = 3.15 L</span>
+<span id="cb19-160"><a href="#cb19-160" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>$\omega^2_{CL}$ = 0.11</span>
+<span id="cb19-161"><a href="#cb19-161" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>$\sigma^2_{RUV<span class="sc">\_</span>ADD}$ = 0.10</span>
+<span id="cb19-162"><a href="#cb19-162" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>$\sigma^2_{RUV<span class="sc">\_</span>PROP}$ = 0.10</span>
+<span id="cb19-163"><a href="#cb19-163" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-164"><a href="#cb19-164" aria-hidden="true" tabindex="-1"></a>This is what we are now going to translate into a NONMEM model. Please note that we added a proportional error term to the previously used model to better make a point when comparing prior, likelihood and posterior. </span>
+<span id="cb19-165"><a href="#cb19-165" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-166"><a href="#cb19-166" aria-hidden="true" tabindex="-1"></a><span class="fu">## NONMEM model</span></span>
+<span id="cb19-167"><a href="#cb19-167" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-168"><a href="#cb19-168" aria-hidden="true" tabindex="-1"></a>The NONMEM model is based on the previous blogpost, but we have made some minor edits:</span>
+<span id="cb19-169"><a href="#cb19-169" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-170"><a href="#cb19-170" aria-hidden="true" tabindex="-1"></a><span class="in">```{.r filename="1cmt_iv_map_est.mod"}</span></span>
+<span id="cb19-171"><a href="#cb19-171" aria-hidden="true" tabindex="-1"></a><span class="in">$PROBLEM 1cmt_iv_map_est</span></span>
+<span id="cb19-172"><a href="#cb19-172" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-173"><a href="#cb19-173" aria-hidden="true" tabindex="-1"></a><span class="in">$INPUT ID TIME EVID AMT RATE DV MDV</span></span>
+<span id="cb19-174"><a href="#cb19-174" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-175"><a href="#cb19-175" aria-hidden="true" tabindex="-1"></a><span class="in">$DATA C:\Users\maria\Documents\GitHub\personal-website\posts\bayes_map_estimation_r\data\sim_data_ID5.csv IGNORE=@</span></span>
+<span id="cb19-176"><a href="#cb19-176" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-177"><a href="#cb19-177" aria-hidden="true" tabindex="-1"></a><span class="in">$SUBROUTINES ADVAN1 TRANS2</span></span>
+<span id="cb19-178"><a href="#cb19-178" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-179"><a href="#cb19-179" aria-hidden="true" tabindex="-1"></a><span class="in">$PK</span></span>
+<span id="cb19-180"><a href="#cb19-180" aria-hidden="true" tabindex="-1"></a><span class="in">; define fixed effects parameters</span></span>
+<span id="cb19-181"><a href="#cb19-181" aria-hidden="true" tabindex="-1"></a><span class="in">CL = THETA(1) * EXP(ETA(1))</span></span>
+<span id="cb19-182"><a href="#cb19-182" aria-hidden="true" tabindex="-1"></a><span class="in">V = THETA(2)</span></span>
+<span id="cb19-183"><a href="#cb19-183" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-184"><a href="#cb19-184" aria-hidden="true" tabindex="-1"></a><span class="in">; scaling</span></span>
+<span id="cb19-185"><a href="#cb19-185" aria-hidden="true" tabindex="-1"></a><span class="in">S1=V</span></span>
+<span id="cb19-186"><a href="#cb19-186" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-187"><a href="#cb19-187" aria-hidden="true" tabindex="-1"></a><span class="in">$THETA</span></span>
+<span id="cb19-188"><a href="#cb19-188" aria-hidden="true" tabindex="-1"></a><span class="in">0.247 FIX               ; 1 TVCL</span></span>
+<span id="cb19-189"><a href="#cb19-189" aria-hidden="true" tabindex="-1"></a><span class="in">3.15 FIX                ; 2 TVV</span></span>
+<span id="cb19-190"><a href="#cb19-190" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-191"><a href="#cb19-191" aria-hidden="true" tabindex="-1"></a><span class="in">$OMEGA </span></span>
+<span id="cb19-192"><a href="#cb19-192" aria-hidden="true" tabindex="-1"></a><span class="in">0.11 FIX                ; 1 OM_CL</span></span>
+<span id="cb19-193"><a href="#cb19-193" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-194"><a href="#cb19-194" aria-hidden="true" tabindex="-1"></a><span class="in">$SIGMA</span></span>
+<span id="cb19-195"><a href="#cb19-195" aria-hidden="true" tabindex="-1"></a><span class="in">0.10 FIX                ; 1 SIG_PROP</span></span>
+<span id="cb19-196"><a href="#cb19-196" aria-hidden="true" tabindex="-1"></a><span class="in">0.10 FIX                ; 2 SIG_ADD</span></span>
+<span id="cb19-197"><a href="#cb19-197" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-198"><a href="#cb19-198" aria-hidden="true" tabindex="-1"></a><span class="in">$ERROR </span></span>
+<span id="cb19-199"><a href="#cb19-199" aria-hidden="true" tabindex="-1"></a><span class="in">; add residual unexplained variability</span></span>
+<span id="cb19-200"><a href="#cb19-200" aria-hidden="true" tabindex="-1"></a><span class="in">IPRED = F</span></span>
+<span id="cb19-201"><a href="#cb19-201" aria-hidden="true" tabindex="-1"></a><span class="in">Y = IPRED + IPRED * EPS(1) + EPS(2)</span></span>
+<span id="cb19-202"><a href="#cb19-202" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-203"><a href="#cb19-203" aria-hidden="true" tabindex="-1"></a><span class="in">$ESTIMATION METHOD=COND LAPLACIAN MAXEVAL=0 SIGDIG=3 PRINT=1 NOABORT POSTHOC</span></span>
+<span id="cb19-204"><a href="#cb19-204" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-205"><a href="#cb19-205" aria-hidden="true" tabindex="-1"></a><span class="in">$TABLE ID TIME EVID AMT RATE DV PRED IPRED MDV ETA1 CL NOAPPEND ONEHEADER NOPRINT FILE=map_estim_out</span></span>
+<span id="cb19-206"><a href="#cb19-206" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb19-207"><a href="#cb19-207" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-208"><a href="#cb19-208" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-209"><a href="#cb19-209" aria-hidden="true" tabindex="-1"></a>We have updated the initial parameter estimates to the estimates listed above. Furthermore, we run with <span class="in">`MAXEVAL=0`</span> as we don't need a full estimation but only a MAP estimation. The <span class="in">`POSTHOC`</span> option will force NONMEM to calculate the individual MAP estimates. We can now go ahead and run it.</span>
+<span id="cb19-210"><a href="#cb19-210" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-211"><a href="#cb19-211" aria-hidden="true" tabindex="-1"></a>After executing the model, we can read in <span class="in">`map_estim_out`</span>:</span>
+<span id="cb19-212"><a href="#cb19-212" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-215"><a href="#cb19-215" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb19-216"><a href="#cb19-216" aria-hidden="true" tabindex="-1"></a><span class="co"># load simulated data</span></span>
+<span id="cb19-217"><a href="#cb19-217" aria-hidden="true" tabindex="-1"></a>nm_out <span class="ot">&lt;-</span> <span class="fu">read_nm_table</span>(<span class="st">"~/GitHub/personal-website/posts/bayes_map_estimation_r/models/map_estim_out"</span>)</span>
+<span id="cb19-218"><a href="#cb19-218" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-219"><a href="#cb19-219" aria-hidden="true" tabindex="-1"></a><span class="co"># show simulated data</span></span>
+<span id="cb19-220"><a href="#cb19-220" aria-hidden="true" tabindex="-1"></a>nm_out <span class="sc">|&gt;</span> </span>
+<span id="cb19-221"><a href="#cb19-221" aria-hidden="true" tabindex="-1"></a>  <span class="fu">head</span>() <span class="sc">|&gt;</span> </span>
+<span id="cb19-222"><a href="#cb19-222" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable</span>() <span class="sc">|&gt;</span> </span>
+<span id="cb19-223"><a href="#cb19-223" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable_styling</span>()</span>
+<span id="cb19-224"><a href="#cb19-224" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb19-225"><a href="#cb19-225" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-226"><a href="#cb19-226" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-227"><a href="#cb19-227" aria-hidden="true" tabindex="-1"></a><span class="in">`ETA1`</span> (or $\eta_i$) is the individual random effect for the individual and <span class="in">`CL`</span> (better $CL_i$) represents the resulting individual MAP estimate for the clearance. <span class="in">`CL_i`</span> can be obtained by</span>
+<span id="cb19-228"><a href="#cb19-228" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-229"><a href="#cb19-229" aria-hidden="true" tabindex="-1"></a>$$CL_i = \theta_{TVCL} \cdot \exp(\eta_i)$$</span>
+<span id="cb19-230"><a href="#cb19-230" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-231"><a href="#cb19-231" aria-hidden="true" tabindex="-1"></a>We can confirm this by calculating:</span>
+<span id="cb19-232"><a href="#cb19-232" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-233"><a href="#cb19-233" aria-hidden="true" tabindex="-1"></a>$$CL_i = 0.247 \cdot \exp(0.4763) = 0.3977$$</span>
+<span id="cb19-234"><a href="#cb19-234" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-235"><a href="#cb19-235" aria-hidden="true" tabindex="-1"></a>or directly in R:</span>
+<span id="cb19-236"><a href="#cb19-236" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-239"><a href="#cb19-239" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb19-240"><a href="#cb19-240" aria-hidden="true" tabindex="-1"></a><span class="co">#| code-fold: FALSE</span></span>
+<span id="cb19-241"><a href="#cb19-241" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-242"><a href="#cb19-242" aria-hidden="true" tabindex="-1"></a><span class="co"># calculate individual MAP estimate</span></span>
+<span id="cb19-243"><a href="#cb19-243" aria-hidden="true" tabindex="-1"></a><span class="fl">0.247</span><span class="sc">*</span><span class="fu">exp</span>(<span class="fl">0.4763</span>)</span>
+<span id="cb19-244"><a href="#cb19-244" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb19-245"><a href="#cb19-245" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-246"><a href="#cb19-246" aria-hidden="true" tabindex="-1"></a>Great! Now we have our reference solution for the parameter individualization. We not only got the individualized parameter estimates but also the individual predictions (<span class="in">`IPRED`</span>). We can now compare both visually:</span>
+<span id="cb19-247"><a href="#cb19-247" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-250"><a href="#cb19-250" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb19-251"><a href="#cb19-251" aria-hidden="true" tabindex="-1"></a><span class="co"># plot DV, PRED, IPRED</span></span>
+<span id="cb19-252"><a href="#cb19-252" aria-hidden="true" tabindex="-1"></a>nm_out <span class="sc">|&gt;</span> </span>
+<span id="cb19-253"><a href="#cb19-253" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(TIME <span class="sc">&gt;</span> <span class="dv">0</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb19-254"><a href="#cb19-254" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(<span class="at">cols=</span><span class="fu">c</span>(PRED, IPRED, DV), <span class="at">names_to=</span><span class="st">"variable"</span>, <span class="at">values_to=</span><span class="st">"value"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb19-255"><a href="#cb19-255" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x=</span>TIME, <span class="at">y=</span>value, <span class="at">group=</span>variable, <span class="at">color=</span>variable))<span class="sc">+</span></span>
+<span id="cb19-256"><a href="#cb19-256" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>()<span class="sc">+</span></span>
+<span id="cb19-257"><a href="#cb19-257" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>()<span class="sc">+</span></span>
+<span id="cb19-258"><a href="#cb19-258" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb19-259"><a href="#cb19-259" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"Concentration [mg/L]"</span>,</span>
+<span id="cb19-260"><a href="#cb19-260" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">"Time after last dose [h]"</span>,</span>
+<span id="cb19-261"><a href="#cb19-261" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"Comparison of DV, PRED and IPRED"</span></span>
+<span id="cb19-262"><a href="#cb19-262" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb19-263"><a href="#cb19-263" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_bw</span>() </span>
+<span id="cb19-264"><a href="#cb19-264" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb19-265"><a href="#cb19-265" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-266"><a href="#cb19-266" aria-hidden="true" tabindex="-1"></a>We can see at a first glance that our reference individual (red, <span class="in">`DV`</span>) differs substantially from our typical individual (blue, <span class="in">`PRED`</span>). The individual predictions (green, <span class="in">`IPRED`</span>), which are based on our MAP estimate for CL (<span class="in">`CL_i`</span>), are in between. Let's have a closer look how to get there.</span>
+<span id="cb19-267"><a href="#cb19-267" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-268"><a href="#cb19-268" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-269"><a href="#cb19-269" aria-hidden="true" tabindex="-1"></a><span class="fu">## Bayesian Theory</span></span>
+<span id="cb19-270"><a href="#cb19-270" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-271"><a href="#cb19-271" aria-hidden="true" tabindex="-1"></a><span class="fu">### General form</span></span>
+<span id="cb19-272"><a href="#cb19-272" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-273"><a href="#cb19-273" aria-hidden="true" tabindex="-1"></a>As described above, the main goal of a Bayesian attempt is to obtain the posterior distribution (either the mode or the full distribution). Often you find this formula to describe the Bayes theorem: </span>
+<span id="cb19-274"><a href="#cb19-274" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-275"><a href="#cb19-275" aria-hidden="true" tabindex="-1"></a>$$P(A|B) = \frac{P(A) \cdot P(B|A)}{P(B)}$$</span>
+<span id="cb19-276"><a href="#cb19-276" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-277"><a href="#cb19-277" aria-hidden="true" tabindex="-1"></a>Here, conditional probabilities are used and $P(A|B)$ is the probability of event A given that event B has occurred. This remains quite theoretical. Let's directly translate it into the context of a pharmacokinetic NLME model. </span>
+<span id="cb19-278"><a href="#cb19-278" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-279"><a href="#cb19-279" aria-hidden="true" tabindex="-1"></a><span class="fu">### Pharmacometric context</span></span>
+<span id="cb19-280"><a href="#cb19-280" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-281"><a href="#cb19-281" aria-hidden="true" tabindex="-1"></a>Our use-case in the world of pharmacometrics is to find the most likely parameter $\eta_i$ (which then translates to $CL_i$) given our individual's concentration data $Y_{i}$:</span>
+<span id="cb19-282"><a href="#cb19-282" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-283"><a href="#cb19-283" aria-hidden="true" tabindex="-1"></a>$$p(\eta|Y_{i}) = \frac{p(\eta) \cdot p(Y_{i}|\eta)}{p(Y_i)}$$</span>
+<span id="cb19-284"><a href="#cb19-284" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-285"><a href="#cb19-285" aria-hidden="true" tabindex="-1"></a>with </span>
+<span id="cb19-286"><a href="#cb19-286" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-287"><a href="#cb19-287" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>$p(\eta|Y_{ij})$: the posterior distribution of the parameter $\eta$ given the data of our ith individual $Y_{i}$</span>
+<span id="cb19-288"><a href="#cb19-288" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>$p(\eta)$: the prior distribution of the parameter $\eta$</span>
+<span id="cb19-289"><a href="#cb19-289" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>$p(Y_{i}|\eta)$: the likelihood of the data $Y_{i}$ given the parameter $\eta$</span>
+<span id="cb19-290"><a href="#cb19-290" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>$p(Y_{i})$: the marginal likelihood of the data $Y_{i}$</span>
+<span id="cb19-291"><a href="#cb19-291" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-292"><a href="#cb19-292" aria-hidden="true" tabindex="-1"></a>The marginal likelihood of the data $Y_{i}$ is often neglected since it is just a scaling factor, does not depend on the parameter $\eta$ and is typically hard to calculate as it contains a high-dimensional integral. That is why you often see the formula written as:</span>
+<span id="cb19-293"><a href="#cb19-293" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-294"><a href="#cb19-294" aria-hidden="true" tabindex="-1"></a>$$p(\eta|Y_{i}) \propto p(\eta) \cdot p(Y_{i}|\eta)$$</span>
+<span id="cb19-295"><a href="#cb19-295" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-296"><a href="#cb19-296" aria-hidden="true" tabindex="-1"></a>Here, we got rid of the marginal likelihood in the denominator. As we are now missing out the scaling factor, we now deal with an unnormalized posterior distribution and indicate this by using the proportional sign. Dealing with unnormalized posteriors is not a problem if we are only interested in the mode of the posterior distribution (MAP estimate) as the normalization factor is not needed for this. But how can we calculate the MAP estimate for a given individual? </span>
+<span id="cb19-297"><a href="#cb19-297" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-298"><a href="#cb19-298" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-299"><a href="#cb19-299" aria-hidden="true" tabindex="-1"></a><span class="fu">### MAP estimation</span></span>
+<span id="cb19-300"><a href="#cb19-300" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-301"><a href="#cb19-301" aria-hidden="true" tabindex="-1"></a>If we are interested to find the most likely parameter for our individual, we have to find the maximum of the posterior distribution (MAP estimate). Mathematically we can define this by finding the parameter $\eta_i^*$ that maximizes the posterior distribution:</span>
+<span id="cb19-302"><a href="#cb19-302" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-303"><a href="#cb19-303" aria-hidden="true" tabindex="-1"></a>$$\eta_i^* = \underset{\eta_i}{\mathrm{argmax}}~ p(\eta_i|Y_{i}) = \underset{\eta_i}{\mathrm{argmax}}~ p(\eta_i) \cdot \prod_{j=1}^{m} p(Y_{ij}|\eta_i)$$</span>
+<span id="cb19-304"><a href="#cb19-304" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-305"><a href="#cb19-305" aria-hidden="true" tabindex="-1"></a>Dealing with the product of probabilities is often not very handy and we can simplify this by taking the log of the posterior distribution:</span>
+<span id="cb19-306"><a href="#cb19-306" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-307"><a href="#cb19-307" aria-hidden="true" tabindex="-1"></a>$$\eta_i^* = \underset{\eta_i}{\mathrm{argmax}}~ \log(p(\eta_i|Y_{i})) = \underset{\eta_i}{\mathrm{argmax}}~ \log(p(\eta_i)) + \sum_{j=1}^{m} \log(p(Y_{ij}|\eta_i))$$</span>
+<span id="cb19-308"><a href="#cb19-308" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-309"><a href="#cb19-309" aria-hidden="true" tabindex="-1"></a>In the end, we would have to use a numerical optimizer function to search the parameter space of $\eta_i$ to find the maximum of the posterior distribution ($\eta_i^*$). To write out the full equation we need to define both terms, $p(\eta_i)$ and $p(Y_{ij}|\eta_i)$. Let's go through them step by step.</span>
+<span id="cb19-310"><a href="#cb19-310" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-311"><a href="#cb19-311" aria-hidden="true" tabindex="-1"></a><span class="fu">#### Prior term</span></span>
+<span id="cb19-312"><a href="#cb19-312" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-313"><a href="#cb19-313" aria-hidden="true" tabindex="-1"></a>The prior distribution for $p(\eta_i)$ needs to incorporate our beliefs and uncertainty about $\eta_i$ before we have seen the data. Bayesian estimation actually allows us to incorporate our prior information through different distributions and parameters (which is sometimes being criticized being too subjective). In pharmacometrics, you will often see that people use the same distribution based on a previously estimates model. This is usually a normal distribution with mean 0 and a variance $\omega^2_{CL}$ estimated by the NLME model. What is the intuition behind this? When searching the space of $\eta_i$ during $\underset{\eta_i}{\mathrm{argmax}}$, we need to evaluate at each point how likely the given $\eta_i$ is given the prior distribution. This means that individual random effects at the boundaries of the prior distribution are discouraged while those in the center are encouraged. Or in other words: We only want to move away from the typical individual estimate when we get a substantial gain in explaining the data. To calculate the contribution of the prior term, we rely on the probability density function of the normal distribution:</span>
+<span id="cb19-314"><a href="#cb19-314" aria-hidden="true" tabindex="-1"></a> </span>
+<span id="cb19-315"><a href="#cb19-315" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-316"><a href="#cb19-316" aria-hidden="true" tabindex="-1"></a>$$p(\eta_i) = \frac{1}{\sqrt{2\pi\omega^2}} \cdot \exp\left(-\frac{(\eta_i-\mu)^2}{2\omega^2}\right)$$</span>
+<span id="cb19-317"><a href="#cb19-317" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-318"><a href="#cb19-318" aria-hidden="true" tabindex="-1"></a>As $\mu$ is typically 0, we can simplify this to:</span>
+<span id="cb19-319"><a href="#cb19-319" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-320"><a href="#cb19-320" aria-hidden="true" tabindex="-1"></a>$$p(\eta_i) = \frac{1}{\sqrt{2\pi\omega^2}} \cdot \exp\left(-\frac{\eta_i^2}{2\omega^2}\right)$$</span>
+<span id="cb19-321"><a href="#cb19-321" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-322"><a href="#cb19-322" aria-hidden="true" tabindex="-1"></a>Taking the log yields:</span>
+<span id="cb19-323"><a href="#cb19-323" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-324"><a href="#cb19-324" aria-hidden="true" tabindex="-1"></a>$$\log(p(\eta_i)) = -0.5 \log(2\pi\omega^2) - \frac{\eta_i^2}{2\omega^2} $$</span>
+<span id="cb19-325"><a href="#cb19-325" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-326"><a href="#cb19-326" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-327"><a href="#cb19-327" aria-hidden="true" tabindex="-1"></a>Now we are able to calculate the contribution of the prior term for a given individual $\eta_i$, as we know the variance $\omega^2_{CL}$ (0.11) from our NLME model.</span>
+<span id="cb19-328"><a href="#cb19-328" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-329"><a href="#cb19-329" aria-hidden="true" tabindex="-1"></a><span class="fu">#### Likelihood term</span></span>
+<span id="cb19-330"><a href="#cb19-330" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-331"><a href="#cb19-331" aria-hidden="true" tabindex="-1"></a>The likelihood term $p(Y_{ij}|\eta_i)$ is the probability of observing the data point $Y_{ij}$ given the parameter $\eta_i$. As we usually also assume that the residuals of our model predictions are normally distributed, we can also use the probability density function of the normal distribution to calculate this term. The likelihood term is then:</span>
+<span id="cb19-332"><a href="#cb19-332" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-333"><a href="#cb19-333" aria-hidden="true" tabindex="-1"></a>$$p(Y_{ij}|\eta_i) = \frac{1}{\sqrt{2\pi\sigma^2}} \cdot \exp\left(-\frac{(Y_{ij}-f(x_{ij}; \eta_i))^2}{2\sigma^2}\right)$$</span>
+<span id="cb19-334"><a href="#cb19-334" aria-hidden="true" tabindex="-1"></a>where</span>
+<span id="cb19-335"><a href="#cb19-335" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-336"><a href="#cb19-336" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>$Y_{ij}$ is the observed data point of the individual $i$ at time $j$</span>
+<span id="cb19-337"><a href="#cb19-337" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>$f(x_{ij}; \eta_i)$ is the model prediction for the individual $i$ at time $j$ given the individual random effect $\eta_i$ (for CL)</span>
+<span id="cb19-338"><a href="#cb19-338" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>$\sigma^2$ is the variance of the residual unexplained variability of the model</span>
+<span id="cb19-339"><a href="#cb19-339" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-340"><a href="#cb19-340" aria-hidden="true" tabindex="-1"></a>Please note that in our case, where we have a combined additive and proportional RUV model, $\sigma^2$ is the sum of both variances at time $j$. We can take the log and get:</span>
+<span id="cb19-341"><a href="#cb19-341" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-342"><a href="#cb19-342" aria-hidden="true" tabindex="-1"></a>$$\log(p(Y_{ij}|\eta_i)) = -0.5 \log(2\pi\sigma^2) - \frac{(Y_{ij}-f(x_{ij}; \eta_i))^2}{2\sigma^2}$$</span>
+<span id="cb19-343"><a href="#cb19-343" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-344"><a href="#cb19-344" aria-hidden="true" tabindex="-1"></a><span class="fu">### Combining both terms</span></span>
+<span id="cb19-345"><a href="#cb19-345" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-346"><a href="#cb19-346" aria-hidden="true" tabindex="-1"></a>Now we can combine both terms:</span>
+<span id="cb19-347"><a href="#cb19-347" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-348"><a href="#cb19-348" aria-hidden="true" tabindex="-1"></a>$$\eta_i^* = \underset{\eta_i}{\mathrm{argmax}}~\left(\left<span class="co">[</span><span class="ot">-0.5 \log(2\pi\omega^2) - \frac{\eta_i^2}{2\omega^2}\right</span><span class="co">]</span> ~ + \left<span class="co">[</span><span class="ot">-0.5 \log(2\pi\sigma^2) - \frac{(Y_{ij}-f(x_{ij}; \eta_i))^2}{2\sigma^2}\right</span><span class="co">]</span>\right)$$</span>
+<span id="cb19-349"><a href="#cb19-349" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-350"><a href="#cb19-350" aria-hidden="true" tabindex="-1"></a>This is the equation for which our numerical optimizer needs to find the maximum (or minimum if negated) to obtain the individual MAP estimate. Let's define some functions and reproduce our NONMEM reference solution in R.</span>
+<span id="cb19-351"><a href="#cb19-351" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-352"><a href="#cb19-352" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-353"><a href="#cb19-353" aria-hidden="true" tabindex="-1"></a><span class="fu"># R-based MAP reproduction</span></span>
+<span id="cb19-354"><a href="#cb19-354" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-355"><a href="#cb19-355" aria-hidden="true" tabindex="-1"></a><span class="fu">## Prior term</span></span>
+<span id="cb19-356"><a href="#cb19-356" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-357"><a href="#cb19-357" aria-hidden="true" tabindex="-1"></a>We will start to define a function with the prior term</span>
+<span id="cb19-358"><a href="#cb19-358" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-359"><a href="#cb19-359" aria-hidden="true" tabindex="-1"></a><span class="in">```{r filename="function: prior_fun()"}</span></span>
+<span id="cb19-360"><a href="#cb19-360" aria-hidden="true" tabindex="-1"></a><span class="in">#| echo: true</span></span>
+<span id="cb19-361"><a href="#cb19-361" aria-hidden="true" tabindex="-1"></a><span class="in">#| collapse: false</span></span>
+<span id="cb19-362"><a href="#cb19-362" aria-hidden="true" tabindex="-1"></a><span class="in">#| code-fold: false</span></span>
+<span id="cb19-363"><a href="#cb19-363" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-364"><a href="#cb19-364" aria-hidden="true" tabindex="-1"></a><span class="in"># define prior term function</span></span>
+<span id="cb19-365"><a href="#cb19-365" aria-hidden="true" tabindex="-1"></a><span class="in">prior_fun &lt;- function(eta_i, omega2){</span></span>
+<span id="cb19-366"><a href="#cb19-366" aria-hidden="true" tabindex="-1"></a><span class="in">  # calculate probability</span></span>
+<span id="cb19-367"><a href="#cb19-367" aria-hidden="true" tabindex="-1"></a><span class="in">  log_prob &lt;- - 0.5 * log(2*pi*omega2) - eta_i^2/(2*omega2)</span></span>
+<span id="cb19-368"><a href="#cb19-368" aria-hidden="true" tabindex="-1"></a><span class="in">  </span></span>
+<span id="cb19-369"><a href="#cb19-369" aria-hidden="true" tabindex="-1"></a><span class="in">  # return log probability</span></span>
+<span id="cb19-370"><a href="#cb19-370" aria-hidden="true" tabindex="-1"></a><span class="in">  return(log_prob)</span></span>
+<span id="cb19-371"><a href="#cb19-371" aria-hidden="true" tabindex="-1"></a><span class="in">}</span></span>
+<span id="cb19-372"><a href="#cb19-372" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb19-373"><a href="#cb19-373" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-374"><a href="#cb19-374" aria-hidden="true" tabindex="-1"></a>We can now test this function and illustrate the prior term for a range of $\eta_i$ values:</span>
+<span id="cb19-375"><a href="#cb19-375" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-378"><a href="#cb19-378" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb19-379"><a href="#cb19-379" aria-hidden="true" tabindex="-1"></a><span class="co"># define range</span></span>
+<span id="cb19-380"><a href="#cb19-380" aria-hidden="true" tabindex="-1"></a>eta_i <span class="ot">&lt;-</span> <span class="fu">seq</span>(<span class="sc">-</span><span class="dv">2</span>, <span class="dv">2</span>, <span class="fl">0.01</span>)</span>
+<span id="cb19-381"><a href="#cb19-381" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-382"><a href="#cb19-382" aria-hidden="true" tabindex="-1"></a><span class="co"># calculate prior term</span></span>
+<span id="cb19-383"><a href="#cb19-383" aria-hidden="true" tabindex="-1"></a>prior <span class="ot">&lt;-</span> <span class="fu">prior_fun</span>(<span class="at">eta_i =</span> eta_i, <span class="at">omega2 =</span> <span class="fl">0.11</span>)</span>
+<span id="cb19-384"><a href="#cb19-384" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-385"><a href="#cb19-385" aria-hidden="true" tabindex="-1"></a><span class="co"># create tibble</span></span>
+<span id="cb19-386"><a href="#cb19-386" aria-hidden="true" tabindex="-1"></a>prior_tibble <span class="ot">&lt;-</span> <span class="fu">tibble</span>(</span>
+<span id="cb19-387"><a href="#cb19-387" aria-hidden="true" tabindex="-1"></a>  <span class="at">eta_i =</span> eta_i,</span>
+<span id="cb19-388"><a href="#cb19-388" aria-hidden="true" tabindex="-1"></a>  <span class="at">exp_prior =</span> <span class="fu">exp</span>(prior),</span>
+<span id="cb19-389"><a href="#cb19-389" aria-hidden="true" tabindex="-1"></a>  <span class="at">source =</span> <span class="st">"prior"</span></span>
+<span id="cb19-390"><a href="#cb19-390" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb19-391"><a href="#cb19-391" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-392"><a href="#cb19-392" aria-hidden="true" tabindex="-1"></a><span class="co"># plot prior term</span></span>
+<span id="cb19-393"><a href="#cb19-393" aria-hidden="true" tabindex="-1"></a>prior_tibble <span class="sc">|&gt;</span> </span>
+<span id="cb19-394"><a href="#cb19-394" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x=</span>eta_i, <span class="at">y=</span>exp_prior))<span class="sc">+</span></span>
+<span id="cb19-395"><a href="#cb19-395" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>()<span class="sc">+</span></span>
+<span id="cb19-396"><a href="#cb19-396" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb19-397"><a href="#cb19-397" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="fu">expression</span>(eta[i]),</span>
+<span id="cb19-398"><a href="#cb19-398" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="fu">expression</span>(<span class="fu">p</span>(eta[i])),</span>
+<span id="cb19-399"><a href="#cb19-399" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"Prior term (Random effect)"</span></span>
+<span id="cb19-400"><a href="#cb19-400" aria-hidden="true" tabindex="-1"></a>  )<span class="sc">+</span></span>
+<span id="cb19-401"><a href="#cb19-401" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_bw</span>()</span>
+<span id="cb19-402"><a href="#cb19-402" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb19-403"><a href="#cb19-403" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-404"><a href="#cb19-404" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-405"><a href="#cb19-405" aria-hidden="true" tabindex="-1"></a>and this is how the $\eta_i$ values translate to the Clearance domain:</span>
+<span id="cb19-406"><a href="#cb19-406" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-409"><a href="#cb19-409" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb19-410"><a href="#cb19-410" aria-hidden="true" tabindex="-1"></a><span class="co"># plot prior term</span></span>
+<span id="cb19-411"><a href="#cb19-411" aria-hidden="true" tabindex="-1"></a>prior_tibble <span class="sc">|&gt;</span> </span>
+<span id="cb19-412"><a href="#cb19-412" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x=</span><span class="fl">0.247</span><span class="sc">*</span><span class="fu">exp</span>(eta_i), <span class="at">y=</span>exp_prior))<span class="sc">+</span></span>
+<span id="cb19-413"><a href="#cb19-413" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>()<span class="sc">+</span></span>
+<span id="cb19-414"><a href="#cb19-414" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb19-415"><a href="#cb19-415" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="fu">expression</span>(CL[i]),</span>
+<span id="cb19-416"><a href="#cb19-416" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="fu">expression</span>(<span class="fu">p</span>(CL[i])),</span>
+<span id="cb19-417"><a href="#cb19-417" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"Prior term (Clearance)"</span></span>
+<span id="cb19-418"><a href="#cb19-418" aria-hidden="true" tabindex="-1"></a>  )<span class="sc">+</span></span>
+<span id="cb19-419"><a href="#cb19-419" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_bw</span>()</span>
+<span id="cb19-420"><a href="#cb19-420" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb19-421"><a href="#cb19-421" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-422"><a href="#cb19-422" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-423"><a href="#cb19-423" aria-hidden="true" tabindex="-1"></a>We can see that some values of $\eta_i$ and $CL_i$ are more likely than others. Based on the results of the fitted NLME model, these distributions represent our prior beliefs before we see the data of the given individual.</span>
+<span id="cb19-424"><a href="#cb19-424" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-425"><a href="#cb19-425" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-426"><a href="#cb19-426" aria-hidden="true" tabindex="-1"></a><span class="fu">## Likelihood term</span></span>
+<span id="cb19-427"><a href="#cb19-427" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-428"><a href="#cb19-428" aria-hidden="true" tabindex="-1"></a>For the Likelihood term described in <span class="co">[</span><span class="ot">IREF</span><span class="co">]</span> we need to define the model prediction function. The simple 1 cmt model structure we are using allows us to use a closed-form expression of the model instead of relying on ODE-based numerical solutions (see <span class="co">[</span><span class="ot">REF</span><span class="co">]</span>). But the concepts remain the same and you could apply this also if you have an ODE-based system. Let's first define the model prediction function:</span>
+<span id="cb19-429"><a href="#cb19-429" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-430"><a href="#cb19-430" aria-hidden="true" tabindex="-1"></a><span class="in">```{r filename="function: model_fun()"}</span></span>
+<span id="cb19-431"><a href="#cb19-431" aria-hidden="true" tabindex="-1"></a><span class="in">#| echo: true</span></span>
+<span id="cb19-432"><a href="#cb19-432" aria-hidden="true" tabindex="-1"></a><span class="in">#| collapse: false</span></span>
+<span id="cb19-433"><a href="#cb19-433" aria-hidden="true" tabindex="-1"></a><span class="in">#| code-fold: false</span></span>
+<span id="cb19-434"><a href="#cb19-434" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-435"><a href="#cb19-435" aria-hidden="true" tabindex="-1"></a><span class="in"># define model function</span></span>
+<span id="cb19-436"><a href="#cb19-436" aria-hidden="true" tabindex="-1"></a><span class="in">model_fun &lt;- function(eta_i, dose, vd, theta_tvcl, t) {</span></span>
+<span id="cb19-437"><a href="#cb19-437" aria-hidden="true" tabindex="-1"></a><span class="in">  exp_eta_i &lt;- exp(eta_i)</span></span>
+<span id="cb19-438"><a href="#cb19-438" aria-hidden="true" tabindex="-1"></a><span class="in">  exponent &lt;- -1 * (theta_tvcl * exp_eta_i / vd) * t</span></span>
+<span id="cb19-439"><a href="#cb19-439" aria-hidden="true" tabindex="-1"></a><span class="in">  result &lt;- (dose / vd) * exp(exponent)</span></span>
+<span id="cb19-440"><a href="#cb19-440" aria-hidden="true" tabindex="-1"></a><span class="in">  return(result)</span></span>
+<span id="cb19-441"><a href="#cb19-441" aria-hidden="true" tabindex="-1"></a><span class="in">}</span></span>
+<span id="cb19-442"><a href="#cb19-442" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb19-443"><a href="#cb19-443" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-444"><a href="#cb19-444" aria-hidden="true" tabindex="-1"></a>We can now use the prediction function and build the likelihood term function:</span>
+<span id="cb19-445"><a href="#cb19-445" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-446"><a href="#cb19-446" aria-hidden="true" tabindex="-1"></a><span class="in">```{r filename="function: likelihood_fun()"}</span></span>
+<span id="cb19-447"><a href="#cb19-447" aria-hidden="true" tabindex="-1"></a><span class="in">#| echo: true</span></span>
+<span id="cb19-448"><a href="#cb19-448" aria-hidden="true" tabindex="-1"></a><span class="in">#| collapse: false</span></span>
+<span id="cb19-449"><a href="#cb19-449" aria-hidden="true" tabindex="-1"></a><span class="in">#| code-fold: false</span></span>
+<span id="cb19-450"><a href="#cb19-450" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-451"><a href="#cb19-451" aria-hidden="true" tabindex="-1"></a><span class="in"># define likelihood term function</span></span>
+<span id="cb19-452"><a href="#cb19-452" aria-hidden="true" tabindex="-1"></a><span class="in">likelihood_fun &lt;- function(eta_i, dose, vd, theta_tvcl, t, Y_i, sigma2_add, sigma2_prop){</span></span>
+<span id="cb19-453"><a href="#cb19-453" aria-hidden="true" tabindex="-1"></a><span class="in">  </span></span>
+<span id="cb19-454"><a href="#cb19-454" aria-hidden="true" tabindex="-1"></a><span class="in">  # get model predictions</span></span>
+<span id="cb19-455"><a href="#cb19-455" aria-hidden="true" tabindex="-1"></a><span class="in">  f_i &lt;- model_fun(eta_i, dose, vd, theta_tvcl, t)</span></span>
+<span id="cb19-456"><a href="#cb19-456" aria-hidden="true" tabindex="-1"></a><span class="in">  </span></span>
+<span id="cb19-457"><a href="#cb19-457" aria-hidden="true" tabindex="-1"></a><span class="in">  # calculate resulting sigma2 for each timepoint (prop variance is scaled based on f_i^2)</span></span>
+<span id="cb19-458"><a href="#cb19-458" aria-hidden="true" tabindex="-1"></a><span class="in">  sigma2 &lt;- sigma2_prop * f_i^2 + sigma2_add</span></span>
+<span id="cb19-459"><a href="#cb19-459" aria-hidden="true" tabindex="-1"></a><span class="in">  </span></span>
+<span id="cb19-460"><a href="#cb19-460" aria-hidden="true" tabindex="-1"></a><span class="in">  # calculate probability</span></span>
+<span id="cb19-461"><a href="#cb19-461" aria-hidden="true" tabindex="-1"></a><span class="in">  log_lik &lt;- - 0.5 * log(2*pi*sigma2) - (Y_i - f_i)^2/(2*sigma2)</span></span>
+<span id="cb19-462"><a href="#cb19-462" aria-hidden="true" tabindex="-1"></a><span class="in">  </span></span>
+<span id="cb19-463"><a href="#cb19-463" aria-hidden="true" tabindex="-1"></a><span class="in">  # take sum of likelihoods</span></span>
+<span id="cb19-464"><a href="#cb19-464" aria-hidden="true" tabindex="-1"></a><span class="in">  log_lik_sum &lt;- sum(log_lik)</span></span>
+<span id="cb19-465"><a href="#cb19-465" aria-hidden="true" tabindex="-1"></a><span class="in">  </span></span>
+<span id="cb19-466"><a href="#cb19-466" aria-hidden="true" tabindex="-1"></a><span class="in">  # return log likelihood</span></span>
+<span id="cb19-467"><a href="#cb19-467" aria-hidden="true" tabindex="-1"></a><span class="in">  return(log_lik_sum)</span></span>
+<span id="cb19-468"><a href="#cb19-468" aria-hidden="true" tabindex="-1"></a><span class="in">}</span></span>
+<span id="cb19-469"><a href="#cb19-469" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb19-470"><a href="#cb19-470" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-471"><a href="#cb19-471" aria-hidden="true" tabindex="-1"></a> We can now test this function and illustrate the likelihood term for a range of $\eta_i$ values:</span>
+<span id="cb19-472"><a href="#cb19-472" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-475"><a href="#cb19-475" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb19-476"><a href="#cb19-476" aria-hidden="true" tabindex="-1"></a><span class="co"># define range</span></span>
+<span id="cb19-477"><a href="#cb19-477" aria-hidden="true" tabindex="-1"></a>eta_i <span class="ot">&lt;-</span> <span class="fu">seq</span>(<span class="sc">-</span><span class="dv">2</span>, <span class="dv">2</span>, <span class="fl">0.01</span>)</span>
+<span id="cb19-478"><a href="#cb19-478" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-479"><a href="#cb19-479" aria-hidden="true" tabindex="-1"></a><span class="co"># empty list</span></span>
+<span id="cb19-480"><a href="#cb19-480" aria-hidden="true" tabindex="-1"></a>ll_list <span class="ot">&lt;-</span> <span class="fu">list</span>()</span>
+<span id="cb19-481"><a href="#cb19-481" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-482"><a href="#cb19-482" aria-hidden="true" tabindex="-1"></a><span class="co"># loop over each element of eta_i</span></span>
+<span id="cb19-483"><a href="#cb19-483" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span>(cur_eta_i <span class="cf">in</span> eta_i){</span>
+<span id="cb19-484"><a href="#cb19-484" aria-hidden="true" tabindex="-1"></a>  <span class="co"># calculate likelihood term</span></span>
+<span id="cb19-485"><a href="#cb19-485" aria-hidden="true" tabindex="-1"></a>  ll_list[[<span class="fu">as.character</span>(cur_eta_i)]] <span class="ot">&lt;-</span> <span class="fu">likelihood_fun</span>(</span>
+<span id="cb19-486"><a href="#cb19-486" aria-hidden="true" tabindex="-1"></a>    <span class="at">eta_i =</span> cur_eta_i, </span>
+<span id="cb19-487"><a href="#cb19-487" aria-hidden="true" tabindex="-1"></a>    <span class="at">dose =</span> nm_out <span class="sc">|&gt;</span> <span class="fu">filter</span>(EVID <span class="sc">==</span> <span class="dv">1</span>) <span class="sc">|&gt;</span> <span class="fu">pull</span>(AMT), </span>
+<span id="cb19-488"><a href="#cb19-488" aria-hidden="true" tabindex="-1"></a>    <span class="at">vd =</span> <span class="fl">3.15</span>, </span>
+<span id="cb19-489"><a href="#cb19-489" aria-hidden="true" tabindex="-1"></a>    <span class="at">theta_tvcl =</span> <span class="fl">0.247</span>, </span>
+<span id="cb19-490"><a href="#cb19-490" aria-hidden="true" tabindex="-1"></a>    <span class="at">t =</span> nm_out <span class="sc">|&gt;</span> <span class="fu">filter</span>(EVID <span class="sc">==</span> <span class="dv">0</span>) <span class="sc">|&gt;</span> <span class="fu">pull</span>(TIME), </span>
+<span id="cb19-491"><a href="#cb19-491" aria-hidden="true" tabindex="-1"></a>    <span class="at">Y_i =</span> nm_out <span class="sc">|&gt;</span> <span class="fu">filter</span>(EVID <span class="sc">==</span> <span class="dv">0</span>) <span class="sc">|&gt;</span> <span class="fu">pull</span>(DV), </span>
+<span id="cb19-492"><a href="#cb19-492" aria-hidden="true" tabindex="-1"></a>    <span class="at">sigma2_add =</span> <span class="fl">0.10</span>, </span>
+<span id="cb19-493"><a href="#cb19-493" aria-hidden="true" tabindex="-1"></a>    <span class="at">sigma2_prop =</span> <span class="fl">0.10</span></span>
+<span id="cb19-494"><a href="#cb19-494" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb19-495"><a href="#cb19-495" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb19-496"><a href="#cb19-496" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-497"><a href="#cb19-497" aria-hidden="true" tabindex="-1"></a><span class="co"># convert to vector</span></span>
+<span id="cb19-498"><a href="#cb19-498" aria-hidden="true" tabindex="-1"></a>ll_vector <span class="ot">&lt;-</span> ll_list <span class="sc">|&gt;</span> <span class="fu">unlist</span>() <span class="sc">|&gt;</span> <span class="fu">unname</span>()</span>
+<span id="cb19-499"><a href="#cb19-499" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-500"><a href="#cb19-500" aria-hidden="true" tabindex="-1"></a><span class="co"># create tibble</span></span>
+<span id="cb19-501"><a href="#cb19-501" aria-hidden="true" tabindex="-1"></a>likelihood_tibble <span class="ot">&lt;-</span> <span class="fu">tibble</span>(</span>
+<span id="cb19-502"><a href="#cb19-502" aria-hidden="true" tabindex="-1"></a>  <span class="at">eta_i =</span> eta_i,</span>
+<span id="cb19-503"><a href="#cb19-503" aria-hidden="true" tabindex="-1"></a>  <span class="at">likelihood =</span> ll_vector,</span>
+<span id="cb19-504"><a href="#cb19-504" aria-hidden="true" tabindex="-1"></a>  <span class="at">source =</span> <span class="st">"likelihood"</span></span>
+<span id="cb19-505"><a href="#cb19-505" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb19-506"><a href="#cb19-506" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-507"><a href="#cb19-507" aria-hidden="true" tabindex="-1"></a><span class="co"># plot likelihood term</span></span>
+<span id="cb19-508"><a href="#cb19-508" aria-hidden="true" tabindex="-1"></a>likelihood_tibble <span class="sc">|&gt;</span> </span>
+<span id="cb19-509"><a href="#cb19-509" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x=</span>eta_i, <span class="at">y=</span><span class="fu">exp</span>(likelihood)))<span class="sc">+</span></span>
+<span id="cb19-510"><a href="#cb19-510" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>()<span class="sc">+</span></span>
+<span id="cb19-511"><a href="#cb19-511" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb19-512"><a href="#cb19-512" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="fu">expression</span>(eta[i]),</span>
+<span id="cb19-513"><a href="#cb19-513" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="fu">expression</span>(<span class="fu">p</span>(Y[i] <span class="sc">|</span> eta[i])),</span>
+<span id="cb19-514"><a href="#cb19-514" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"Likelihood term"</span></span>
+<span id="cb19-515"><a href="#cb19-515" aria-hidden="true" tabindex="-1"></a>  )<span class="sc">+</span></span>
+<span id="cb19-516"><a href="#cb19-516" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_bw</span>()</span>
+<span id="cb19-517"><a href="#cb19-517" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb19-518"><a href="#cb19-518" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-519"><a href="#cb19-519" aria-hidden="true" tabindex="-1"></a>Here we can see which values of $\eta_i$ are more and less likely to describe the observed data $Y_i$ of our example individual. Now we can go ahead and combine both terms to calculate the MAP estimate for our individual.</span>
+<span id="cb19-520"><a href="#cb19-520" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-521"><a href="#cb19-521" aria-hidden="true" tabindex="-1"></a><span class="fu">## MAP estimation</span></span>
+<span id="cb19-522"><a href="#cb19-522" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-523"><a href="#cb19-523" aria-hidden="true" tabindex="-1"></a>We now have to define an objective function for the numerical optimizer which will maximize the posterior distribution as defined in <span class="co">[</span><span class="ot">IREF</span><span class="co">]</span>. We simply have to put together both terms:</span>
+<span id="cb19-524"><a href="#cb19-524" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-525"><a href="#cb19-525" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-526"><a href="#cb19-526" aria-hidden="true" tabindex="-1"></a><span class="in">```{r filename="function: map_obj_fun()"}</span></span>
+<span id="cb19-527"><a href="#cb19-527" aria-hidden="true" tabindex="-1"></a><span class="in">#| echo: true</span></span>
+<span id="cb19-528"><a href="#cb19-528" aria-hidden="true" tabindex="-1"></a><span class="in">#| collapse: false</span></span>
+<span id="cb19-529"><a href="#cb19-529" aria-hidden="true" tabindex="-1"></a><span class="in">#| code-fold: false</span></span>
+<span id="cb19-530"><a href="#cb19-530" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-531"><a href="#cb19-531" aria-hidden="true" tabindex="-1"></a><span class="in"># define MAP estimation objective function</span></span>
+<span id="cb19-532"><a href="#cb19-532" aria-hidden="true" tabindex="-1"></a><span class="in">map_obj_fun &lt;- function(eta_i, omega2, dose, vd, theta_tvcl, t, Y_i, sigma2_add, sigma2_prop){</span></span>
+<span id="cb19-533"><a href="#cb19-533" aria-hidden="true" tabindex="-1"></a><span class="in">  </span></span>
+<span id="cb19-534"><a href="#cb19-534" aria-hidden="true" tabindex="-1"></a><span class="in">  # calculate log prior term</span></span>
+<span id="cb19-535"><a href="#cb19-535" aria-hidden="true" tabindex="-1"></a><span class="in">  log_prior_term &lt;- prior_fun(</span></span>
+<span id="cb19-536"><a href="#cb19-536" aria-hidden="true" tabindex="-1"></a><span class="in">    eta_i = eta_i, </span></span>
+<span id="cb19-537"><a href="#cb19-537" aria-hidden="true" tabindex="-1"></a><span class="in">    omega2 = omega2</span></span>
+<span id="cb19-538"><a href="#cb19-538" aria-hidden="true" tabindex="-1"></a><span class="in">  )</span></span>
+<span id="cb19-539"><a href="#cb19-539" aria-hidden="true" tabindex="-1"></a><span class="in">  </span></span>
+<span id="cb19-540"><a href="#cb19-540" aria-hidden="true" tabindex="-1"></a><span class="in">  # calculate log likelihood term</span></span>
+<span id="cb19-541"><a href="#cb19-541" aria-hidden="true" tabindex="-1"></a><span class="in">  log_likelihood_term &lt;- likelihood_fun(</span></span>
+<span id="cb19-542"><a href="#cb19-542" aria-hidden="true" tabindex="-1"></a><span class="in">    eta_i = eta_i, </span></span>
+<span id="cb19-543"><a href="#cb19-543" aria-hidden="true" tabindex="-1"></a><span class="in">    dose = dose, </span></span>
+<span id="cb19-544"><a href="#cb19-544" aria-hidden="true" tabindex="-1"></a><span class="in">    vd = vd, </span></span>
+<span id="cb19-545"><a href="#cb19-545" aria-hidden="true" tabindex="-1"></a><span class="in">    theta_tvcl = theta_tvcl, </span></span>
+<span id="cb19-546"><a href="#cb19-546" aria-hidden="true" tabindex="-1"></a><span class="in">    t = t, </span></span>
+<span id="cb19-547"><a href="#cb19-547" aria-hidden="true" tabindex="-1"></a><span class="in">    Y_i = Y_i, </span></span>
+<span id="cb19-548"><a href="#cb19-548" aria-hidden="true" tabindex="-1"></a><span class="in">    sigma2_add = sigma2_add, </span></span>
+<span id="cb19-549"><a href="#cb19-549" aria-hidden="true" tabindex="-1"></a><span class="in">    sigma2_prop = sigma2_prop</span></span>
+<span id="cb19-550"><a href="#cb19-550" aria-hidden="true" tabindex="-1"></a><span class="in">  )</span></span>
+<span id="cb19-551"><a href="#cb19-551" aria-hidden="true" tabindex="-1"></a><span class="in">  </span></span>
+<span id="cb19-552"><a href="#cb19-552" aria-hidden="true" tabindex="-1"></a><span class="in">  # combine both</span></span>
+<span id="cb19-553"><a href="#cb19-553" aria-hidden="true" tabindex="-1"></a><span class="in">  log_posterior &lt;- log_prior_term + log_likelihood_term</span></span>
+<span id="cb19-554"><a href="#cb19-554" aria-hidden="true" tabindex="-1"></a><span class="in">  </span></span>
+<span id="cb19-555"><a href="#cb19-555" aria-hidden="true" tabindex="-1"></a><span class="in">  # return negative log posterior</span></span>
+<span id="cb19-556"><a href="#cb19-556" aria-hidden="true" tabindex="-1"></a><span class="in">  return(-log_posterior)</span></span>
+<span id="cb19-557"><a href="#cb19-557" aria-hidden="true" tabindex="-1"></a><span class="in">}</span></span>
+<span id="cb19-558"><a href="#cb19-558" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-559"><a href="#cb19-559" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-560"><a href="#cb19-560" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb19-561"><a href="#cb19-561" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-562"><a href="#cb19-562" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-563"><a href="#cb19-563" aria-hidden="true" tabindex="-1"></a>Please note that we are returning the negative log posterior as it is easier to minimize a function than to maximize it. We can now use this objective function to find the MAP estimate for our individual using the <span class="in">`optim`</span> function in R. We want to find the particular value of $\eta_i$ which minimizes our <span class="in">`map_obj_fun()`</span> function. </span>
+<span id="cb19-564"><a href="#cb19-564" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-567"><a href="#cb19-567" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb19-568"><a href="#cb19-568" aria-hidden="true" tabindex="-1"></a><span class="co"># run optimization</span></span>
+<span id="cb19-569"><a href="#cb19-569" aria-hidden="true" tabindex="-1"></a>map_est <span class="ot">&lt;-</span> <span class="fu">optim</span>(</span>
+<span id="cb19-570"><a href="#cb19-570" aria-hidden="true" tabindex="-1"></a>  <span class="at">par =</span> <span class="dv">0</span>, </span>
+<span id="cb19-571"><a href="#cb19-571" aria-hidden="true" tabindex="-1"></a>  <span class="at">fn =</span> map_obj_fun, </span>
+<span id="cb19-572"><a href="#cb19-572" aria-hidden="true" tabindex="-1"></a>  <span class="at">omega2 =</span> <span class="fl">0.11</span>, </span>
+<span id="cb19-573"><a href="#cb19-573" aria-hidden="true" tabindex="-1"></a>  <span class="at">dose =</span> nm_out <span class="sc">|&gt;</span> <span class="fu">filter</span>(EVID <span class="sc">==</span> <span class="dv">1</span>) <span class="sc">|&gt;</span> <span class="fu">pull</span>(AMT), </span>
+<span id="cb19-574"><a href="#cb19-574" aria-hidden="true" tabindex="-1"></a>  <span class="at">vd =</span> <span class="fl">3.15</span>, </span>
+<span id="cb19-575"><a href="#cb19-575" aria-hidden="true" tabindex="-1"></a>  <span class="at">theta_tvcl =</span> <span class="fl">0.247</span>, </span>
+<span id="cb19-576"><a href="#cb19-576" aria-hidden="true" tabindex="-1"></a>  <span class="at">t =</span> nm_out <span class="sc">|&gt;</span> <span class="fu">filter</span>(EVID <span class="sc">==</span> <span class="dv">0</span>) <span class="sc">|&gt;</span> <span class="fu">pull</span>(TIME), </span>
+<span id="cb19-577"><a href="#cb19-577" aria-hidden="true" tabindex="-1"></a>  <span class="at">Y_i =</span> nm_out <span class="sc">|&gt;</span> <span class="fu">filter</span>(EVID <span class="sc">==</span> <span class="dv">0</span>) <span class="sc">|&gt;</span> <span class="fu">pull</span>(DV), </span>
+<span id="cb19-578"><a href="#cb19-578" aria-hidden="true" tabindex="-1"></a>  <span class="at">sigma2_add =</span> <span class="fl">0.10</span>, </span>
+<span id="cb19-579"><a href="#cb19-579" aria-hidden="true" tabindex="-1"></a>  <span class="at">sigma2_prop =</span> <span class="fl">0.10</span>,</span>
+<span id="cb19-580"><a href="#cb19-580" aria-hidden="true" tabindex="-1"></a>  <span class="at">method =</span> <span class="st">"BFGS"</span></span>
+<span id="cb19-581"><a href="#cb19-581" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb19-582"><a href="#cb19-582" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-583"><a href="#cb19-583" aria-hidden="true" tabindex="-1"></a><span class="co"># show estimation results</span></span>
+<span id="cb19-584"><a href="#cb19-584" aria-hidden="true" tabindex="-1"></a>map_est </span>
+<span id="cb19-585"><a href="#cb19-585" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb19-586"><a href="#cb19-586" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-587"><a href="#cb19-587" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-588"><a href="#cb19-588" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-589"><a href="#cb19-589" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-590"><a href="#cb19-590" aria-hidden="true" tabindex="-1"></a><span class="fu"># Conclusion</span></span>
+<span id="cb19-591"><a href="#cb19-591" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-592"><a href="#cb19-592" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Summarize benefits of performing Bayesian estimation explicitly.</span>
+<span id="cb19-593"><a href="#cb19-593" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-594"><a href="#cb19-594" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Encourage pharmacometricians to reproduce standard software results occasionally to enhance intuition.</span>
+<span id="cb19-595"><a href="#cb19-595" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-596"><a href="#cb19-596" aria-hidden="true" tabindex="-1"></a><span class="fu"># Epilogue / Acknowledgments</span></span>
+<span id="cb19-597"><a href="#cb19-597" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-598"><a href="#cb19-598" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>xxx</span>
+<span id="cb19-599"><a href="#cb19-599" aria-hidden="true" tabindex="-1"></a></span>
 </code><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></pre></div>
 </div></div></div></div></div>
 </div> <!-- /content -->

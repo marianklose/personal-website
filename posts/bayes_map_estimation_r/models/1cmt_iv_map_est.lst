@@ -1,5 +1,5 @@
-Sat 03/29/2025 
-03:05 PM
+Sun 03/30/2025 
+09:42 PM
 $PROBLEM    1cmt_iv_map_est
 $INPUT      ID TIME EVID AMT RATE DV MDV
 $DATA      sim_data_ID5.csv IGNORE=@
@@ -15,19 +15,17 @@ S1=V
 $THETA  0.247 FIX ; 1 TVCL
  3.15 FIX ; 2 TVV
 $OMEGA  0.11  FIX  ;    1 OM_CL
-$SIGMA  10  FIX  ;  1 SIG_ADD
+$SIGMA  0.10  FIX  ; 1 SIG_PROP
+ 0.10  FIX  ;  2 SIG_ADD
 $ERROR 
-; add additive error
+; add residual unexplained variability
 IPRED = F
-Y = IPRED + EPS(1)
-
-; store error for table output
-ERR1 = EPS(1)
+Y = IPRED + IPRED * EPS(1) + EPS(2)
 
 $ESTIMATION METHOD=COND LAPLACIAN MAXEVAL=0 SIGDIG=3 PRINT=1 NOABORT
             POSTHOC
-$TABLE      ID TIME EVID AMT RATE DV PRED IPRED MDV ETA1 ERR1 CL
-            NOAPPEND ONEHEADER NOPRINT FILE=map_estim_out
+$TABLE      ID TIME EVID AMT RATE DV PRED IPRED MDV ETA1 CL NOAPPEND
+            ONEHEADER NOPRINT FILE=map_estim_out
 
   
 NM-TRAN MESSAGES 
@@ -38,8 +36,8 @@ NM-TRAN MESSAGES
   
 License Registered to: Freie Universitaet Berlin Department of Clinical Pharmacy Biochemistry
 Expiration Date:    14 JAN 2026
-Current Date:       29 MAR 2025
-Days until program expires : 290
+Current Date:       30 MAR 2025
+Days until program expires : 289
 1NONLINEAR MIXED EFFECTS MODEL PROGRAM (NONMEM) VERSION 7.5.1
  ORIGINALLY DEVELOPED BY STUART BEAL, LEWIS SHEINER, AND ALISON BOECKMANN
  CURRENT DEVELOPERS ARE ROBERT BAUER, ICON DEVELOPMENT SOLUTIONS,
@@ -61,7 +59,7 @@ Days until program expires : 290
 0LABELS FOR DATA ITEMS:
  ID TIME EVID AMT RATE DV MDV
 0(NONBLANK) LABELS FOR PRED-DEFINED ITEMS:
- CL IPRED ERR1
+ CL IPRED
 0FORMAT FOR DATA:
  (7E8.0)
 
@@ -71,7 +69,7 @@ Days until program expires : 290
 0DEFAULT THETA BOUNDARY TEST OMITTED:    NO
 0OMEGA HAS SIMPLE DIAGONAL FORM WITH DIMENSION:   1
 0DEFAULT OMEGA BOUNDARY TEST OMITTED:    NO
-0SIGMA HAS SIMPLE DIAGONAL FORM WITH DIMENSION:   1
+0SIGMA HAS SIMPLE DIAGONAL FORM WITH DIMENSION:   2
 0DEFAULT SIGMA BOUNDARY TEST OMITTED:    NO
 0INITIAL ESTIMATE OF THETA:
  LOWER BOUND    INITIAL EST    UPPER BOUND
@@ -81,7 +79,8 @@ Days until program expires : 290
  0.1100E+00
 0OMEGA CONSTRAINED TO BE THIS INITIAL ESTIMATE
 0INITIAL ESTIMATE OF SIGMA:
- 0.1000E+02
+ 0.1000E+00
+ 0.0000E+00   0.1000E+00
 0SIGMA CONSTRAINED TO BE THIS INITIAL ESTIMATE
 0TABLES STEP OMITTED:    NO
  NO. OF TABLES:           1
@@ -103,7 +102,7 @@ Days until program expires : 290
  RFORMAT:
  FIXED_EFFECT_ETAS:
 0USER-CHOSEN ITEMS:
- ID TIME EVID AMT RATE DV PRED IPRED MDV ETA1 ERR1 CL
+ ID TIME EVID AMT RATE DV PRED IPRED MDV ETA1 CL
 1DOUBLE PRECISION PREDPP VERSION 7.5.1
 
  ONE COMPARTMENT MODEL (ADVAN1)
@@ -221,7 +220,7 @@ Days until program expires : 290
 
 
 
- #OBJV:********************************************       16.779       **************************************************
+ #OBJV:********************************************       20.373       **************************************************
 1
  ************************************************************************************************************************
  ********************                                                                                ********************
@@ -254,10 +253,13 @@ Days until program expires : 290
  SIGMA - COV MATRIX FOR RANDOM EFFECTS - EPSILONS  ****
 
 
-         EPS1     
+         EPS1      EPS2     
  
  EPS1
-+        1.00E+01
++        1.00E-01
+ 
+ EPS2
++        0.00E+00  1.00E-01
  
 1
 
@@ -275,13 +277,16 @@ Days until program expires : 290
  SIGMA - CORR MATRIX FOR RANDOM EFFECTS - EPSILONS  ***
 
 
-         EPS1     
+         EPS1      EPS2     
  
  EPS1
-+        3.16E+00
++        3.16E-01
+ 
+ EPS2
++        0.00E+00  3.16E-01
  
  Elapsed finaloutput time in seconds:     0.00
- #CPUT: Total CPU Time in Seconds,        0.000
+ #CPUT: Total CPU Time in Seconds,        0.016
 Stop Time: 
-Sat 03/29/2025 
-03:06 PM
+Sun 03/30/2025 
+09:42 PM

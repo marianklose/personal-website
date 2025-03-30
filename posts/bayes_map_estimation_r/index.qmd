@@ -99,13 +99,13 @@ Without data no Bayesian parameter individualization. As we do this MAP estimati
 sim_data <- read_csv("~/GitHub/personal-website/posts/understanding_nlme_estimation/data/output_from_sim/sim_data.csv")
 
 # show data 
-sim_data |> 
+sim_data |>  
   head() |> 
   kable() |> 
   kable_styling()
 ```
 
-These is the previously simulated data with which we have built the model. We will focus on one single ID (ID 5) which is rather at the lower end of the simulated concentrations. 
+These is the previously simulated data with which we have built the model. We will focus on one single ID (ID 5) which is rather at the lower end of the simulated concentrations. We did this as it allows us to better see the differences between the typical individual and the individualized one. Let's plot the data to get a better understanding of the concentration-time profiles:
 
 
 ```{r}
@@ -129,9 +129,12 @@ sim_data |>
 We will later need this data when running NONMEM, so we have to save it to file. 
 
 ```{r}
+# define sim_data with ID == 5
+sim_data_id5 <- sim_data |> 
+  filter(ID == 5)
+
 # save data for NONMEM
-sim_data |> 
-  filter(ID == 5) |> 
+sim_data_id5 |> 
   write_csv("~/GitHub/personal-website/posts/bayes_map_estimation_r/data/sim_data_ID5.csv") 
 ```
 
@@ -142,14 +145,15 @@ For a little example and the reference solution, we will use the same simple one
 
 ![Model structure of our simple 1 cmt i.v. bolus model.](media/model_structure.png)
 
-We assume to have an already fitted model and our only task is to individualize the parameters for our given individual. The model parameter estimates which we are using are taken from the previous blogpost [REF]:
+We assume to have an already fitted model and our only task is to individualize the parameters for our given individual. The model parameter estimates which we are using are mainly taken from the previous blogpost [REF]:
 
 - $CL$ = 0.247 L/h
 - $V$ = 3.15 L
 - $\omega^2_{CL}$ = 0.11
-- $\sigma^2_{RUV}$ = 0.10 * 100 = 10
+- $\sigma^2_{RUV\_ADD}$ = 0.10
+- $\sigma^2_{RUV\_PROP}$ = 0.10
 
-This is what we are now going to translate into a NONMEM model. Please note that we assume a much higher RUV for the MAP estimation than in the previous blogpost (variance of 10 instead of 0.1). This just helps to make a point, as we have quite dense sampling and the likelihood of the data is quickly dominating the prior. By decreasing the "trust" into the data, we can better see the interplay between prior, likelihood and posterior. More to that later!
+This is what we are now going to translate into a NONMEM model. Please note that we added a proportional error term to the previously used model to better make a point when comparing prior, likelihood and posterior. 
 
 ## NONMEM model
 
@@ -180,23 +184,21 @@ $OMEGA
 0.11 FIX                ; 1 OM_CL
 
 $SIGMA
-10 FIX                ; 1 SIG_ADD
+0.10 FIX                ; 1 SIG_PROP
+0.10 FIX                ; 2 SIG_ADD
 
 $ERROR 
-; add additive error
+; add residual unexplained variability
 IPRED = F
-Y = IPRED + EPS(1)
-
-; store error for table output
-ERR1 = EPS(1)
+Y = IPRED + IPRED * EPS(1) + EPS(2)
 
 $ESTIMATION METHOD=COND LAPLACIAN MAXEVAL=0 SIGDIG=3 PRINT=1 NOABORT POSTHOC
 
-$TABLE ID TIME EVID AMT RATE DV PRED IPRED MDV ETA1 ERR1 CL NOAPPEND ONEHEADER NOPRINT FILE=map_estim_out
+$TABLE ID TIME EVID AMT RATE DV PRED IPRED MDV ETA1 CL NOAPPEND ONEHEADER NOPRINT FILE=map_estim_out
 ```
 
 
-We have updated the initial parameter estimates to the estimates listed above. Furthermore, we run with $MAXEVAL=0$ as we don't need a full estimation but only a MAP estimation. The $POSTHOC$ option will force NONMEM to calculate the individual MAP estimates. We can now go ahead and run it.
+We have updated the initial parameter estimates to the estimates listed above. Furthermore, we run with `MAXEVAL=0` as we don't need a full estimation but only a MAP estimation. The `POSTHOC` option will force NONMEM to calculate the individual MAP estimates. We can now go ahead and run it.
 
 After executing the model, we can read in `map_estim_out`:
 
@@ -218,7 +220,7 @@ $$CL_i = \theta_{TVCL} \cdot \exp(\eta_i)$$
 
 We can confirm this by calculating:
 
-$$CL_i = 0.247 \cdot \exp(0.72446) = 0.50971$$
+$$CL_i = 0.247 \cdot \exp(0.4763) = 0.3977$$
 
 or directly in R:
 
@@ -226,7 +228,7 @@ or directly in R:
 #| code-fold: FALSE
 
 # calculate individual MAP estimate
-0.247*exp(0.72446)
+0.247*exp(0.4763)
 ```
 
 Great! Now we have our reference solution for the parameter individualization. We not only got the individualized parameter estimates but also the individual predictions (`IPRED`). We can now compare both visually:
@@ -234,13 +236,20 @@ Great! Now we have our reference solution for the parameter individualization. W
 ```{r}
 # plot DV, PRED, IPRED
 nm_out |> 
+  filter(TIME > 0) |> 
   pivot_longer(cols=c(PRED, IPRED, DV), names_to="variable", values_to="value") |>
   ggplot(aes(x=TIME, y=value, group=variable, color=variable))+
   geom_point()+
   geom_line()+
+  labs(
+    y = "Concentration [mg/L]",
+    x = "Time after last dose [h]",
+    title = "Comparison of DV, PRED and IPRED"
+  ) +
   theme_bw() 
 ```
 
+We can see at a first glance that our reference individual (red, `DV`) differs substantially from our typical individual (blue, `PRED`). The individual predictions (green, `IPRED`), which are based on our MAP estimate for CL (`CL_i`), are in between. Let's have a closer look how to get there.
 
 
 ## Bayesian Theory
@@ -255,7 +264,7 @@ Here, conditional probabilities are used and $P(A|B)$ is the probability of even
 
 ### Pharmacometric context
 
-Our use-case in the world of pharmacometrics is to find the most likely parameter $\eta$ given our individual's concentration data $Y_{i}$:
+Our use-case in the world of pharmacometrics is to find the most likely parameter $\eta_i$ (which then translates to $CL_i$) given our individual's concentration data $Y_{i}$:
 
 $$p(\eta|Y_{i}) = \frac{p(\eta) \cdot p(Y_{i}|\eta)}{p(Y_i)}$$
 
@@ -277,22 +286,283 @@ Here, we got rid of the marginal likelihood in the denominator. As we are now mi
 
 If we are interested to find the most likely parameter for our individual, we have to find the maximum of the posterior distribution (MAP estimate). Mathematically we can define this by finding the parameter $\eta_i^*$ that maximizes the posterior distribution:
 
-$$\eta_i^* = \underset{\eta_i}{\mathrm{argmax}}~ p(\eta_i|Y_{i}) = \underset{\eta_i}{\mathrm{argmax}}~ p(\eta_i) \cdot p(Y_{i}|\eta_i)$$
+$$\eta_i^* = \underset{\eta_i}{\mathrm{argmax}}~ p(\eta_i|Y_{i}) = \underset{\eta_i}{\mathrm{argmax}}~ p(\eta_i) \cdot \prod_{j=1}^{m} p(Y_{ij}|\eta_i)$$
 
-In the end, we would have to use a numerical optimizer function to search the parameter space of $\eta_i$ to find the maximum of the posterior distribution ($\eta_i^*$). But how to define 
+Dealing with the product of probabilities is often not very handy and we can simplify this by taking the log of the posterior distribution:
+
+$$\eta_i^* = \underset{\eta_i}{\mathrm{argmax}}~ \log(p(\eta_i|Y_{i})) = \underset{\eta_i}{\mathrm{argmax}}~ \log(p(\eta_i)) + \sum_{j=1}^{m} \log(p(Y_{ij}|\eta_i))$$
+
+In the end, we would have to use a numerical optimizer function to search the parameter space of $\eta_i$ to find the maximum of the posterior distribution ($\eta_i^*$). To write out the full equation we need to define both terms, $p(\eta_i)$ and $p(Y_{ij}|\eta_i)$. Let's go through them step by step.
+
+#### Prior term
+
+The prior distribution for $p(\eta_i)$ needs to incorporate our beliefs and uncertainty about $\eta_i$ before we have seen the data. Bayesian estimation actually allows us to incorporate our prior information through different distributions and parameters (which is sometimes being criticized being too subjective). In pharmacometrics, you will often see that people use the same distribution based on a previously estimates model. This is usually a normal distribution with mean 0 and a variance $\omega^2_{CL}$ estimated by the NLME model. What is the intuition behind this? When searching the space of $\eta_i$ during $\underset{\eta_i}{\mathrm{argmax}}$, we need to evaluate at each point how likely the given $\eta_i$ is given the prior distribution. This means that individual random effects at the boundaries of the prior distribution are discouraged while those in the center are encouraged. Or in other words: We only want to move away from the typical individual estimate when we get a substantial gain in explaining the data. To calculate the contribution of the prior term, we rely on the probability density function of the normal distribution:
+ 
+
+$$p(\eta_i) = \frac{1}{\sqrt{2\pi\omega^2}} \cdot \exp\left(-\frac{(\eta_i-\mu)^2}{2\omega^2}\right)$$
+
+As $\mu$ is typically 0, we can simplify this to:
+
+$$p(\eta_i) = \frac{1}{\sqrt{2\pi\omega^2}} \cdot \exp\left(-\frac{\eta_i^2}{2\omega^2}\right)$$
+
+Taking the log yields:
+
+$$\log(p(\eta_i)) = -0.5 \log(2\pi\omega^2) - \frac{\eta_i^2}{2\omega^2} $$
 
 
+Now we are able to calculate the contribution of the prior term for a given individual $\eta_i$, as we know the variance $\omega^2_{CL}$ (0.11) from our NLME model.
+
+#### Likelihood term
+
+The likelihood term $p(Y_{ij}|\eta_i)$ is the probability of observing the data point $Y_{ij}$ given the parameter $\eta_i$. As we usually also assume that the residuals of our model predictions are normally distributed, we can also use the probability density function of the normal distribution to calculate this term. The likelihood term is then:
+
+$$p(Y_{ij}|\eta_i) = \frac{1}{\sqrt{2\pi\sigma^2}} \cdot \exp\left(-\frac{(Y_{ij}-f(x_{ij}; \eta_i))^2}{2\sigma^2}\right)$$
+where
+
+- $Y_{ij}$ is the observed data point of the individual $i$ at time $j$
+- $f(x_{ij}; \eta_i)$ is the model prediction for the individual $i$ at time $j$ given the individual random effect $\eta_i$ (for CL)
+- $\sigma^2$ is the variance of the residual unexplained variability of the model
+
+Please note that in our case, where we have a combined additive and proportional RUV model, $\sigma^2$ is the sum of both variances at time $j$. We can take the log and get:
+
+$$\log(p(Y_{ij}|\eta_i)) = -0.5 \log(2\pi\sigma^2) - \frac{(Y_{ij}-f(x_{ij}; \eta_i))^2}{2\sigma^2}$$
+
+### Combining both terms
+
+Now we can combine both terms:
+
+$$\eta_i^* = \underset{\eta_i}{\mathrm{argmax}}~\left(\left[-0.5 \log(2\pi\omega^2) - \frac{\eta_i^2}{2\omega^2}\right] ~ + \left[-0.5 \log(2\pi\sigma^2) - \frac{(Y_{ij}-f(x_{ij}; \eta_i))^2}{2\sigma^2}\right]\right)$$
+
+This is the equation for which our numerical optimizer needs to find the maximum (or minimum if negated) to obtain the individual MAP estimate. Let's define some functions and reproduce our NONMEM reference solution in R.
 
 
+# R-based MAP reproduction
 
-# Reproducing Bayesian MAP Estimation in R
+## Prior term
 
-- Outline steps to perform Bayesian estimation manually in R.
+We will start to define a function with the prior term
+
+```{r filename="function: prior_fun()"}
+#| echo: true
+#| collapse: false
+#| code-fold: false
+
+# define prior term function
+prior_fun <- function(eta_i, omega2){
+  # calculate probability
+  log_prob <- - 0.5 * log(2*pi*omega2) - eta_i^2/(2*omega2)
+  
+  # return log probability
+  return(log_prob)
+}
+```
+
+We can now test this function and illustrate the prior term for a range of $\eta_i$ values:
+
+```{r}
+# define range
+eta_i <- seq(-2, 2, 0.01)
+
+# calculate prior term
+prior <- prior_fun(eta_i = eta_i, omega2 = 0.11)
+
+# create tibble
+prior_tibble <- tibble(
+  eta_i = eta_i,
+  exp_prior = exp(prior),
+  source = "prior"
+)
+
+# plot prior term
+prior_tibble |> 
+  ggplot(aes(x=eta_i, y=exp_prior))+
+  geom_line()+
+  labs(
+    x = expression(eta[i]),
+    y = expression(p(eta[i])),
+    title = "Prior term (Random effect)"
+  )+
+  theme_bw()
+```
 
 
-# Full Bayesian Estimation
+and this is how the $\eta_i$ values translate to the Clearance domain:
 
-- Introduce Markov Chain Monte Carlo (MCMC) briefly (e.g., using rstan or similar tools).
+```{r}
+# plot prior term
+prior_tibble |> 
+  ggplot(aes(x=0.247*exp(eta_i), y=exp_prior))+
+  geom_line()+
+  labs(
+    x = expression(CL[i]),
+    y = expression(p(CL[i])),
+    title = "Prior term (Clearance)"
+  )+
+  theme_bw()
+```
+
+
+We can see that some values of $\eta_i$ and $CL_i$ are more likely than others. Based on the results of the fitted NLME model, these distributions represent our prior beliefs before we see the data of the given individual.
+
+
+## Likelihood term
+
+For the Likelihood term described in [IREF] we need to define the model prediction function. The simple 1 cmt model structure we are using allows us to use a closed-form expression of the model instead of relying on ODE-based numerical solutions (see [REF]). But the concepts remain the same and you could apply this also if you have an ODE-based system. Let's first define the model prediction function:
+
+```{r filename="function: model_fun()"}
+#| echo: true
+#| collapse: false
+#| code-fold: false
+
+# define model function
+model_fun <- function(eta_i, dose, vd, theta_tvcl, t) {
+  exp_eta_i <- exp(eta_i)
+  exponent <- -1 * (theta_tvcl * exp_eta_i / vd) * t
+  result <- (dose / vd) * exp(exponent)
+  return(result)
+}
+```
+
+We can now use the prediction function and build the likelihood term function:
+
+```{r filename="function: likelihood_fun()"}
+#| echo: true
+#| collapse: false
+#| code-fold: false
+
+# define likelihood term function
+likelihood_fun <- function(eta_i, dose, vd, theta_tvcl, t, Y_i, sigma2_add, sigma2_prop){
+  
+  # get model predictions
+  f_i <- model_fun(eta_i, dose, vd, theta_tvcl, t)
+  
+  # calculate resulting sigma2 for each timepoint (prop variance is scaled based on f_i^2)
+  sigma2 <- sigma2_prop * f_i^2 + sigma2_add
+  
+  # calculate probability
+  log_lik <- - 0.5 * log(2*pi*sigma2) - (Y_i - f_i)^2/(2*sigma2)
+  
+  # take sum of likelihoods
+  log_lik_sum <- sum(log_lik)
+  
+  # return log likelihood
+  return(log_lik_sum)
+}
+```
+
+ We can now test this function and illustrate the likelihood term for a range of $\eta_i$ values:
+
+```{r}
+# define range
+eta_i <- seq(-2, 2, 0.01)
+
+# empty list
+ll_list <- list()
+
+# loop over each element of eta_i
+for(cur_eta_i in eta_i){
+  # calculate likelihood term
+  ll_list[[as.character(cur_eta_i)]] <- likelihood_fun(
+    eta_i = cur_eta_i, 
+    dose = nm_out |> filter(EVID == 1) |> pull(AMT), 
+    vd = 3.15, 
+    theta_tvcl = 0.247, 
+    t = nm_out |> filter(EVID == 0) |> pull(TIME), 
+    Y_i = nm_out |> filter(EVID == 0) |> pull(DV), 
+    sigma2_add = 0.10, 
+    sigma2_prop = 0.10
+  )
+}
+
+# convert to vector
+ll_vector <- ll_list |> unlist() |> unname()
+
+# create tibble
+likelihood_tibble <- tibble(
+  eta_i = eta_i,
+  likelihood = ll_vector,
+  source = "likelihood"
+)
+
+# plot likelihood term
+likelihood_tibble |> 
+  ggplot(aes(x=eta_i, y=exp(likelihood)))+
+  geom_line()+
+  labs(
+    x = expression(eta[i]),
+    y = expression(p(Y[i] | eta[i])),
+    title = "Likelihood term"
+  )+
+  theme_bw()
+```
+
+Here we can see which values of $\eta_i$ are more and less likely to describe the observed data $Y_i$ of our example individual. Now we can go ahead and combine both terms to calculate the MAP estimate for our individual.
+
+## MAP estimation
+
+We now have to define an objective function for the numerical optimizer which will maximize the posterior distribution as defined in [IREF]. We simply have to put together both terms:
+
+
+```{r filename="function: map_obj_fun()"}
+#| echo: true
+#| collapse: false
+#| code-fold: false
+
+# define MAP estimation objective function
+map_obj_fun <- function(eta_i, omega2, dose, vd, theta_tvcl, t, Y_i, sigma2_add, sigma2_prop){
+  
+  # calculate log prior term
+  log_prior_term <- prior_fun(
+    eta_i = eta_i, 
+    omega2 = omega2
+  )
+  
+  # calculate log likelihood term
+  log_likelihood_term <- likelihood_fun(
+    eta_i = eta_i, 
+    dose = dose, 
+    vd = vd, 
+    theta_tvcl = theta_tvcl, 
+    t = t, 
+    Y_i = Y_i, 
+    sigma2_add = sigma2_add, 
+    sigma2_prop = sigma2_prop
+  )
+  
+  # combine both
+  log_posterior <- log_prior_term + log_likelihood_term
+  
+  # return negative log posterior
+  return(-log_posterior)
+}
+
+
+```
+
+
+Please note that we are returning the negative log posterior as it is easier to minimize a function than to maximize it. We can now use this objective function to find the MAP estimate for our individual using the `optim` function in R. We want to find the particular value of $\eta_i$ which minimizes our `map_obj_fun()` function. 
+
+```{r}
+# run optimization
+map_est <- optim(
+  par = 0, 
+  fn = map_obj_fun, 
+  omega2 = 0.11, 
+  dose = nm_out |> filter(EVID == 1) |> pull(AMT), 
+  vd = 3.15, 
+  theta_tvcl = 0.247, 
+  t = nm_out |> filter(EVID == 0) |> pull(TIME), 
+  Y_i = nm_out |> filter(EVID == 0) |> pull(DV), 
+  sigma2_add = 0.10, 
+  sigma2_prop = 0.10,
+  method = "BFGS"
+)
+
+# show estimation results
+map_est 
+```
+
+
 
 
 # Conclusion
