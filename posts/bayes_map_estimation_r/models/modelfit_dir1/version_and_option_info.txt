@@ -1,13 +1,13 @@
-PsN version: 5.4.0
-Run started: 2025-03-30 at 17:15:09
+PsN version: 5.5.0
+Run started: 2025-03-31 at 11:42:39
 version_and_option_info.txt is overwitten if the run is restarted later using option -directory.
 The original file from the first call is saved as original_version_and_option_info.txt.
 
 Command:
-C:\PsN-5.4.0\strawberry\perl\bin/execute 1cmt_iv_map_est.mod
+C:\PsN-5.5.0\strawberry\perl\bin/execute 1cmt_iv_map_est.mod
 
 NONMEM:
-C:\nm75g64
+C:\nm76g64
 
 Actual values optional execute options (undefined values not listed):
 -copy_data=1
@@ -22,12 +22,10 @@ Actual values optional PsN (common) options (undefined values not listed):
 -check_nmtran=0
 -clean=3
 -compress=0
--condition_number_limit=1000
--correlation_limit=0.85
 -crash_restarts=5
 -debug_rmd=0
 -degree=0.1
--directory=C:\Users\maria\Documents\GitHub\personal-website\posts\bayes_map_estimation_r\models\modelfit_dir1\
+-directory=C:\Users\mklose\Desktop\GitHub\personal-website\posts\bayes_map_estimation_r\models\modelfit_dir1\
 -display_iterations=1
 -handle_crashes=1
 -handle_msfo=0
@@ -40,8 +38,6 @@ Actual values optional PsN (common) options (undefined values not listed):
 -min_retries=0
 -missing_data_token=-99
 -model_subdir=0
--near_bound_sign_digits=2
--near_zero_boundary_limit=0.01
 -nice=19
 -nm_output=ext,cov,cor,coi,phi,phm,cnv,smt,rmt,npd,npe,npi,npl,ets
 -nm_version=default
@@ -60,13 +56,12 @@ Actual values optional PsN (common) options (undefined values not listed):
 -run_on_torque=0
 -run_on_ud=0
 -run_on_zink=0
--seed=676766
+-seed=810558
 -send_email=0
 -shrinkage=0
--sign_digits_off_diagonals=2
 -significant_digits_accept=0
 -so=0
--template_directory_rplots=C:/PsN-5.4.0/strawberry/perl/site/lib/PsN_5_4_0/R-scripts
+-template_directory_rplots=C:/PsN-5.5.0/strawberry/perl/site/lib/PsN_5_5_0/R-scripts
 -template_file_rplots=execute_default.Rmd
 -threads=5
 -tweak_inits=1

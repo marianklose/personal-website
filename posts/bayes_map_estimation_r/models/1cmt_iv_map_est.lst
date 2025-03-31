@@ -1,8 +1,10 @@
-Sun 03/30/2025 
-09:42 PM
+31.03.2025 
+11:43
 $PROBLEM    1cmt_iv_map_est
 $INPUT      ID TIME EVID AMT RATE DV MDV
 $DATA      sim_data_ID5.csv IGNORE=@
+
+; $DATA C:\Users\maria\Documents\GitHub\personal-website\posts\bayes_map_estimation_r\data\sim_data_ID5.csv IGNORE=@
 $SUBROUTINE ADVAN1 TRANS2
 $PK
 ; define fixed effects parameters
@@ -15,14 +17,14 @@ S1=V
 $THETA  0.247 FIX ; 1 TVCL
  3.15 FIX ; 2 TVV
 $OMEGA  0.11  FIX  ;    1 OM_CL
-$SIGMA  0.10  FIX  ; 1 SIG_PROP
- 0.10  FIX  ;  2 SIG_ADD
+$SIGMA  0.50  FIX  ; 1 SIG_PROP
+ 2.00  FIX  ;  2 SIG_ADD
 $ERROR 
 ; add residual unexplained variability
 IPRED = F
 Y = IPRED + IPRED * EPS(1) + EPS(2)
 
-$ESTIMATION METHOD=COND LAPLACIAN MAXEVAL=0 SIGDIG=3 PRINT=1 NOABORT
+$ESTIMATION METHOD=1 INTERACTION MAXEVAL=0 SIGDIG=3 PRINT=1 NOABORT
             POSTHOC
 $TABLE      ID TIME EVID AMT RATE DV PRED IPRED MDV ETA1 CL NOAPPEND
             ONEHEADER NOPRINT FILE=map_estim_out
@@ -34,11 +36,15 @@ NM-TRAN MESSAGES
              
  (WARNING  2) NM-TRAN INFERS THAT THE DATA ARE POPULATION.
   
+Note: Analytical 2nd Derivatives are constructed in FSUBS but are never used.
+      You may insert $ABBR DERIV2=NO after the first $PROB to save FSUBS construction and compilation time
+  
+  
 License Registered to: Freie Universitaet Berlin Department of Clinical Pharmacy Biochemistry
 Expiration Date:    14 JAN 2026
-Current Date:       30 MAR 2025
-Days until program expires : 289
-1NONLINEAR MIXED EFFECTS MODEL PROGRAM (NONMEM) VERSION 7.5.1
+Current Date:       31 MAR 2025
+Days until program expires : 288
+1NONLINEAR MIXED EFFECTS MODEL PROGRAM (NONMEM) VERSION 7.6.0 (nm760)
  ORIGINALLY DEVELOPED BY STUART BEAL, LEWIS SHEINER, AND ALISON BOECKMANN
  CURRENT DEVELOPERS ARE ROBERT BAUER, ICON DEVELOPMENT SOLUTIONS,
  AND ALISON BOECKMANN. IMPLEMENTATION, EFFICIENCY, AND STANDARDIZATION
@@ -49,6 +55,7 @@ Days until program expires : 289
 0DATA CHECKOUT RUN:              NO
  DATA SET LOCATED ON UNIT NO.:    2
  THIS UNIT TO BE REWOUND:        NO
+ CREATE/ADD TO FDATA.csv:        YES
  NO. OF DATA RECS IN DATA SET:        6
  NO. OF DATA ITEMS IN DATA SET:   7
  ID DATA ITEM IS DATA ITEM NO.:   1
@@ -79,8 +86,8 @@ Days until program expires : 289
  0.1100E+00
 0OMEGA CONSTRAINED TO BE THIS INITIAL ESTIMATE
 0INITIAL ESTIMATE OF SIGMA:
- 0.1000E+00
- 0.0000E+00   0.1000E+00
+ 0.5000E+00
+ 0.0000E+00   0.2000E+01
 0SIGMA CONSTRAINED TO BE THIS INITIAL ESTIMATE
 0TABLES STEP OMITTED:    NO
  NO. OF TABLES:           1
@@ -103,7 +110,7 @@ Days until program expires : 289
  FIXED_EFFECT_ETAS:
 0USER-CHOSEN ITEMS:
  ID TIME EVID AMT RATE DV PRED IPRED MDV ETA1 CL
-1DOUBLE PRECISION PREDPP VERSION 7.5.1
+1DOUBLE PRECISION PREDPP VERSION 7.6.0 (nm760)
 
  ONE COMPARTMENT MODEL (ADVAN1)
 0MAXIMUM NO. OF BASIC PK PARAMETERS:   2
@@ -140,15 +147,15 @@ Days until program expires : 289
 
 
  #TBLN:      1
- #METH: Laplacian Conditional Estimation (Evaluation)
+ #METH: First Order Conditional Estimation with Interaction (Evaluation)
 
  ESTIMATION STEP OMITTED:                 YES
+ SHRINK INFO WITH EVALUATION (EVALSHRINK) NO
  ANALYSIS TYPE:                           POPULATION
  CONDITIONAL ESTIMATES USED:              YES
  CENTERED ETA:                            NO
- EPS-ETA INTERACTION:                     NO
- LAPLACIAN OBJ. FUNC.:                    YES
- NUMERICAL 2ND DERIVATIVES:               NO
+ EPS-ETA INTERACTION:                     YES
+ LAPLACIAN OBJ. FUNC.:                    NO
  NUMERICAL DERIVATIVE
        FILE REQUEST (NUMDER):               NONE
  MAP (ETAHAT) ESTIMATION METHOD (OPTMAP):   0
@@ -178,14 +185,14 @@ Days until program expires : 289
 
 
  THE FOLLOWING LABELS ARE EQUIVALENT
- PRED=NPRED
- RES=NRES
- WRES=NWRES
- IWRS=NIWRES
- IPRD=NIPRED
- IRS=NIRES
+ PRED=PREDI
+ RES=RESI
+ WRES=WRESI
+ IWRS=IWRESI
+ IPRD=IPREDI
+ IRS=IRESI
 
- Elapsed evaluation time in seconds:     0.01
+ Elapsed evaluation time in seconds:     0.04
  Elapsed postprocess time in seconds:     0.00
 1
  
@@ -210,7 +217,7 @@ Days until program expires : 289
  
  ************************************************************************************************************************
  ********************                                                                                ********************
- ********************                  LAPLACIAN CONDITIONAL ESTIMATION (EVALUATION)                 ********************
+ ********************         FIRST ORDER CONDITIONAL ESTIMATION WITH INTERACTION (EVALUATION)       ********************
  #OBJT:**************                       MINIMUM VALUE OF OBJECTIVE FUNCTION                      ********************
  ********************                                                                                ********************
  ************************************************************************************************************************
@@ -220,11 +227,11 @@ Days until program expires : 289
 
 
 
- #OBJV:********************************************       20.373       **************************************************
+ #OBJV:********************************************            24.507       *********************************************
 1
  ************************************************************************************************************************
  ********************                                                                                ********************
- ********************                  LAPLACIAN CONDITIONAL ESTIMATION (EVALUATION)                 ********************
+ ********************         FIRST ORDER CONDITIONAL ESTIMATION WITH INTERACTION (EVALUATION)       ********************
  ********************                             FINAL PARAMETER ESTIMATE                           ********************
  ********************                                                                                ********************
  ************************************************************************************************************************
@@ -256,10 +263,10 @@ Days until program expires : 289
          EPS1      EPS2     
  
  EPS1
-+        1.00E-01
++        5.00E-01
  
  EPS2
-+        0.00E+00  1.00E-01
++        0.00E+00  2.00E+00
  
 1
 
@@ -280,13 +287,13 @@ Days until program expires : 289
          EPS1      EPS2     
  
  EPS1
-+        3.16E-01
++        7.07E-01
  
  EPS2
-+        0.00E+00  3.16E-01
++        0.00E+00  1.41E+00
  
- Elapsed finaloutput time in seconds:     0.00
- #CPUT: Total CPU Time in Seconds,        0.016
+ Elapsed finaloutput time in seconds:     0.01
+ #CPUT: Total CPU Time in Seconds,        0.078
 Stop Time: 
-Sun 03/30/2025 
-09:42 PM
+31.03.2025 
+11:43

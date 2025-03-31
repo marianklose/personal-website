@@ -8,7 +8,6 @@ author:
 date: 01-11-2025
 categories: [Estimation, NONMEM, Laplacian, R] 
 image: preview_reduced.jpg
-bibliography: C:/Users/maria/Desktop/bibliography.bib
 draft: false 
 echo: true
 citation: 
