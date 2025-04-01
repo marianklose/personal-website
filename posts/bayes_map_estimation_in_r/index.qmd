@@ -1,23 +1,23 @@
 ---
-title: "Bayesian MAP estimation in R"
-description: "Understanding the Bayesian idea and reproducing a MAP estimation in R"
+title: "Reproducing NONMEM's MAP estimation in R"
+description: "How to perform Bayesian MAP estimation yourself using R and why you should care."
 author:
   - name: Marian Klose
     url: https://github.com/marianklose
     orcid: 0009-0005-1706-6289
 date: 03-31-2025  # MM-DD-YYYY
-categories: [NONMEM, Bayes, MAP] 
+categories: [NONMEM, Bayes, MAP, EBE, Estimation] 
 bibliography: C:/Users/mklose/Desktop/GitHub/personal-website/literature/bibliography.bib
 image: preview.gif
 draft: false 
 echo: true
 execute:
-  freeze: false # never re-render during project render (dependencies might change over time)
+  freeze: true # never re-render during project render (dependencies might change over time)
   echo: true
   message: false
   warning: false
 citation: 
-  url: https://marian-klose.com/posts/bayes_map_estimation_r/index.html
+  url: https://marian-klose.com/posts/bayes_map_estimation_in_r/index.html
 format:
   html:
     number-sections: true
@@ -38,34 +38,46 @@ library(tidyr)
 
 
 
-# Motivation
+# Motivation {#sec-motivation}
 
-Bayesian estimation is a widely-used method in pharmacometrics. Many pharmacometricians utilize individual predictions (`IPRED`) in their diagnostics, which represent simulations based on the *maximum a-posteriori* (MAP) estimates, also known as *Empirical Bayes Estimates* (EBE). These estimates essentially represent the mode of the so-called *posterior* distribution, which combines prior knowledge about the population and new evidence about the particular individual at hand (more to that later). `MAP` estimates also play a crucial role in *Model-Informed Precision Dosing* (MIPD), where one aims to predict the concentration-time profile of an individual, given a pharmacokinetic NLME model and a set of drug concentrations measured through a *Therapeutic Drug Monitoring* (TDM) program. During model building, the underlying individualized `ETAs` are often used for covariate screening, provided that shrinkage permits it. As you can see, Bayesian estimation is quite prominent in pharmacometric workflows.
+Bayesian estimation is a widely-used method in pharmacometrics. Many pharmacometricians utilize individual predictions (`IPRED`) in their diagnostics, which represent simulations based on the *maximum a-posteriori* (MAP) estimates [^1]. These estimates essentially represent the mode of the so-called *posterior* distribution, which combines prior knowledge about the population and new evidence about the particular individual at hand (more to that later). `MAP` estimates also play a crucial role in *Model-Informed Precision Dosing* (MIPD), where one aims to predict the concentration-time profile of an individual, given a pharmacokinetic NLME model and a set of drug concentrations measured through a *Therapeutic Drug Monitoring* (TDM) program. During model building, the underlying individualized `ETAs` are often used for covariate screening, provided that shrinkage permits it. As you can see, Bayesian estimation is quite prominent in pharmacometric workflows. Thomas Bayes would be proud of us!
+
+![Portrait of Thomas Bayes.](media/Thomas_Bayes.gif){width=40% #fig-thomas-bayes}  
 
 In many scenarios, these Bayesian calculations happen automatically *under the hood* when fitting pharmacometric models (e.g., in NONMEM), making it quite easy to use Bayesian estimates without exploring the underlying concepts and calculations. I myself did this for quite some time. Reproducing  calculations through equations is often the best way to grasp the underlying principles. Therefore, I have decided to write this blogpost, in which I want to explain the Bayesian idea and reproduce a simple Bayesian MAP estimation in R. I will mainly focus on the point estimates of the posterior distribution (`MAP` or `EBE`). Addressing the full *posterior* distribution is also important and might be covered in a future post. There are other nice blogposts which cover full Bayesian approaches in more detail, such as @navarro2023.
 
-Please note: These are just my personal reflections and interpretations of Bayesian concepts. While I've aimed for accuracy, I cannot guarantee that my explanations, equations, or terminology are flawless. If you notice any inaccuracies, please let me know so I can correct them! 
+Please note: These are just my personal reflections and interpretations of Bayesian concepts. I cannot guarantee that my explanations, equations, or terminology are flawless. If you notice any inaccuracies, please let me know so I can correct them! 
 
 
-# Structure
+# Structure {#sec-structure}
 
-Lorem ipsum dolor sit amet.
+Let me briefly outline how I structured this blogpost. The overall goal is to better understand the Bayesian concept behind MAP estimation and to derive an individualized clearance estimate for a virtual patient using R, step by step.
 
-# The Bayesian Idea: Updating Beliefs
+I start with my own little introduction of the Bayesian idea (@sec-bayesian-idea) using a real-world example and define the key components—prior, likelihood, and posterior. 
 
-## Starting with an example
+This is then followed by a pharmacometric example using a simulated dataset (from my previous blogpost) and a simple one-compartment i.v. bolus PK model as reference (@sec-pharmex). This section also includes our NONMEM reference solution which is later used to validate our calculations in R.
+
+Next, we try to explore the Bayesian theory a bit more, dealing with the mathematical formulation of MAP estimation and explaining how the prior and likelihood combine to form the posterior (@sec-bayesth).
+
+Afterwards, we move on to the R-based MAP reproduction (@sec-rrepro). We implement the prior and likelihood functions, combine them into an optimization routine, and estimate the individual parameter from scratch. Finally, we are able to compare the R-based result to the NONMEM output and visualize how prior, likelihood, and posterior interact.
+
+With that being said, let's get started!
+
+# The Bayesian Idea: Updating Beliefs {#sec-bayesian-idea}
+
+## Starting with an example {#sec-bayesian-idea-example}
 
 I would say that many of us naturally think Bayesian, even if we are not aware of it or if we don't label it that way. At its core, Bayesian statistics is about updating your beliefs once new data or information becomes available. Let’s consider an example from the real-world to illustrate this idea.
 
 Imagine you drive to work every day. If someone would ask you "How long will it take you to get to work tomorrow?", you would probably have a good idea, simply based on your past experiences. 30 minutes might be your best guess, but would you bet money that it will be exactly 30 minutes? Probably not, as you will always have some uncertainty associated with it. Perhaps something between 20 and 40 minutes would be reasonable based on your previous trips. Now, let's assume you get into your car the next morning and after 25 minutes, you have made it halfway.
 
-![A traffic jam on your way to work. Credits: Aayush Srivastava, Pexels.](media/pexels-aayushsri-1445653.jpg){width=100% #fig-traffic-jam}
+![A traffic jam on your way to work. Credits: Aayush Srivastava, Pexels.](media/pexels-aayushsri-1445653.jpg){width=80% #fig-traffic-jam}
 
-Would you stick to your initial belief that it will take you 30 minutes? Probably not, you would likely revise it (or try to break all speed limits). But would you simply double the 25 minutes to predict a 50-minute commute? This is also unlikely, given your experience suggesting that 40 minutes is usually the upper limit. So, maybe you would adjust your estimate to 38 minutes, assuming that the traffic will get better soon. This is Bayesian thinking in action: Updating your beliefs with new data. So far just without any equation and rather based on gut-feeling.
+Would you stick to your initial belief that it will take you 30 minutes? Probably not, you would likely revise it (or try to break all speed limits). But would you simply double the 25 minutes to predict a 50-minute commute? This is also unlikely, given your experience suggesting that 40 minutes is usually the upper limit. So, maybe you would adjust your estimate to 38 minutes, assuming that the traffic will get better soon. This is Bayesian thinking in action: Updating your beliefs with new data. But so far without any equation and rather based on gut-feeling.
 
 
 
-## Terminology
+## Terminology {#sec-bayesian-idea-terminology}
 
 Now, let’s map this real-world scenario to some Bayesian terminology. There are three key components in every Bayesian analysis:
 
@@ -78,20 +90,20 @@ Bayesian analysis starts with a prior, which you revise using new data (likeliho
 - **MAP / EBE:** Simply focuses on the mode of the posterior distribution and ignores its uncertainty.
 - **Full Bayesian:** Considers the entire posterior distribution, not just the mode or a point estimate.
 
-Many pharmacometricians use MAP estimates due to their computational simplicity and their direct integration into standard NLME routines, while full Bayesian methods offer a more comprehensive view by integrating uncertainty even after new data became available.
+Many pharmacometricians use MAP estimates due to their computational simplicity and their direct integration into standard NLME routines, while full Bayesian methods offer a more comprehensive view by integrating uncertainty even after new data became available. Full Bayesian methods are more and more used in the field, also thanks to some nice tutorials by @margossianFlexibleEfficientBayesian2022 for Stan/Torsten and by @johnstonBayesianEstimationNONMEM2024 for NONMEM itself, both from the Metrum Research Group.
 
 
-## Our goal in pharmacometrics
+## Our goal in pharmacometrics {#sec-bayesian-idea-goal}
 
-So, what role does Bayesian methodology play in pharmacometrics? Obviously it is not about optimizing your commute.  Instead, we typically use Bayesian estimation to individualize the model parameters for a given individual $i$, which has a set of unique observations $Y_{i}$. This concept was first introduced to the pharmacometric community by @sheiner1972, if I am not mistaken. On the one hand, `MAP` estimation happens during model building, at each iteration step and then after the actual estimation has finished, at the `POSTHOC` step. On the other hand, it is also used in MIPD settings as described above. The approach is the same and we will later have a look at a simple pharmacokinetic example to illustrate this.
+So, what role does Bayesian methodology play in pharmacometrics? Obviously it is not about optimizing your commute.  Instead, we typically use Bayesian estimation to individualize the model parameters for a given individual $i$, which has a set of unique observations $Y_{i}$. This concept was first introduced to the pharmacometric community by @sheiner1972, if I am not mistaken. On the one hand, `MAP` estimation happens during model building, at each iteration step [^2] and then after the actual estimation has finished, at the `POSTHOC` step. On the other hand, it is also used in MIPD settings as described above. The approach remains the same, and we will later have a look at a simple pharmacokinetic example to illustrate this.
 
 So far we used a relatable example rather focusing on the intuition behind Bayesian thinking. Now we want to dive a bit into the mathematics behind it to be able to formally reproduce a simple Bayesian MAP estimation in R.
 
 
 
-# Pharmacometric example and reference solution
+# Pharmacometric example and reference solution {#sec-pharmex}
 
-## Data
+## Data and visualization {#sec-pharmex-data}
 
 Without data, no Bayesian parameter individualization. For our MAP estimation, we are using the same simulated data set I have defined in the previous blogpost about NLME modelling. See @klose2025 for more details about this data set. Let's start by loading the simulated concentration-time data and showing the head of the data set:
 
@@ -107,11 +119,11 @@ sim_data |>
 ```
 
 
-We will focus on ID 5, which has lower simulated concentrations, making it easier to observe differences between typical and individualized profiles. Here's a plot to visualize these concentration-time profiles of ID 5 and the other IDs of the virtual population:
+We will focus on ID 5, which has lower simulated concentrations than the average individual, making it easier to observe differences between typical and individualized profiles. Here's a plot to visualize these concentration-time profiles of ID 5 and the other IDs of the virtual population:
 
 ```{r}
 #| label: fig-sim-vis
-#| fig-cap: "Simulated concentration-time profiles for 10 individuals after i.v. bolus injection. ID 5 (blue) represents our examplaratory ID."
+#| fig-cap: "Simulated concentration-time profiles for 10 individuals after i.v. bolus injection. ID 5 (blue) represents our exemplary ID."
 
 # show individual profiles
 sim_data |> 
@@ -124,7 +136,7 @@ sim_data |>
   scale_y_continuous(limits=c(0,NA))+
   labs(x="Time after last dose [h]", y="Concentration [mg/L]")+
   scale_color_manual("Individual", values=c("grey", "darkblue"))+
-  ggtitle("Simulated concentration time data after i.v. infusion")
+  ggtitle("Simulated concentration time data after i.v. bolus injection")
 ```
 
 
@@ -143,21 +155,21 @@ sim_data_id5 |>
 With that being done, we are all set to define the NLME model in NONMEM in a next step!
 
 
-## NLME model structure
+## NLME model structure {#sec-pharmex-nlme}
 
-For our example and reference, we'll use a simple one-compartment IV model with first-order kinetics, previously fitted to similar data in @klose2025. Here's the model structure:
+For our example and reference, we'll use a simple one-compartment IV model with first-order kinetics, previously fitted to similar data (@klose2025). Here's a sketch of the simple model structure:
 
 ![Model structure of our simple 1 cmt i.v. bolus model with first order kinetics.](media/model_structure.png){width=100% #fig-mod-struct}
 
-Assuming our model is already fitted, our goal is to individualize parameters for ID 5. The model parameter estimates which are:
+Assuming our model is already fitted, our goal is to individualize parameters for ID 5. The model parameter estimates are based on the fitted model from the previous blogpost and are as follows:
 
 - $CL$ = 0.247 L/h
 - $V$ = 3.15 L
 - $\omega^2_{CL}$ = 0.11
-- $\sigma^2_{RUV\_ADD}$ = 0.10
-- $\sigma^2_{RUV\_PROP}$ = 2.0
+- $\sigma^2_{RUV\_ADD}$ = 2.00
+- $\sigma^2_{RUV\_PROP}$ = 0.50
 
-In a next step, we will translate this into a NONMEM model. Note that we added a proportional error term to the previously used model to better illustrate the differences among prior, likelihood, and posterior distributions. For the same reason, we increased the additive error to 2 mg/L. Let's store this information, along with the 100 mg intravenous bolus dose administered to the individual, in a list object for easy retrieval during subsequent calculations:
+In a next step, we will translate this into a NONMEM model. Note that we added a proportional error term to the previously used model to better illustrate the differences among prior, likelihood, and posterior distributions [^3]. For the same reason, we increased the additive error to 2 mg/L. Let's store this information, along with the 100 mg intravenous bolus dose administered to the individual, in a list object for easy retrieval during subsequent calculations:
 
 ```{r}
 # store model parameters in list
@@ -165,8 +177,8 @@ mod_par <- list(
   tvcl = 0.247,
   tvvd = 3.15,
   omega2_CL = 0.11,
-  sigma2_prop = 0.50, 
   sigma2_add = 2,
+  sigma2_prop = 0.50, 
   dose = 100 
 )
  
@@ -177,7 +189,7 @@ mod_par
 Great! Now we can go ahead and define the NONMEM model.
 
 
-## NONMEM model
+## NONMEM model {#sec-pharmex-model}
 
 We have updated our NONMEM model slightly from the last blogpost:
 
@@ -221,7 +233,7 @@ $TABLE ID TIME EVID AMT RATE DV PRED IPRED MDV ETA1 CL NOAPPEND ONEHEADER NOPRIN
 ```
 
 
-We have fixed the initial parameter estimates to the final estimates from before and incorporated a combined error model (as described above). By using `MAXEVAL=0`, we avoid any population parameter estimation and the model is simply being evaluated. The `POSTHOC` option computes individual MAP estimates as this is the core of our task. We need to make sure that we include the `INTERACTION` option in the `$$ESTIMATION` block, as this tells NONMEM to include the effect of `ETA` on the residual error when performing MAP estimation. This is important as our error model now depends on `IPRED`, which in turn depends on `ETA.` 
+We have fixed the initial parameter estimates to the final estimates from before and incorporated a combined error model (as described above). By using `MAXEVAL=0`, we avoid any population parameter estimation and the model is simply being evaluated. The `POSTHOC` option computes individual MAP estimates as this is the core of our task. We need to make sure that we include the `INTERACTION` option in the `$ESTIMATION` block, as this tells NONMEM to include the effect of `ETA` on the residual error when performing MAP estimation [^4]. This is important as our error model now depends on `IPRED`, which in turn depends on `ETA.` 
 
 
 After running the model, we'll read the output through `map_estim_out`:
@@ -244,7 +256,7 @@ $$CL_i = \theta_{TVCL} \cdot \exp(\eta_i)$$  {#eq-cl-individual}
 
 Calculating this in R yields:
 
-$$CL_i = 0.247 \cdot \exp(0.55194) = 0.3977$$ {#eq-cl-individual-num}
+$$CL_i = 0.247 \cdot \exp(0.55194) = 0.42894$$ {#eq-cl-individual-num}
 
 
 ```{r}
@@ -270,7 +282,7 @@ nm_out |>
   labs(
     y = "Concentration [mg/L]",
     x = "Time after last dose [h]",
-    title = "Comparison of DV, PRED and IPRED",
+    title = "Comparison of DV, PRED and IPRED for ID 5",
     color = "Source"
   ) +
   theme_bw() 
@@ -279,9 +291,9 @@ nm_out |>
 Notably, our reference individual's data (`DV`) diverges from typical predictions (`PRED`), while individualized predictions (`IPRED`) fall in between. Let's dive deeper into the process to understand these differences.
 
 
-# Bayesian Theory
+# Bayesian Theory {#sec-bayesth}
 
-## General form of Bayes' theorem
+## General form of Bayes' theorem {#sec-bayesth-general}
 
 As described earlier, the primary goal of a Bayesian approach is to obtain the posterior distribution, either as the mode or as the complete distribution. Bayes' theorem is commonly presented as follows:
 
@@ -290,7 +302,7 @@ $$P(A|B) = \frac{P(A) \cdot P(B|A)}{P(B)}$$ {#eq-bayes-general}
 Here, conditional probabilities are utilized, and $P(A|B)$ represents the probability of event $A$ given event $B$ has occurred. However, this remains quite theoretical. Let's directly translate it into the context of a pharmacokinetic NLME model.
 
 
-## Pharmacometric context
+## Pharmacometric context {#sec-bayesth-pharmetrx}
 
 In pharmacometrics, we aim to determine the most likely individual random effect $\eta_i$ (which translates to the individual parameter $CL_i$), given the observed concentration data $Y_{i}$ for the individual. Therefore, we are mostly interested to find the posterior distribution of the individual random effect $\eta_i$ given the data $Y_{i}$:
 
@@ -298,7 +310,7 @@ $$p(\eta_i|Y_{i}) = \frac{p(\eta_i) \cdot p(Y_{i}|\eta_i)}{p(Y_i)}$$  {#eq-bayes
 
 with 
 
-- $p(\eta_i|Y_{ij})$: posterior distribution of parameter $\eta_i$ given the individual data $Y_{i}$
+- $p(\eta_i|Y_{i})$: posterior distribution of parameter $\eta_i$ given the individual data $Y_{i}$
 - $p(\eta_i)$: prior distribution of parameter $\eta_i$
 - $p(Y_{i}|\eta_i)$: likelihood of observing data $Y_{i}$ given parameter $\eta_i$
 - $p(Y_{i})$: marginal likelihood of data $Y_{i}$
@@ -310,21 +322,21 @@ $$p(\eta_i|Y_{i}) \propto p(\eta_i) \cdot p(Y_{i}|\eta_i)$$ {#eq-bayes-specific-
 Removing the marginal likelihood gives an unnormalized posterior distribution, indicated by the proportional sign. Working with an unnormalized posterior is acceptable when our when we solely care about finding the mode of the posterior distribution (MAP estimate), as normalization is unnecessary in this scenario. But how exactly do we calculate the MAP estimate?
 
 
-## MAP estimation
+## MAP estimation {#sec-bayesth-map}
 
 To find the most likely parameter for an individual, we must identify the maximum of the posterior distribution (MAP estimate). Mathematically, this involves finding the parameter $\eta_i^*$ that maximizes the posterior:
 
 $$\eta_i^* = \underset{\eta_i}{\mathrm{argmax}}~ p(\eta_i|Y_{i}) = \underset{\eta_i}{\mathrm{argmax}}~ p(\eta_i) \cdot \prod_{j=1}^{m} p(Y_{ij}|\eta_i)$$ {#eq-map-norm}
 
-Dealing with products of probabilities can be cumbersome (and mathematically instable), so taking the logarithm simplifies the calculation:
+Dealing with products of small probability densities can be cumbersome (and mathematically instable), so taking the logarithm simplifies the calculation:
 
 $$\eta_i^* = \underset{\eta_i}{\mathrm{argmax}}~ \log(p(\eta_i|Y_{i})) = \underset{\eta_i}{\mathrm{argmax}}~ \log(p(\eta_i)) + \sum_{j=1}^{m} \log(p(Y_{ij}|\eta_i))$$ {#eq-map-log}
 
 In the end, we would have to use a numerical optimizer function to explore the parameter space of $\eta_i$ and locate the maximum of the posterior distribution ($\eta_i^*$). To fully express the equation, we must define both the log prior $\log(p(\eta_i))$ and log likelihood $\log(p(Y_{ij}|\eta_i))$ terms. Let's explore these in detail.
 
-### Prior term
+### Prior term {#sec-bayesth-map-prior}
 
-The prior distribution $p(\eta_i)$ captures our inital beliefs and uncertainties regarding $\eta_i$ before observing the data. Bayesian methods allow to  incorporate prior knowledge through various distributions and parameters (which is why Bayesians are sometimes being criticized of being too subjective). In pharmacometrics, a common approach is using a prior based on a previously estimated model, typically a normal distribution with mean 0 and variance $\omega^2_{CL}$ estimated from the NLME model. In contrast to other disciplines, the choice of our priors is generally less controversial, although there has been recent discussion regarding whether this one-approach-fits-all is always appropriate or if priors should be adjusted (e.g., flattened compared to the NLME estimate) in certain situations. See @hughes2021 for more information. The general 'role' of the prior term is that strong deviations from the "typical" individual should only be considered when it allows us do substantially better explain the observed data. We can treat it as some kind of penalty function. The probability density function (PDF) of a normal distribution can be used to calculate its contribution:
+The prior distribution $p(\eta_i)$ captures our inital beliefs and uncertainties regarding $\eta_i$ before observing the data. Bayesian methods allow to  incorporate prior knowledge through various distributions and parameters (which is why Bayesians are sometimes being criticized of being too subjective). In pharmacometrics, a common approach is using a prior based on a previously estimated model, typically a normal distribution with mean 0 and variance $\omega^2_{CL}$ estimated from the NLME model. In contrast to other disciplines, the choice of our priors is generally less controversial, although there has been recent discussion regarding whether this one-approach-fits-all is always appropriate or if priors should be adjusted (e.g., flattened compared to the NLME estimate) in certain situations. See @hughes2021 for more information. The general "role" of the prior term is that strong deviations from the "typical" individual should only be considered when it allows us do substantially better explain the observed data. I like to see it as some kind of penalty function which prevents us from doing a potentially flawed curve fitting exercise. The probability density function (PDF) of a normal distribution can be used to calculate its contribution:
  
 
 $$p(\eta_i) = \frac{1}{\sqrt{2\pi\omega^2}} \cdot \exp\left(-\frac{(\eta_i-\mu)^2}{2\omega^2}\right)$$  {#eq-prior-1}
@@ -337,9 +349,9 @@ Taking the log yields:
 
 $$\log(p(\eta_i)) = -0.5 \log(2\pi\omega^2) - \frac{\eta_i^2}{2\omega^2}$$ {#eq-prior-3}
 
-Now, we can compute the prior term for any given individual $\eta_i$, using variance $\omega^2_{CL}$ (e.g., 0.11) from our NLME model. If we have a good reason to believe that our prior should be different (e.g., we apply our model to another population), we could adjust the variance accordingly.
+Now, we can compute the prior term for any given individual $\eta_i$, using variance $\omega^2_{CL}$ (e.g., 0.11) from our NLME model. If we have a good reason to believe that our prior should be different (e.g., we apply our model to another population), we could adjust the variance accordingly (as described in @hughes2021).
 
-### Likelihood term
+### Likelihood term {#sec-bayesth-map-likelihood}
 
 The likelihood term $p(Y_{ij}|\eta_i)$ is the probability of observing the data point $Y_{ij}$ given the parameter $\eta_i$. As we usually assume the residuals of our model predictions to be normally distributed, we again use the normal distribution PDF:
 
@@ -355,24 +367,24 @@ Taking the log yields:
 
 $$\log(p(Y_{ij}|\eta_i)) = -0.5 \log(2\pi\sigma^2) - \frac{(Y_{ij}-f(x_{ij}; \eta_i))^2}{2\sigma^2}$$ {#eq-likelihood-2}
 
-Please note that in our case (a combined additive and proportional RUV model), $\sigma^2$ represents the combined variances at time $t_{ij}$ and prediction $f(x_{ij}$. As $f(x_{ij}$ is a constant for a given $t_{ij}$, we can compute the combined variance as 
+Please note that in our case (a combined additive and proportional RUV model), $\sigma^2$ represents the combined variances at time $t_{ij}$ and prediction $f(x_{ij})$. As the structural solution of our model, $f(x_{ij})$, is a constant for a given $t_{ij}$, we can compute the combined variance as 
 
 $$\sigma^2 = \sigma^2_{prop} \cdot f(x_{ij})^2 + \sigma^2_{add}$$ {#eq-sigma2}
 
-Therefore, we have to calculate the $\sigma^2$ for each data point $Y_{ij}$ individually.
+Therefore, we later have to calculate the $\sigma^2$ for each data point $Y_{ij}$ individually.
 
-## Combining both terms
+## Combining both terms {#sec-bayesth-map-final}
 
-Combining the prior and likelihood terms, we obtain:
+Writing out the log prior (@eq-prior-3) and log likelihood (@eq-likelihood-2) terms in our MAP estimation objective function (@eq-map-log), we obtain:
 
-$$\eta_i^* = \underset{\eta_i}{\mathrm{argmax}}~\left(\left[-0.5 \log(2\pi\omega^2) - \frac{\eta_i^2}{2\omega^2}\right] ~ + \left[-0.5 \log(2\pi\sigma^2) - \frac{(Y_{ij}-f(x_{ij}; \eta_i))^2}{2\sigma^2}\right]\right)$$ {#eq-map-final}
+$$\eta_i^* = \underset{\eta_i}{\mathrm{argmax}}~\left(\left[-0.5 \log(2\pi\omega^2) - \frac{\eta_i^2}{2\omega^2}\right] ~ + \sum_{j=1}^m \left[-0.5 \log(2\pi\sigma^2) - \frac{(Y_{ij}-f(x_{ij}; \eta_i))^2}{2\sigma^2}\right]\right)$$ {#eq-map-final}
 
 This final equation will guide our numerical optimizer (`optim` function in R) to determine the maximum, providing us with the individual MAP estimate. Let's implement this method in R and reproduce our NONMEM reference solution!  
 
 
-# R-based MAP reproduction
+# R-based MAP reproduction {#sec-rrepro}
 
-## Prior term
+## Prior term {#sec-rrepro-prior}
 
 We start by defining a function to calculate the prior term given by @eq-prior-3. Here, we simply pass the individual $\eta_i$ and the model parameters (including $\omega^2_{CL}$) as input arguments, and the function returns the log probability of the given $\eta_i$ under the prior distribution:
 
@@ -389,7 +401,6 @@ prior_fun <- function(eta_i, mod_par){
   
   # calculate probability
   log_prob <- - 0.5 * log(2*pi*omega2) - eta_i^2/(2*omega2)
-  # log_prob <- 1
   
   # return log probability
   return(log_prob)
@@ -429,7 +440,7 @@ prior_tibble |>
 ```
 
 
-The following plot shows how these $\eta_i$ values map onto the Clearance domain:
+The following plot shows how these $\eta_i$ values map onto the clearance domain:
 
 ```{r}
 #| label: fig-prior-term-cl
@@ -452,7 +463,7 @@ prior_tibble |>
 From the plots, we see that certain values of $\eta_i$ and $CL_i$ are more likely than others, based on our prior beliefs derived from the NLME model estimates, before observing any individual data. Let's continue with the likelihood term:
 
 
-## Likelihood term
+## Likelihood term {#sec-rrepro-likelihood}
 
 To calculate the log likelihood term described in @eq-likelihood-2, we first have to define a model prediction function. Given our simple one-compartment model, we use a closed-form expression, though the principles apply equally to ODE-based models. More details on the model prediction function can be found in the previous blogpost, see @klose2025.
 
@@ -471,7 +482,7 @@ model_fun <- function(eta_i, dose, vd, theta_tvcl, t) {
 }
 ```
 
-Next, we construct the likelihood function for individual observations:
+Next, we construct the likelihood function for individual observations. Please note that we have to calculate the $\sigma^2$ for each data point $Y_{ij}$ individually, as the variance contains an element proportional to the model prediction $f_i$ (see @eq-likelihood-2). The following equation calculates the log likelihood for a single observation:
 
 ```{r filename="function: log_likelihood_fun_single()"}
 #| echo: true
@@ -490,11 +501,8 @@ log_likelihood_fun_single <- function(eta_i, dose, vd, theta_tvcl, t_ij, Y_ij, s
   # calculate probability
   log_lik <- - 0.5 * log(2*pi*sigma2) - (Y_ij - f_ij)^2/(2*sigma2)
   
-  # take sum of likelihoods
-  log_lik_sum <- sum(log_lik)
-  
   # return log likelihood
-  return(log_lik_sum)
+  return(log_lik)
 }
 ```
 
@@ -586,7 +594,7 @@ log_likelihood_fun_multiple(
 )
 ```
 
-Now, we can visualize the likelihood term across a range of $\eta_i$ values:
+Now, we can visualize the likelihood term across a range of $\eta_i$ values, similar to what we have did for the prior term:
 
 ```{r}
 #| label: fig-likelihood-term
@@ -642,9 +650,9 @@ eta_i_max_likelihood
 ```
 
 
-The optimal $\eta_i$ value according to the likelihood term and ignoring any prior information is `r eta_i_max_likelihood`. Please note: As the likelihood is the product of many probabilities, each between 0 and 1, we typically deal with extremely small numerical values. Therefore, it is common practice to use logarithmic transformations for numerical stability. Next, we combine the prior and likelihood terms to perform MAP estimation.
+The optimal $\eta_i$ value according to the likelihood term (and ignoring any prior information) is `r eta_i_max_likelihood`. Please note: As the likelihood is the product of many probabilities, each between 0 and 1, we typically deal with extremely small numerical values. Therefore, it is common practice to use logarithmic transformations for numerical stability. Next, we combine the prior and likelihood terms to perform MAP estimation.
 
-## MAP estimation (posterior)
+## MAP estimation (posterior) {#map-rrepro-mapestim}
 
 We now have to define an objective function for numerical optimization, combining prior and likelihood terms to estimate the posterior (as shown in @eq-map-final).
 
@@ -740,8 +748,7 @@ posterior_tibble |>
   theme_bw()
 ```
 
-
-## Comparison of prior, likelihood, and posterior
+## Comparison of prior, likelihood, and posterior {#sec-map-rrepro-comp} 
 
 Finally, we compare the MAP estimate (mode of the posterior) with prior and likelihood terms visually:
 
@@ -772,7 +779,7 @@ comp_tibble |>
   ) +
   geom_vline(
     data = data.frame(source = factor("posterior", levels = c("prior", "posterior", "likelihood"))),
-    aes(xintercept = map_est$par |> max()),
+    aes(xintercept = map_est$par),
     color = "darkgreen", linetype = "dashed", linewidth = linewidth
   ) +
   geom_vline(
@@ -795,11 +802,15 @@ comp_tibble |>
 ```
 
 
-This clearly demonstrates how the posterior is influenced by both the prior and the likelihood, with the MAP estimate reflecting a balance between these two sources of information.
+This clearly demonstrates how the posterior is influenced by both the prior and the likelihood, with the MAP estimate (mode of the posterior, green dashed line) reflecting a balance between these two sources of information.
 
 
-# Conclusion
+# Conclusion {#map-rrepro-conclusion}
 
-This simple example illustrates how to estimate the individual parameter $\eta_i$ (which translates to an individual clearance $CL_i$) for a single subject using a Bayesian approach. We have seen that the posterior distribution, often summarized by its mode (the MAP or EBE estimate), represents a compromise between the prior and the likelihood. This powerful technique enables the continuous integration of prior knowledge with new data.
+This simple example illustrates how to estimate the individual parameter $\eta_i$ (which translates to an individual clearance $CL_i$) for a single subject using a Bayesian approach. We have seen that the posterior distribution, often summarized by its mode (the MAP or EBE estimate), represents a compromise between the prior and the likelihood. This powerful technique enables the continuous integration of prior knowledge with new data and is very useful for many pharmacometric workflows. With that, I conclude this blog post and hope you enjoyed it. If you have any questions or feedback, please feel free to leave a comment.
 
 
+[^1]: *MAP* estimates are also known as *Empirical Bayes Estimates* (EBE).
+[^2]: Depending on the estimation algorithm.
+[^3]: The dense sampling in combination with a simple additive error model for RUV led to a scenario where the posterior was nearly equal to the likelihood. Therefore, I have increased the additive error and introduced a proportional term as well. This places the posterior in the middle and I can recycle the old dataset I have simulated before. 
+[^4]: Actually, this took me quite some time to figure out. I was using the model from the previous blogpost, which only had an additive error and was missing the `INTERACTION` option (which doesn't matter if you are just using a constant additive error). With the newly introduced proportional error, I then had a mismatch between my calculations and the reference and I couldn't figure out why. The missing `INTERACTION` was the solution, as with the introduction of the proportional error the RUV does not remain constant (which NONMEM is assuming when `INTERACTION` is missing). Lesson learned!

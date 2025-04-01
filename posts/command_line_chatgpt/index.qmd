@@ -9,7 +9,7 @@ date: 01-12-2025
 categories: [ChatGPT, openai, LLM] 
 image: preview.png
 draft: true
-draft-mode: "gone"
+draft-mode: gone
 echo: true
 execute:
   freeze: true # never re-render during project render (dependencies might change over time)
