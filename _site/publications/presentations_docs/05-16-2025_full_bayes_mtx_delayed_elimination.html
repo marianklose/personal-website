@@ -6,11 +6,11 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="author" content="M. Klose, F. Thoma, L. Kovar, W. Huisinga, R. Michelet, C. Kloft">
-<meta name="dcterms.date" content="2024-06-26">
-<meta name="description" content="PAGE 2024">
+<meta name="author" content="M. Klose, D. Marschner, M. Knott, J. Wendler, J. Müller-Kühnle, L. Kovar, W. Huisinga, C. Nyhoegen, R. Michelet, A. M. Mc Laughlin, G. Illerhaus, C. Kloft">
+<meta name="dcterms.date" content="2025-05-16">
+<meta name="description" content="PK/PD Expert Meeting - Best Presentation Award Session">
 
-<title>Machine learning-driven flattening of model priors: A comparative simulation study across multiple compounds – Marian Klose</title>
+<title>A Bayesian-NLME approach identifies patients at risk of delayed MTX elimination if informative TDM data is provided – Marian Klose</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -121,19 +121,19 @@ ul.task-list li input[type="checkbox"] {
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Machine learning-driven flattening of model priors: A comparative simulation study across multiple compounds</h1>
+<h1 class="title">A Bayesian-NLME approach identifies patients at risk of delayed MTX elimination if informative TDM data is provided</h1>
   <div class="quarto-categories">
-    <div class="quarto-category">Machine learning</div>
+    <div class="quarto-category">Methotrexate</div>
+    <div class="quarto-category">MTX</div>
     <div class="quarto-category">Bayes</div>
-    <div class="quarto-category">Prior Modifications</div>
-    <div class="quarto-category">Simulation study</div>
+    <div class="quarto-category">NLME PK</div>
     <div class="quarto-category">First author</div>
   </div>
   </div>
 
 <div>
   <div class="description">
-    PAGE 2024
+    PK/PD Expert Meeting - Best Presentation Award Session
   </div>
 </div>
 
@@ -143,14 +143,14 @@ ul.task-list li input[type="checkbox"] {
     <div>
     <div class="quarto-title-meta-heading">Author</div>
     <div class="quarto-title-meta-contents">
-             <p><strong>M. Klose</strong>, F. Thoma, L. Kovar, W. Huisinga, R. Michelet, C. Kloft </p>
+             <p><strong>M. Klose</strong>, D. Marschner, M. Knott, J. Wendler, J. Müller-Kühnle, L. Kovar, W. Huisinga, C. Nyhoegen, R. Michelet, A. M. Mc Laughlin, G. Illerhaus, C. Kloft </p>
           </div>
   </div>
     
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">June 26, 2024</p>
+      <p class="date">May 16, 2025</p>
     </div>
   </div>
   
@@ -164,61 +164,69 @@ ul.task-list li input[type="checkbox"] {
 
 <section id="url" class="level2">
 <h2 class="anchored" data-anchor-id="url">URL</h2>
-<p><a href="https://www.page-meeting.org/default.asp?abstract=10858" class="uri">https://www.page-meeting.org/default.asp?abstract=10858</a></p>
+<p><a href="https://www.pkpd-expertentreffen.de/" class="uri">https://www.pkpd-expertentreffen.de/</a></p>
 </section>
 <section id="abstract" class="level2">
 <h2 class="anchored" data-anchor-id="abstract">Abstract</h2>
-<section id="introduction" class="level3">
-<h3 class="anchored" data-anchor-id="introduction">Introduction</h3>
-<p>Model-informed precision dosing (MIPD) supports clinical decision-making by leveraging mathematical models and individual drug or biomarker measurements [1]. A typical MIPD workflow involves estimating individual maximum a posteriori (MAP) values for parameters which include interindividual variability (IIV). MAP values represent the mode of the posterior distribution and are obtained by maximising the product of the likelihood of the data and the parameter’s prior distribution [2]. The selected prior distribution needs to properly reflect the uncertainty about the parameter and is often defined by a distribution around the covariate-adjusted typical parameter value with a variance given by the model’s IIV estimate. However, this representation of uncertainty is only accurate when the model closely represents the clinical population (CP). In reality, deviations between model and CP are expected [3]. This deviation gave rise to the method of machine learning (ML)-assisted flattening of model priors [4], where the variance of the prior is selectively increased to account for these deviations. While this method has shown considerable improvement in predictive performance for vancomycin [4], its potential benefit across other drugs has not been studied.</p>
 </section>
-<section id="objectives" class="level3">
-<h3 class="anchored" data-anchor-id="objectives">Objectives</h3>
-<p>To assess the impact of ML-driven flattening of priors on the predictive performance for five compounds which are commonly applied in Therapeutic Drug Monitoring (TDM) programs by conducting a simulation study.</p>
+<section id="introduction" class="level2">
+<h2 class="anchored" data-anchor-id="introduction">Introduction</h2>
+<p>Physicians must constantly assess treatment-related risks based on limited data. This is particularly difficult in oncology, as compounds often have a narrow therapeutic window. For example, patients receiving high-dose methotrexate (HD-MTX) are at increased risk of toxicity if MTX elimination is delayed (MTX &gt; threshold of 0.2 µM for &gt;72 h post-dose). To timely identify these patients (‘delayed eliminators’), TDM is being performed until MTX concentrations drop below the threshold. However, early translation of MTX concentrations and clinical biomarkers into a risk score at the bedside can be challenging. A Bayesian-NLME framework allows to combine prior knowledge about the population with individual measurements. Evaluating its predictive performance in clinically relevant scenarios with unseen patients is crucial to determine the clinical utility of the obtained predictions. However, most published HD-MTX models lack such validation, leaving their clinical applicability uncertain.</p>
 </section>
-<section id="methods" class="level3">
-<h3 class="anchored" data-anchor-id="methods">Methods</h3>
-<p>Five compounds were investigated: vancomycin (VAN), meropenem (MEM), methotrexate (MTX), infliximab (IFX), and tacrolimus (TAC). To have a plausible representation of the differences between model and CP to which the model is applied, two published models per drug [5-14] were selected and split into a data-generating model (DM) and an applied model (AM) used for Bayesian forecasting.</p>
-<p>A plausible TDM dataset was simulated with the DM (n=5000) using mrgsolve [15]. The PK-Sim® [16] population builder was used to generate demographically realistic virtual patients. All other covariates were drawn from lognormal distributions based on reported point estimates. Two administrations, each followed by a single drug concentration measurement, were simulated for each individual. RUV was included to account for the expected noise in clinical readouts.</p>
-<p>MAP estimation using the AM was performed with prior weights λ=1 and λ=1/8 for standard priors (SP) and flattened priors (FP), respectively. While the first concentration was included for MAP estimation, the second was used as a reference to evaluate the predictive performance. For each patient and λ, the residual between prediction and withheld datapoint was calculated.</p>
-<p>The labeled dataset was then split into a training/test cohort (75%/25%) to build a ML model which predicts whether FP or SP should be applied for a given individual. All ML steps were conducted using the tidymodels [17] framework in R. The XGBoost (XGB) algorithm [18] was employed, using a 5-fold cross-validation with 5 repeats and a grid search for hyperparameter tuning. Optimal hyperparameters were selected based on precision.</p>
-<p>To assess the impact of the method on the predictive performance of the model, the test dataset was bootstrapped (n=1000). For each sample, RMSE and MPE along with their relative improvement compared to SP were calculated across patients.</p>
-</section>
-<section id="results" class="level3">
-<h3 class="anchored" data-anchor-id="results">Results</h3>
-<p>Results from the simulation study, presented as the median relative improvement (-) or deterioration (+) compared to SP, were:</p>
+<section id="objectives" class="level2">
+<h2 class="anchored" data-anchor-id="objectives">Objectives</h2>
+<p>Therefore, the objectives of our work were:</p>
 <ul>
-<li>VAN
-<ul>
-<li>RMSE: -16.0% (-11 to -22% [4])</li>
-<li>MPE: -40.8% (-42 to -74% [4]) -MEM</li>
-<li>RMSE: -0.12%</li>
-<li>MPE: -2.89%</li>
-</ul></li>
-<li>MTX
-<ul>
-<li>RMSE: +1.06%</li>
-<li>MPE: -4.15%</li>
-</ul></li>
-<li>IFX
-<ul>
-<li>RMSE: -11.8%</li>
-<li>MPE: +1.69%</li>
-</ul></li>
-<li>TAC
-<ul>
-<li>RMSE: -32.6%</li>
-<li>MPE: +18.0%</li>
-</ul></li>
+<li>to develop an MTX NLME model for an adult central nervous system (CNS) lymphoma population based on a training cohort, and</li>
+<li>to assess how well the model identifies delayed eliminators in a test cohort at different time points with varying amounts of data available for Bayesian forecasting.</li>
 </ul>
-<p>Overall, the simulated impact ranged from -40.8% to +1.06% (RMSE) and -16.0% to +18.0% (MPE). Precision for the test dataset was 72.1% (VAN), 25.8% (MEM), 32.8% (MTX), 37.9% (IFX), and 71.3% (TAC).</p>
 </section>
-<section id="conclusion" class="level3">
-<h3 class="anchored" data-anchor-id="conclusion">Conclusion</h3>
-<p>The predicted improvements in RMSE and MPE for VAN are in agreement with the reported values. However, the impact of ML driven-flattening of priors on the predictive performance for other drugs varied substantially: The largest reduction in RMSE/MPE was indeed found for VAN with heterogenous improvements and even deteriorations for the other compounds. Missing impact of modified priors was also previously reported [19]. Moving forward, we plan to extend the investigation to identify variables which potentially explain the observed differences.</p>
+<section id="methods" class="level2">
+<h2 class="anchored" data-anchor-id="methods">Methods</h2>
+<p>Clinical routine data of adult CNS-lymphoma patients receiving HD-MTX i.v. infusion (median duration 3.25 h) was retrospectively collected and split by ID into a training (75%) and a test (25%) cohort. Cycles exceeding 72 h to MTX&lt;0.2 µM were classified as delayed. To avoid biased parameter estimates due to a longer follow-up in delayed eliminators, censored observations (&lt;0.2 µM) were added every 24 h up to 22 days since the last observation &lt;0.2 µM per patient and cycle. Parameters were estimated using SAEM and M3 method in NONMEM 7.5.1. Pre-specified covariate relations were tested on parameters with variability using SCM. Per cycle, time-to-threshold predictions were evaluated at pre-dose, 10 h, 30 h, and 50 h after start of infusion using data available up to each time point. Bayesian forecasting using <code>mapbayr</code> was conducted once MTX concentrations became available, including data from previous cycles. The predicted and observed times to threshold were compared for each time point within a cycle by calculating the mean absolute error (MAE) and the fraction of correctly identified delayed patients (true positive rate, TPR).</p>
+</section>
+<section id="results" class="level2">
+<h2 class="anchored" data-anchor-id="results">Results</h2>
+<p>The training data (nID: 132, nCycl: 410, nMTX: 2906) was best described by a 3 cmt model with first-order disposition processes and variability on CL (IIV: 19.0%, IOV: 14.4%) and Q3 (IIV: 29.6%, IOV: 27.3%). CL was positively associated with estimated glomerular filtration rate and serum albumin concentrations and negatively associated with C-reactive protein concentrations. Parameters were precisely estimated (SIR: 1.0%-26% RSE), with GOF and VPC plots demonstrating good agreement with the data.</p>
+<p>Predictivity results for the time to threshold in all cycles of the test cohort (nID: 44, nCycl: 137, nMTX: 985) were:</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Time Point</th>
+<th>MAE (h)</th>
+<th>TPR (%)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Pre-dose</td>
+<td>22.8</td>
+<td>30.6</td>
+</tr>
+<tr class="even">
+<td>≤ 10 h</td>
+<td>22.2</td>
+<td>38.9</td>
+</tr>
+<tr class="odd">
+<td>≤ 30 h</td>
+<td>15.7</td>
+<td>61.1</td>
+</tr>
+<tr class="even">
+<td>≤ 50 h</td>
+<td>11.9</td>
+<td>77.8</td>
+</tr>
+</tbody>
+</table>
+<p>At pre-dose, the model showed poor identification of delayed eliminators (TPR) and low predictive accuracy (MAE). Including MTX concentrations at the end of infusion only slightly improved predictive performance, with a minor reduction in MAE (-0.6 h) and a small increase in TPR (+8.3% points). In contrast, incorporating additional data between 10 h and 30 h substantially improved predictive performance, increasing the TPR by 22.2% points and reducing MAE by 6.5 h compared to the 10 h time point. The 50 h time point showed the best predictive performance. Adding data from previous cycles improved TPR for early time points (pre-dose: 38% vs 10%; 10 h: 46% vs 20%), but worsened TPR for later time points (30 h: 58% vs 70%; 50 h: 77% vs 80%). A similar pattern was observed for MAE.</p>
+</section>
+<section id="conclusion" class="level2">
+<h2 class="anchored" data-anchor-id="conclusion">Conclusion</h2>
+<p>Depending on the amount of data available for a given patient, the predictive performance of the NLME model ranged from poor to good. At early time points, the model showed substantial inaccuracy and insufficient identification of delayed eliminators. We conclude that TDM data beyond 10 h is essential for identifying at-risk patients. Next, we will extend the framework to a full Bayesian approach using Stan and Torsten and integrate it into an RShiny app.</p>
 
 
-</section>
 </section>
 
 </main> <!-- /main -->

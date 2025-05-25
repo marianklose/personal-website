@@ -1,0 +1,48 @@
+---
+title: "Understanding Sampling Importance Resampling"
+description: "The queen of getting the correct RSE%"
+author:
+  - name: Marian Klose
+    url: https://github.com/marianklose
+    orcid: 0009-0005-1706-6289
+date: 05-24-2025
+categories: [RUV, Error, NONMEM] 
+image: preview.jpg
+draft: true
+draft-mode: gone
+echo: true
+execute:
+  freeze: false # never re-render during project render (dependencies might change over time)
+  echo: true
+  message: false
+  warning: false
+citation: 
+  url: https://marian-klose.com/posts/expressing_ruv_as_theta/index.html
+format:
+  html:
+    number-sections: true
+    toc: true
+    code-fold: true
+    code-tools: true
+---
+
+```{r}
+# load packages
+library(ggplot2)
+library(tibble)
+library(dplyr)
+library(kableExtra)
+```
+
+## Introduction
+
+Lorem ipsum
+
+
+## Conclusion
+
+
+
+
+
+

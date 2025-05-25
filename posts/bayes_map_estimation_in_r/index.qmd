@@ -1,13 +1,12 @@
 ---
 title: "Reproducing NONMEM's MAP estimation in R"
-description: "How to perform Bayesian MAP estimation yourself using R and why you should care."
+description: "How to perform Bayesian MAP estimation yourself using R and why you should care. "
 author:
   - name: Marian Klose
     url: https://github.com/marianklose
     orcid: 0009-0005-1706-6289
 date: 03-31-2025  # MM-DD-YYYY
 categories: [NONMEM, Bayes, MAP, EBE, Estimation] 
-bibliography: C:/Users/mklose/Desktop/GitHub/personal-website/literature/bibliography.bib
 image: preview.gif
 draft: false 
 echo: true

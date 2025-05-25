@@ -19,6 +19,12 @@ listing:
     categories: true
     sort: "date desc"
     fields: [date, title, author, categories, Journal] 
+  - id: presentations
+    contents: "presentations_docs/*.qmd"
+    type: default
+    categories: true
+    sort: "date desc"
+    fields: [date, title, author, categories, Journal] 
 ---
 
 ## Peer-Reviewed Publications
@@ -26,125 +32,13 @@ listing:
 :::{#publications}
 :::
 
-## Abstracts/Posters/Presentations
+## Abstracts/Posters
 
 :::{#abstracts}
 :::
 
-<!-- ::: {.grid .custom-grid} -->
+## Presentations
 
-<!-- ::: {.g-col-6} -->
-<!-- ::: {.callout-note appearance="minimal" .custom-callout icon=false } -->
-<!-- ## Publication -->
-
-<!-- ::: -->
-<!-- ::: -->
-
-<!-- ::: {.g-col-6} -->
-<!-- ::: {.callout-caution appearance="minimal" .custom-callout icon=false } -->
-<!-- ## Abstract/Poster -->
-<!-- ::: -->
-
-<!-- ::: -->
-
-<!-- ::: -->
-
-
-
-<!-- ## 2024  -->
-
-<!-- ::: {.callout-note appearance="minimal" .custom-callout icon=false collapse="false"} -->
-<!-- ## A model-informed clinical trial simulation tool with a graphical user interface for Duchenne muscular dystrophy -->
-
-<!-- Journal: CPT: Pharmacometrics & Systems Pharmacology   -->
-<!-- Publication Date: 2024-10-03   -->
-<!-- DOI: [10.1002/psp4.13246](https://doi.org/10.1002/psp4.13246){target="_blank"}     -->
-<!-- Authors: Kim J, Morales JF, Kang S, <u>Klose M</u>, Willcocks RJ, Daniels MJ, Belfiore-Oshan R, Walter GA, Rooney WD, Vandenborne K, Kim S.   -->
-<!-- ::: -->
-
-<!-- ::: {.callout-note appearance="minimal" .custom-callout icon=false collapse="false"} -->
-<!-- ## Type 1 diabetes prevention clinical trial simulator: Case reports of model-informed drug development tool -->
-
-<!-- Journal: CPT: Pharmacometrics & Systems Pharmacology   -->
-<!-- Publication Date: 2024-07-03   -->
-<!-- DOI: [10.1002/psp4.13193](https://doi.org/10.1002/psp4.13193){target="_blank"}     -->
-<!-- Authors: Morales JF, <u>Klose M</u>, Hoffert Y, Podichetty JT, Burton J, Schmidt S, Romero K, O'Doherty I, Martin F, Campbell-Thompson M, Haller MJ, Atkinson MA, Kim S.   -->
-<!-- ::: -->
-
-
-<!-- ::: {.callout-note appearance="minimal" .custom-callout icon=false collapse="false"} -->
-<!-- ## Population pharmacokinetics of TLD-1, a novel liposomal doxorubicin, in a phase I trial -->
-
-<!-- Journal: Cancer Chemother Pharmacol   -->
-<!-- Publication Date: 2024-09   -->
-<!-- DOI: [10.1007/s00280-024-04679-z](https://doi.org/10.1007/s00280-024-04679-z){target="_blank"}     -->
-<!-- Authors: Mc Laughlin AM, Hess D, Michelet R, Colombo I, Haefliger S, Bastian S, Rabaglio M, Schwitter M, Fischer S, Eckhardt K, Hayoz S, Kopp C, <u>Klose M</u>, Sessa C, Stathis A, Halbherr S, Huisinga W, Joerger M, Kloft C.   -->
-<!-- ::: -->
-
-
-<!-- ::: {.callout-caution  appearance="minimal" .custom-callout icon=false collapse="false"} -->
-<!-- ## Machine learning-driven flattening of model priors: A comparative simulation study across multiple compounds -->
-
-<!-- Event: PAGE (2024)  -->
-<!-- Publication Date: 2024-06-26    -->
-<!-- Link: [https://www.page-meeting.org/default.asp?abstract=10858](https://www.page-meeting.org/default.asp?abstract=10858){target="_blank"}   -->
-<!-- Authors: <u>Klose M</u>, Thoma F, Kovar L, Huisinga W, Michelet R, Kloft C.    -->
-<!-- ::: -->
-
-
-<!-- ::: {.callout-note appearance="minimal" .custom-callout icon=false collapse="false"} -->
-<!-- ## TLD-1, a novel liposomal doxorubicin, in patients with advanced solid tumors: Dose escalation and expansion part of a multicenter open-label phase I trial (SAKK 65/16) -->
-
-<!-- Journal: European Journal of Cancer   -->
-<!-- Publication Date: 2024-04   -->
-<!-- DOI: [10.1016/j.ejca.2024.113588](https://doi.org/10.1016/j.ejca.2024.113588){target="_blank"}     -->
-<!-- Authors: Colombo I, Koster KL, Holer L, Haefliger S, Rabaglio M, Bastian S, Schwitter M, Eckhardt K, Hayoz S, Mc Laughlin AM, Kloft C, <u>Klose M</u>, Halbherr S, Baumgartner C, Sessa C, Stathis A, Hess D, Joerger M.   -->
-<!-- ::: -->
-
-
-
-<!-- ::: {.callout-note appearance="minimal" .custom-callout icon=false collapse="false"} -->
-<!-- ## Exploring the impact of CYP2D6 and UGT2B7 gene-drug interactions, and CYP-mediated DDI on oxycodone and oxymorphone pharmacokinetics using physiologically-based pharmacokinetic modeling and simulation -->
-
-<!-- Journal: Eur J Pharm Sci   -->
-<!-- Publication Date: 2024-03-01   -->
-<!-- DOI: [10.1016/j.ejps.2023.106689](https://doi.org/10.1016/j.ejps.2023.106689){target="_blank"}     -->
-<!-- Authors: <u>Klose M</u>, Cristofoletti R, Silva CM, Mangal N, Turgeon J, Michaud V, Lesko LJ, Schmidt S.   -->
-<!-- ::: -->
-
-
-<!-- ## 2022 -->
-
-<!-- ::: {.callout-caution  appearance="minimal" .custom-callout icon=false collapse="false"} -->
-<!-- ## The Impact of UGT2B7 and CYP2D6 Gene-Drug- and CYP-mediated Drug-Drug-Interactions on Oxycodone and Oxymorphone Pharmacokinetics using PBPK Modelling. -->
-
-<!-- Event: ACoP13 (2022)   -->
-<!-- Publication Date: 2022    -->
-<!-- Link: [www.go-acop.org/?abstract=413](https:go-acop.org/?abstract=413){target="_blank"}   -->
-<!-- Authors: <u>Klose M</u>, Schmidt S, Cristofoletti R.    -->
-<!-- ::: -->
-
-
-<!-- ## 2021 -->
-
-
-<!-- ::: {.callout-note appearance="minimal" .custom-callout icon=false collapse="false"} -->
-<!-- ## Evaluation of the MeroRisk Calculator, A User-Friendly Tool to Predict the Risk of Meropenem Target Non-Attainment in Critically Ill Patients -->
-
-<!-- Journal: Antibiotics (Basel)   -->
-<!-- Publication Date: 2021-04-20   -->
-<!-- DOI: [10.3390/antibiotics10040468](https://doi.org/10.3390/antibiotics10040468){target="_blank"}     -->
-<!-- Authors: Liebchen U, <u>Klose M</u>, Paal M, Vogeser M, Zoller M, Schroeder I, Schmitt L, Huisinga W, Michelet R, Zander J, Scharf C, Weinelt FA, Kloft C.   -->
-<!-- ::: -->
-
-<!-- ::: {.callout-caution  appearance="minimal" .custom-callout icon=false collapse="false"} -->
-<!-- ## Using microdose-based activity measurement to individualise dosing of cytochrome P450 metabolised drugs: a case study with yohimbine and tamoxifen. -->
-
-<!-- Event: PAGE (2021)  -->
-<!-- Publication Date: 2021    -->
-<!-- Link: [https://www.page-meeting.org/default.asp?abstract=9807](https://www.page-meeting.org/default.asp?abstract=9807){target="_blank"}   -->
-<!-- Authors: Michelet R, Weinelt FA, <u>Klose M</u>, Mc Laughlin AM, Kluwe F, Montefusco-Pereira C, Van Dyk M, Vay M, Huisinga W, Kloft C, Mikus G.    -->
-<!-- ::: -->
-
-
+:::{#presentations}
+:::
 

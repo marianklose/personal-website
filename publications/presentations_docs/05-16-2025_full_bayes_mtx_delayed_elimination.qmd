@@ -1,0 +1,64 @@
+---
+title: "A Bayesian-NLME approach identifies patients at risk of delayed MTX elimination if informative TDM data is provided"
+description: "PK/PD Expert Meeting - Best Presentation Award Session"
+author:
+  - name: "**M. Klose**, D. Marschner, M. Knott, J. Wendler, J. Müller-Kühnle, L. Kovar, W. Huisinga, C. Nyhoegen, R. Michelet, A. M. Mc Laughlin, G. Illerhaus, C. Kloft"
+date: 05-16-2025 # dd mm yyyy
+categories: [Methotrexate, MTX, Bayes, NLME PK, First author]
+Type: Presentation
+Journal: "*PK/PD Expert Meeting 2025*"
+draft: false 
+echo: true
+execute:
+  echo: true
+  message: false
+  warning: false
+format:
+  html:
+    number-sections: false
+    toc: false
+    code-fold: false
+    code-tools: false
+comments: false
+---
+
+## URL
+
+<https://www.pkpd-expertentreffen.de/>
+
+## Abstract
+
+## Introduction
+
+Physicians must constantly assess treatment-related risks based on limited data. This is particularly difficult in oncology, as compounds often have a narrow therapeutic window. For example, patients receiving high-dose methotrexate (HD-MTX) are at increased risk of toxicity if MTX elimination is delayed (MTX > threshold of 0.2 µM for >72 h post-dose). To timely identify these patients ('delayed eliminators'), TDM is being performed until MTX concentrations drop below the threshold. However, early translation of MTX concentrations and clinical biomarkers into a risk score at the bedside can be challenging. A Bayesian-NLME framework allows to combine prior knowledge about the population with individual measurements. Evaluating its predictive performance in clinically relevant scenarios with unseen patients is crucial to determine the clinical utility of the obtained predictions. However, most published HD-MTX models lack such validation, leaving their clinical applicability uncertain.
+
+## Objectives
+
+Therefore, the objectives of our work were:
+
+* to develop an MTX NLME model for an adult central nervous system (CNS) lymphoma population based on a training cohort, and
+* to assess how well the model identifies delayed eliminators in a test cohort at different time points with varying amounts of data available for Bayesian forecasting.
+
+## Methods
+
+Clinical routine data of adult CNS-lymphoma patients receiving HD-MTX i.v. infusion (median duration 3.25 h) was retrospectively collected and split by ID into a training (75%) and a test (25%) cohort. Cycles exceeding 72 h to MTX<0.2 µM were classified as delayed. To avoid biased parameter estimates due to a longer follow-up in delayed eliminators, censored observations (<0.2 µM) were added every 24 h up to 22 days since the last observation <0.2 µM per patient and cycle. Parameters were estimated using SAEM and M3 method in NONMEM 7.5.1. Pre-specified covariate relations were tested on parameters with variability using SCM. Per cycle, time-to-threshold predictions were evaluated at pre-dose, 10 h, 30 h, and 50 h after start of infusion using data available up to each time point. Bayesian forecasting using `mapbayr` was conducted once MTX concentrations became available, including data from previous cycles. The predicted and observed times to threshold were compared for each time point within a cycle by calculating the mean absolute error (MAE) and the fraction of correctly identified delayed patients (true positive rate, TPR).
+
+## Results
+
+The training data (nID: 132, nCycl: 410, nMTX: 2906) was best described by a 3 cmt model with first-order disposition processes and variability on CL (IIV: 19.0%, IOV: 14.4%) and Q3 (IIV: 29.6%, IOV: 27.3%). CL was positively associated with estimated glomerular filtration rate and serum albumin concentrations and negatively associated with C-reactive protein concentrations. Parameters were precisely estimated (SIR: 1.0%-26% RSE), with GOF and VPC plots demonstrating good agreement with the data.
+
+Predictivity results for the time to threshold in all cycles of the test cohort (nID: 44, nCycl: 137, nMTX: 985) were:
+
+| Time Point | MAE (h) | TPR (%) |
+| ---------- | ------- | ------- |
+| Pre-dose   | 22.8    | 30.6    |
+| ≤ 10 h     | 22.2    | 38.9    |
+| ≤ 30 h     | 15.7    | 61.1    |
+| ≤ 50 h     | 11.9    | 77.8    |
+
+At pre-dose, the model showed poor identification of delayed eliminators (TPR) and low predictive accuracy (MAE). Including MTX concentrations at the end of infusion only slightly improved predictive performance, with a minor reduction in MAE (-0.6 h) and a small increase in TPR (+8.3% points). In contrast, incorporating additional data between 10 h and 30 h substantially improved predictive performance, increasing the TPR by 22.2% points and reducing MAE by 6.5 h compared to the 10 h time point. The 50 h time point showed the best predictive performance. Adding data from previous cycles improved TPR for early time points (pre-dose: 38% vs 10%; 10 h: 46% vs 20%), but worsened TPR for later time points (30 h: 58% vs 70%; 50 h: 77% vs 80%). A similar pattern was observed for MAE.
+
+## Conclusion
+
+Depending on the amount of data available for a given patient, the predictive performance of the NLME model ranged from poor to good. At early time points, the model showed substantial inaccuracy and insufficient identification of delayed eliminators. We conclude that TDM data beyond 10 h is essential for identifying at-risk patients. Next, we will extend the framework to a full Bayesian approach using Stan and Torsten and integrate it into an RShiny app.
+
