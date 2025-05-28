@@ -14,6 +14,10 @@ about:
         - icon: envelope
           text: Email
           url: mailto:marian.klose@fu-berlin.de
+        - text: "{{< iconify academicons:google-scholar >}} Google Scholar"
+          href: "https://scholar.google.com/citations?user=Ir81TxwAAAAJ&hl=de"
+        - text: '{{< iconify simple-icons:orcid >}} ORCID'
+          href: "https://orcid.org/0009-0005-1706-6289"
 image: img/profile_picture2.jpg
 comments: false
 ---
