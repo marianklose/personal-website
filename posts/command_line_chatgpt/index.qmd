@@ -5,14 +5,14 @@ author:
   - name: Marian Klose
     url: https://github.com/marianklose
     orcid: 0009-0005-1706-6289
-date: 01-12-2025
+date: 31-07-2025
 categories: [ChatGPT, openai, LLM] 
 image: preview.png
 draft: true
-draft-mode: gone
+draft-mode: visible
 echo: true
 execute:
-  freeze: true # never re-render during project render (dependencies might change over time)
+  freeze: false # never re-render during project render (dependencies might change over time)
   echo: true
   message: false
   warning: false
@@ -30,141 +30,433 @@ format:
 
 ## Motivation
 
-<!-- ## Why python -->
+- Large language models are increasingly implemented in various of our daily workflows
+- They can be useful, especially when it comes to low-risk but repetitive tasks
+- I believe that it can be quite beneficial to use them from the command line, as this supercharges there usefulness and allows you to generate tailored solutions for your specific use-case.
+- In this little blog post I will show my first step using ChatGPT from the command line in python and highlight a few use cases where they can be helpful.
 
-<!-- - Openai provides packages (or so called Software Development Kits, SDKs) to interact with their API (Application Programming Interface) for different programming languages such as JavaScript and Python.  -->
-<!-- - However, you can also directly interact with openais API using raw HTTP requests. This allows you to use ChatGPT also in programming languages for which no offical packages / SDKs exist, such as R.  -->
-<!-- - Although I am more profound in R, I have anyways chosen to use python since I am already somewhat familiar with it through prior projects, and I personally prefer the convenience to have a pre-built package instead of dealing with raw HTTP requests. -->
-<!-- - xxx -->
+## Why python?
 
-<!-- # Setup -->
-
-<!-- - For the setup, we will basically follow the quickstart guidance from openai for developers: https://platform.openai.com/docs/quickstart?language-preference=python -->
-
-<!-- ## Creating an account -->
-
-<!-- - when we want to access ChatGPT from the command line, we need to have an openai account -->
-<!-- - We can simply go to https://platform.openai.com/signup and create ourselves an account -->
-
-<!-- ## Retrieve your API key -->
-
-<!-- - API keys are long, random strings used to authenticate and authorize access to an API. You can view it as a password (and it should also be handled as such). Since you pay money per prompt you send (even if it is a small amount), you don't want to hand your password to a random person in the internet. -->
-<!-- - You can generate youreself an API key via https://platform.openai.com/api-keys once you have your account. -->
-
-<!-- xxxSCREENSHOTxxx -->
-
-<!-- - From the Screenshot you can see that I have a API key for my laptop starting with *sk-....YLUA*.  -->
-
-<!-- ## Saving your API key as an environmental variable -->
-
-<!-- - We want to avoid to always type in this key or to save it in a script, since this would be similar to hard coding your password somewhere. Everyone who can see this script would also have you API key / password.  -->
-<!-- - One common way is to save the API key as an environmental variable on your windows machine. You can do so by searching "System environment variables" using the windows search function. -->
-<!-- - An alternative way would be to use PowerShell (so basically the command line in Windows) to set your environment variable -->
-
-<!-- ```{r filename="powershell"} -->
-<!-- #| echo: true -->
-<!-- #| collapse: false -->
-<!-- #| code-fold: false -->
-<!-- #| eval: false -->
-
-<!-- setx OPENAI_API_KEY "your_api_key_here" -->
-<!-- ``` -->
-
-<!-- - Make sure to name your environmental variable exactly like this "OPENAI_API_KEY". The `openai` package in python looks for this specific name once you initialize it. -->
-<!-- - Great! Now we have our API key / password ready to use it in python. -->
-
-<!-- ## Setting up Pyhton -->
-
-<!-- - I don't really want to go into the details how to set up python itself (there are enough great tutorials out there) -->
-<!-- - To install the openai package we would simply use the package installer for python, pip: -->
+- Openai provides packages (or so called Software Development Kits, SDKs) to interact with their API (Application Programming Interface) for different programming languages such as JavaScript and Python.
+- However, you can also directly interact with openais API using raw HTTP requests. This allows you to use ChatGPT also in programming languages for which no offical packages / SDKs exist, such as R.
+- Although I am more profound in R, I have anyways chosen to use python since I am already somewhat familiar with it through prior projects, and I personally prefer the convenience to have a pre-built package instead of dealing with raw HTTP requests.
+- There is also the ellmer package in R (https://ellmer.tidyverse.org/) which allows to use large language models from R. What is quite nice is that it is part of the tidyverse and h I haven't really tried it out yet, but it could be a suitable alternative for R users in the future!
 
 
-<!-- ```{r filename="powershell"} -->
-<!-- #| echo: true -->
-<!-- #| collapse: false -->
-<!-- #| code-fold: false -->
-<!-- #| eval: false -->
+# Setup
 
-<!-- pip install python -->
-<!-- ``` -->
+- For the setup, we will basically follow the quickstart guidance from openai for developers: https://platform.openai.com/docs/quickstart?language-preference=python
+- As this likely changes within the future, I would recommend to simply follow this quickstart guidance instead of following whatever I have hard-coded within this post
 
-<!-- - With that we have now successfully installed the openai package to interact with the openai API and we also have our API key ready to be used as an environmental variable. We can now go on to have our first prompt. -->
+## Creating an account
 
+- when we want to access ChatGPT from the command line, we need to have an openai account
+- We can simply go to https://platform.openai.com/signup and create ourselves an account
+- So far, this is without charge. However, once you will send prompt via your API key, you will have to pay money
 
-<!-- ## Our first prompt -->
+## Retrieve your API key
 
-<!-- - Sending an request to chatgpt is rather simple. Let's have a look at the code -->
-<!-- - First, we are going to load our packages and initialize the openai client -->
+- API keys are long, random strings used to authenticate and authorize access to an API. You can view it as a password (and it should also be handled as such). Since you pay money per prompt you send (even if it is a small amount), you don't want to hand your password to a random person in the internet.
+- You can generate yourself an API key via https://platform.openai.com/api-keys once you have your account.
 
-<!-- ```{python filename="python"} -->
-<!-- #| echo: true -->
-<!-- #| collapse: false -->
-<!-- #| code-fold: false -->
+xxxSCREENSHOTxxx
 
-<!-- # load packages -->
-<!-- from openai import OpenAI -->
-<!-- import json -->
+- From the Screenshot you can see that I have a API key for my laptop starting with *sk-....YLUA*.
 
-<!-- # initialize openai client -->
-<!-- client = OpenAI() -->
-<!-- ``` -->
+## Saving your API key as an environmental variable
 
-<!-- - Now we can already send the prompt to chatgpt. We are using the `gpt-4o` model for this, but there are many other models available. The available models should be available here: https://platform.openai.com/docs/models -->
+- We want to avoid to always type in this key or to save it in a script, since this would be similar to hard coding your password somewhere. Everyone who can see this script would also have you API key / password.
+- One common way is to save the API key as an environmental variable on your windows machine. You can do so by searching "System environment variables" using the windows search function.
+- An alternative way would be to use PowerShell (so basically the command line in Windows) to set your environment variable
 
-<!-- ```{python filename="python"} -->
-<!-- #| echo: true -->
-<!-- #| collapse: false -->
-<!-- #| code-fold: false -->
+```{r filename="powershell"}
+#| echo: true
+#| collapse: false
+#| code-fold: false
+#| eval: false
 
-<!-- # send request -->
-<!-- completion = client.chat.completions.create( -->
-<!--     model="gpt-4o", -->
-<!--     messages=[ -->
-<!--         { -->
-<!--           "role": "system", -->
-<!--           "content": "You are a comedian with a PhD in pharmacometrics." -->
-<!--         }, -->
-<!--         { -->
-<!--           "role": "user", -->
-<!--           "content": "Write a short joke about pharmacokinetics." -->
-<!--         } -->
-<!--     ] -->
-<!-- ) -->
-<!-- ``` -->
+setx OPENAI_API_KEY "your_api_key_here"
+```
 
-<!-- - Please note that we need to provide input for at least two roles: The *user* role ist more familiar to us as this is the actual prompt we are typically sending when using the webinterface of ChatGPT. Now we also provide input for the *sytem* role. The *system* role in ChatGPT defines the model's behavior, tone, and response style, guiding how it interacts with users. So we actually get some more degrees of freedom here and can already centrally define the general model behaviour.  -->
-<!-- - Let's see what the completion object is all about: -->
+- Make sure to name your environmental variable exactly like this "OPENAI_API_KEY". The `openai` package in python looks for this specific name once you initialize it.
+- Great! Now we have our API key / password ready to use it in python.
+
+## Setting up Pyhton
+
+- I don't really want to go into the details how to set up python itself (there are enough great tutorials out there)
+- To install the openai package we would simply use the package installer for python, pip:
 
 
-<!-- ```{python filename="python"} -->
-<!-- #| echo: true -->
-<!-- #| collapse: false -->
-<!-- #| code-fold: false -->
+```{r filename="powershell"}
+#| echo: true
+#| collapse: false
+#| code-fold: false
+#| eval: false
 
-<!-- # print full object -->
-<!-- print(completion) -->
-<!-- ``` -->
+pip install openai
+```
 
-<!-- - In many cases we are only interested in accessing the actual message, so we can retrieve this by writing: -->
-
-
-<!-- ```{python filename="python"} -->
-<!-- #| echo: true -->
-<!-- #| collapse: false -->
-<!-- #| code-fold: false -->
-
-<!-- # print object -->
-<!-- print(completion.choices[0].message.content) -->
-<!-- ``` -->
-
-<!-- - Now we have successfully written our first prompt! -->
+- With that we have now successfully installed the openai package to interact with the openai API and we also have our API key ready to be used as an environmental variable. We can now go on to have our first prompt.
 
 
+## Our first prompt
 
-# Use-Cases
+- Sending an request to chatgpt is rather simple. Let's have a look at the code
+- First, we are going to load our packages and initialize the openai client
+
+```{python filename="python"}
+#| echo: true
+#| collapse: false
+#| code-fold: false
+
+# load packages
+from openai import OpenAI
+import json
+
+# initialize openai client
+client = OpenAI()
+```
+
+- Now we can already send the prompt to chatgpt. We are using the `gpt-4o` model for this, but there are many other models available. The available models should be available here: https://platform.openai.com/docs/models
+- Please note, that we use the Responses API, which is a bit newer than the Chat Completion API which was previously standard for model interactions. According to OpenAI, also the Chat Completion API will be supported indefinitely. However, we can expect that the Responses API will host more extensive features in the future. The code and architecture between both APIs is slightly different.
+
+```{python filename="python"}
+#| echo: true
+#| collapse: false
+#| code-fold: false
+
+# send request
+response = client.responses.create(
+    model="gpt-4o",
+    input="Write a short joke about pharmacokinetics."
+)
+```
+
+- Please note that we need to provide input for at least two roles: The *user* role ist more familiar to us as this is the actual prompt we are typically sending when using the webinterface of ChatGPT. Now we also provide input for the *sytem* role. The *system* role in ChatGPT defines the model's behavior, tone, and response style, guiding how it interacts with users. So we actually get some more degrees of freedom here and can already centrally define the general model behaviour.
+- Let's see what the completion object is all about:
+
+
+```{python filename="python"}
+#| echo: true
+#| collapse: false
+#| code-fold: false
+
+# print full object
+print(response)
+```
+
+- In many cases we are only interested in accessing the actual message, so we can retrieve this by writing:
+
+
+```{python filename="python"}
+#| echo: true
+#| collapse: false
+#| code-fold: false
+
+# print object
+print(response.output_text)
+```
+
+- Now we have successfully written our first prompt! Congrats, but this is not so helpful so far.
+- Let's explore the slightly more advanced features of accessing chatgpt and other llms from the command-line
+
+
+## Custom instructions
+
+- One advantage is the usage of developer messages, which we can pass via the `instructions` parameter to `client.responses.create()`
+- According to the docs, this gives the model high-level instructions on how it should behave while generating a response, such as tone, goals and examples of correct responses.
+- Notably, these instructions have a higher priority to any other instructions provided via the `input` parameter
+- Dealing with this kind of developer instructions are one important part of prompt engineering, and it allows you to have more control over the models behavior compared to using the graphical user interface
+- Let's have an example where we tell the model to explain complex ideas to us in very short sentences and easy to understand language.
+
+
+```{python filename="python"}
+#| echo: true
+#| collapse: false
+#| code-fold: false
+
+# send request
+response = client.responses.create(
+    model="gpt-4o",
+    instructions="You are an experienced teacher who explains concepts in multiple, short sentences with a maximum of 10 words per sentence and simple, easy-to-understand language.",
+    input="Explain the role of shrinkage in pharmacometric NLME models."
+)
+
+# show answer
+response.output_text
+```
+- I am not sure if I would like a model to respond that way, but you get the idea. Having custom instructions can also be helpful when designing agent-based systems where each model-based agent has a pre-defined role. This pre-defined role is typically defined through such instructions, as it defines the overall response and tone of the response
+
+
+
+
+## Structured outputs
+
+- Another very useful feature of the openai API is the ability to define structured outputs, which define upfront in which output format ChatGPT should provide the answer.  
+- This is very helpful if we want to somehow postprocess the answers from ChatGPT or use it in agentic workflows.
+- Structured outputs can for example allow us to force chatgpt to answer in a numeric format when we want to know what 1+1 is.
+- The documentation for structured outputs can be currently found under https://platform.openai.com/docs/guides/structured-outputs?api-mode=responses
+- For structured outputs, we rely on a python library called pydantic, that focuses on data validation and data parsing. The openai api expects us to pass pydantic objects so that it is able to understand what we need
+- First, we have to install pydantic
+
+
+```{r filename="powershell"}
+#| echo: true
+#| collapse: false
+#| code-fold: false
+#| eval: false
+
+pip install pydantic
+```
+
+- now we can load the package into our python session
+
+
+```{python filename="python"}
+#| echo: true
+#| collapse: false
+#| code-fold: false
+
+# load packages
+from pydantic import BaseModel, Field
+```
+
+- and we are able to define our answer class
+- for now we only define one field in our NumericAnswer class, which is the value. By specifying `float` ChatGPT will be forced to provide a float like 1.643 instead of a text-based output.
+
+```{python filename="python"}
+#| echo: true
+#| collapse: false
+#| code-fold: false
+
+# define class
+class NumericAnswer(BaseModel):
+  value: float
+```
+
+
+- We are now able to pass this `NumericAnswer` class to chatgpt, but this time we use the `client.responses.parse` function which is designed to handle these structured output cases
+
+
+```{python filename="python"}
+#| echo: true
+#| collapse: false
+#| code-fold: false
+
+# prompt chatgpt
+response = client.responses.parse(
+    model="gpt-4o",
+    input="What is 14 minus 2?",
+    text_format=NumericAnswer,
+  )
+  
+# show answer
+response.output_parsed
+```
+
+- We can see that we get an instance of our pre-defined `NumericAnswer` class as output, which already contains the answer from ChatGPT: 12.0
+- We can also directly access this by the predefined key (`value`) that we have defined while constructing the class
+- As you can see via the `type()` function, the content is saved in a float representation, which eases the postprocessing
+
+
+```{python filename="python"}
+#| echo: true
+#| collapse: false
+#| code-fold: false
+
+# show value
+response.output_parsed.value
+
+# show type
+type(response.output_parsed.value)
+```
+
+- We can also define more advanced structured outputs and even nested classes are possible
+- Lets assume we want to automatically extract defined model parameters and their initial values defined in a NONMEM model. We take an example NONMEM model from https://pkpd-info.com/NONMEM/Model_templates.php
+
+```{python filename="python"}
+#| echo: true
+#| collapse: false
+#| code-fold: false
+
+# define model
+model_text = """
+;; 1. Based on: 001
+;; 2. Description: drug
+;; x1. Author: www.pkpd-info.com
+
+$PROBLEM PK model
+
+$INPUT 	;; Pas aan naar dataset
+  CENSOR AORTA=DROP ID DATE=DROP TIME AMT EVID MDV TAD DV		 
+
+$DATA datafile.CSV IGNORE=C 
+
+$SUBROUTINES 
+  ADVAN3 TRANS4 		;; data 2-comp (iv)
+
+$PK 				
+  LTVCL = LOG(THETA(3))
+  MU_1 = LTVCL 			;; MU_1 referencing 
+  CL =  EXP(MU_1 + ETA(1))
+  
+  LTVV1 = LOG(THETA(4))
+  MU_2 = LTVV1
+  V1 = EXP(MU_2 + ETA(2))
+  
+  Q = THETA(5)
+  V2 = THETA(6)
+  
+  S1 = V1
+
+$THETA  			;; set realistic initial estimates
+  (0, 0.5) 	;1 prop
+  (0, 0.1) 	;2 add
+  (0, 30)   	;3 CL
+  (0, 200)  	;4 V1
+  (0, 30)   	;5 Q
+  (0, 200)  	;6 V2
+
+$OMEGA BLOCK(2)
+  0.09		; IIV-CL
+  0.01 0.09	; IIV-V
+
+$SIGMA
+  1 FIX  ;residual variability
+
+$ERROR  			;; Based on linear data and proportional and additive error
+  IPRED = F
+  IRES = DV-IPRED
+  W = IPRED*THETA(1)+THETA(2)
+  IF (W.EQ.0) W = 1
+  IWRES = IRES/W
+  Y= IPRED+W*ERR(1)
+
+$EST METHOD=1 MAXEVAL=99999 SIG=3 PRINT=5 NOABORT POSTHOC INTERACTION  	;; Estimation method FOCE+interaction
+
+$COV PRINT=E UNCONDITIONAL
+
+$TABLE ID TAD IPRED IWRES CWRES EVID MDV TIME NOPRINT ONEHEADER FILE=SDTAB001
+$TABLE ID CL V1 Q V2 ETA1 ETA2 NOPRINT ONEHEADER FILE=PATAB001
+$TABLE ID NOPRINT ONEHEADER FILE=COTAB001
+$TABLE ID NOPRINT ONEHEADER FILE=CATAB001
+"""
+```
+
+
+- We can now define what we want to have per parameter the name and its initial value based on the code
+
+
+```{python filename="python"}
+#| echo: true
+#| collapse: false
+#| code-fold: false
+
+# define class per parameter
+class OneParameter(BaseModel):
+    name: str = Field(..., description="The name of the parameter excluding any strings, typically provided as a comment next to the initial value.")
+    initial_value: float
+```
+
+- As you can see, within the freshly defined `OneParameter` object, the name of the parameter has to be a string and the initial value has to be of type float. So also mixing types is no problem within one class and also having multiple key-value pairs is also no problem
+- Please note, that we can provide custom descriptions to the field by using the `str = Field()` notation. This gives a bit of more flexibility to define what we expect for this field.
+- But we are not done yet. There are multiple parameters in the model code, and we want to extract them for all of them. But we don't want to hard-code the number of expected parameters, this is a task that should be done by the LLM.
+- Luckily, we can simply define a list within a nested class:
+
+
+```{python filename="python"}
+#| echo: true
+#| collapse: false
+#| code-fold: false
+
+# define class per parameter
+class MultipleParameters(BaseModel):
+    parameter_list: list[OneParameter]
+```
+
+- Very convenient! We simply define a new class (which will be our output class), for which we expect a list of `OneParameter` objects. We do not have to define the length of this list, so depending on the model code we paste as input, the list will be hopefully filled accordingly
+- Now we simply have to create our response, let's see if this works. Of note, we also now give some instructions via the `instructions` argument. to clarify that we are interested in `$THETA` only and we provide a little bit of context. The pre-defined `model_text` will be passed (without further instructions or text) via the `input` argument. The previously defined `MultipleParameters` class, expecting a list of `OneParameter` classes, is our `text_format`.    
+
+```{python filename="python"}
+#| echo: true
+#| collapse: false
+#| code-fold: false
+
+# prompt chatgpt
+response = client.responses.parse(
+    model="gpt-4o",
+    input=model_text,
+    instructions="You are a helpful assistant that reliably extracts the $THETA parameters, specifially the names and the initial values from NONMEM model code",
+    text_format=MultipleParameters,
+  )
+  
+# show answer
+response.output_parsed
+```
+- This is now very useful, as we have provided a messy and unstructured NONMEM code and with a little bit of explanation and defining the output structure, we can quickly extract some useful information from the code.
+- We can also directly access now the values of a particular element:
+
+```{python filename="python"}
+#| echo: true
+#| collapse: false
+#| code-fold: false
+
+# show name and value
+response.output_parsed.parameter_list[1].name
+response.output_parsed.parameter_list[1].initial_value
+```
+
+- We can also use this to create a simple table with name and initial value:
+
+```{python filename="python"}
+#| echo: true
+#| collapse: false
+#| code-fold: false
+
+# load pandas
+import pandas as pd
+
+# define dataframe based on response
+df = pd.DataFrame([
+    {"name": p.name, "initial": p.initial_value}
+    for p in response.output_parsed.parameter_list
+])
+
+# show df
+df
+```
+
+- Great! This comes in handy!
+- As with any other use-case of LLMs, we can actually not be fully sure that this works all the time, and hallucinations and errors can happen. So we should never fully trust such operations and always give it some sanity checks. But you can imagine that such a tool can be helpful if you need to systematically extract lots of data from unstructured text.
+
+
+
 
 ## Repetition
 
-## Scheduled content
+- LLMs will always contain a certain level of variability, and without a seed the answer to the same prompt will be always different
+- This is also the reason why hallucinations are still problematic in LLMs, a prompt can give a reasonable answer in 9 out of 10 cases but you might be the unlucky one that is the 1 out of 10.
+- Being able to access ChatGPT from the command line allows us to simply loop over the prompt and then store the results.
 
-## Text revision
+
+
+
+<!-- ```{python filename="python"} -->
+<!-- #| echo: true -->
+<!-- #| collapse: false -->
+<!-- #| code-fold: false -->
+
+<!-- # prompt chatgpt -->
+<!-- response = client.responses.create( -->
+<!--     model="gpt-4o", -->
+<!--     input="" -->
+<!--   ) -->
+
+<!-- # show answer -->
+<!-- response.output_parsed -->
+<!-- ``` -->
+
+
+
+
+
