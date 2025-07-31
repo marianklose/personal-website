@@ -1,18 +1,18 @@
 ---
-title: "Using ChatGPT with Python"
-description: "Supercharging ChatGPT by accessing it from the command line."
+title: "Using ChatGPT from the command line"
+description: "Supercharging LLMs by building agentic workflows."
 author:
   - name: Marian Klose
     url: https://github.com/marianklose
     orcid: 0009-0005-1706-6289
-date: 31-07-2025
+date: 2025-07-31
 categories: [ChatGPT, openai, LLM] 
-image: preview.png
-draft: true
+image: preview.jpg
+draft: false
 draft-mode: visible
 echo: true
 execute:
-  freeze: false # never re-render during project render (dependencies might change over time)
+  freeze: true # never re-render during project render (dependencies might change over time)
   echo: true
   message: false
   warning: false
@@ -30,44 +30,44 @@ format:
 
 ## Motivation
 
-- Large language models are increasingly implemented in various of our daily workflows
-- They can be useful, especially when it comes to low-risk but repetitive tasks
-- I believe that it can be quite beneficial to use them from the command line, as this supercharges there usefulness and allows you to generate tailored solutions for your specific use-case.
-- In this little blog post I will show my first step using ChatGPT from the command line in python and highlight a few use cases where they can be helpful.
+Large language models (LLMs) are sneaking more and more into our daily workflows. There is surely a debate whether they deserve the hype, but in general they seem to be quite useful for low-risk but repetitive tasks that tend to eat up our time and focus. While we can use the graphical user interface to run these models, a more effective and much more powerful way is to run them directly from the command line using R or Python. By doing so we can supercharge their usefulness and create tailored, automated solutions for our specific solutions without the pain of clicking through a web interface. I have recently digged a bit into this topic and I am surely still scratching the surface of what is possible. In this post, I'll simply walk through my first steps using ChatGPT from the command line in Python, and highlight a few features/funcitons that I found helpful. In the end, we will have a very simplistic agentic workflow that is able to extract structured information from some NONMEM model code. Sounds good? Let's get started!
+
 
 ## Why python?
 
-- Openai provides packages (or so called Software Development Kits, SDKs) to interact with their API (Application Programming Interface) for different programming languages such as JavaScript and Python.
-- However, you can also directly interact with openais API using raw HTTP requests. This allows you to use ChatGPT also in programming languages for which no offical packages / SDKs exist, such as R.
-- Although I am more profound in R, I have anyways chosen to use python since I am already somewhat familiar with it through prior projects, and I personally prefer the convenience to have a pre-built package instead of dealing with raw HTTP requests.
-- There is also the ellmer package in R (https://ellmer.tidyverse.org/) which allows to use large language models from R. What is quite nice is that it is part of the tidyverse and h I haven't really tried it out yet, but it could be a suitable alternative for R users in the future!
+OpenAI provides official Software Development Kits (SDKs) for interacting with their API in several programming languages, such as JavaScript and Python. These SDKs make sending requests and processing responses relatively painless and have the official support of OpenAI. While Python is not super popular in our pharmacometric community and also I am personally much more more comfortable in R, I chose Python for these kind of tasks. The existence of a well-maintained, well-documented and ready-to-use SDK simply makes our lives much easier. You can interact with their API directly via raw HTTP requests, but I guess that is just painful and comes with a lot of overhead.  
+
+![A snake, not Python.](snake.jpg)
+
+For those wanting to stick to R, there’s also the promising [ellmer package](https://ellmer.tidyverse.org/)  which has been recently released. It integrates LLM access directly into the `tidyverse` ecosystem (which we all love). I haven’t tried it out yet, but it could become a very attractive option for R users. Currently they are in version `0.3.0` and I guess there is still a lot of development happening, but with the support of Posit and the tidyverse development team it will surely be a great option in the future! Feel free to comment if you have gathered some experience.
 
 
 # Setup
 
-- For the setup, we will basically follow the quickstart guidance from openai for developers: https://platform.openai.com/docs/quickstart?language-preference=python
-- As this likely changes within the future, I would recommend to simply follow this quickstart guidance instead of following whatever I have hard-coded within this post
+Let's start with the essentials. For the setup, we’ll essentially follow OpenAI’s official [Quickstart guide for developers](https://platform.openai.com/docs/quickstart?language-preference=python).
+
+Because the documentation may change over time, I guess referring directly to that guide is more robust than relying on any hard-coded details I would include here. Luckily their documentation is great and I found it quite easy to get started.
 
 ## Creating an account
 
-- when we want to access ChatGPT from the command line, we need to have an openai account
-- We can simply go to https://platform.openai.com/signup and create ourselves an account
-- So far, this is without charge. However, once you will send prompt via your API key, you will have to pay money
+If we want to access ChatGPT from the command line, we first need an OpenAI account. We can simply head to the [OpenAI platform](https://platform.openai.com/signup) and create an account. So far, creating an account is free. However, once we start sending prompts via our API key, usage will be billed. For our use-cases this will just be a couple of cents, and you can always check the expected billing in your dashboard.
+
 
 ## Retrieve your API key
 
-- API keys are long, random strings used to authenticate and authorize access to an API. You can view it as a password (and it should also be handled as such). Since you pay money per prompt you send (even if it is a small amount), you don't want to hand your password to a random person in the internet.
-- You can generate yourself an API key via https://platform.openai.com/api-keys once you have your account.
+If we want to use ChatGPT from the command line, we will have to authenticate ourselves so that OpenAI knows whom to bill. An API key is a long, random string used to authenticate and authorize access to the API. Think of it like a password (and handle it with the same care to avoid excessive bills from some stranger). Since every prompt we send incurs a (usually small) cost, we don’t want to share our API keys with anyone. Once we’ve successfully created the account, we can now generate an API key at [this page of the dashboard](https://platform.openai.com/api-keys).
 
-xxxSCREENSHOTxxx
+![A screenshot of the API keys dashboard.](api_keys.png)
 
-- From the Screenshot you can see that I have a API key for my laptop starting with *sk-....YLUA*.
+
+From the screenshot, you can see that I have an API key for my laptop starting with `sk-....YLUA`. Now we have to make it accessible to Python, so we can authenticate ourselves when making requests.
+
+
 
 ## Saving your API key as an environmental variable
 
-- We want to avoid to always type in this key or to save it in a script, since this would be similar to hard coding your password somewhere. Everyone who can see this script would also have you API key / password.
-- One common way is to save the API key as an environmental variable on your windows machine. You can do so by searching "System environment variables" using the windows search function.
-- An alternative way would be to use PowerShell (so basically the command line in Windows) to set your environment variable
+We want to avoid typing the API key each time or hard-coding it into a script. Hard-coding it would be like pasting a password in plain text or putting it on a post-it somewhere. A much safer approach is to store the API key as an environment variable (and there are even safer options). On Windows, we can do this by searching for *System environment variables* in the Windows search bar or we simply use PowerShell to set it:
+
 
 ```{r filename="powershell"}
 #| echo: true
@@ -78,14 +78,12 @@ xxxSCREENSHOTxxx
 setx OPENAI_API_KEY "your_api_key_here"
 ```
 
-- Make sure to name your environmental variable exactly like this "OPENAI_API_KEY". The `openai` package in python looks for this specific name once you initialize it.
-- Great! Now we have our API key / password ready to use it in python.
+We have to make sure to name the environment variable exactly `OPENAI_API_KEY`. The openai Python package looks for this specific name when we initialize it to link the prompts to our account. Very nice, our API key is ready to be used!
+
 
 ## Setting up Pyhton
 
-- I don't really want to go into the details how to set up python itself (there are enough great tutorials out there)
-- To install the openai package we would simply use the package installer for python, pip:
-
+I won’t go into the details of installing Python itself, as there are many excellent tutorials out there for that. Of course we have to take care of some packages and dependencies, and we install it with Python’s package installer `pip`: 
 
 ```{r filename="powershell"}
 #| echo: true
@@ -96,13 +94,12 @@ setx OPENAI_API_KEY "your_api_key_here"
 pip install openai
 ```
 
-- With that we have now successfully installed the openai package to interact with the openai API and we also have our API key ready to be used as an environmental variable. We can now go on to have our first prompt.
+And that’s it! We've now installed the OpenAI package and set up our API key as an environment variable. Next, we can move on to sending our first prompt.
 
 
-## Our first prompt
+# Our first prompt
 
-- Sending an request to chatgpt is rather simple. Let's have a look at the code
-- First, we are going to load our packages and initialize the openai client
+Sending a request to ChatGPT from the command line is surprisingly straightforward. Let’s walk through it step by step. First, we load our packages and initialize the OpenAI client:
 
 ```{python filename="python"}
 #| echo: true
@@ -117,8 +114,10 @@ import json
 client = OpenAI()
 ```
 
-- Now we can already send the prompt to chatgpt. We are using the `gpt-4o` model for this, but there are many other models available. The available models should be available here: https://platform.openai.com/docs/models
-- Please note, that we use the Responses API, which is a bit newer than the Chat Completion API which was previously standard for model interactions. According to OpenAI, also the Chat Completion API will be supported indefinitely. However, we can expect that the Responses API will host more extensive features in the future. The code and architecture between both APIs is slightly different.
+By initializing the client by calling `OpenAI()`, Python will look for the `OPENAI_API_KEY` environmental variable and get the client started. Now we can already send our first prompt. Here, we’ll use the `gpt-4o` model, but [many other models](https://platform.openai.com/docs/models) are available.
+
+Notably, we’ll use the `Responses API`, which is newer than the `Chat Completions API`. OpenAI has stated that Chat Completions will remain supported, but future features will likely appear first in the Responses API. The general idea is the same, though the syntax differs slightly.
+
 
 ```{python filename="python"}
 #| echo: true
@@ -132,8 +131,14 @@ response = client.responses.create(
 )
 ```
 
-- Please note that we need to provide input for at least two roles: The *user* role ist more familiar to us as this is the actual prompt we are typically sending when using the webinterface of ChatGPT. Now we also provide input for the *sytem* role. The *system* role in ChatGPT defines the model's behavior, tone, and response style, guiding how it interacts with users. So we actually get some more degrees of freedom here and can already centrally define the general model behaviour.
-- Let's see what the completion object is all about:
+Notice that we’re providing input only as a single text string here. This mirrors what we often do in the graphical user interface. In more advanced use cases, we can also define multiple roles:
+
+- **System**: sets the model’s behavior, tone, and style (like giving ChatGPT a personality or a set of instructions).
+- **User**: the actual prompt, just as we’d type in the ChatGPT web interface.
+
+This gives us more control and consistency when building automated workflows. We will come back alter to define the system or developer instructions to get more fine-tuned control over the model responses.
+
+Let’s have a look at what the returned object contains:
 
 
 ```{python filename="python"}
@@ -145,7 +150,7 @@ response = client.responses.create(
 print(response)
 ```
 
-- In many cases we are only interested in accessing the actual message, so we can retrieve this by writing:
+The full object contains a lot of metadata, but in most cases we only care about the generated text. We can retrieve it like this:
 
 
 ```{python filename="python"}
@@ -157,23 +162,25 @@ print(response)
 print(response.output_text)
 ```
 
-- Now we have successfully written our first prompt! Congrats, but this is not so helpful so far.
-- Let's explore the slightly more advanced features of accessing chatgpt and other llms from the command-line
+And there we have it, our first command-line prompt completed and we received a bad joke about pharmacokinetics. Sure, it’s just a joke for now, but the real power will reveal itself soon (hopefully). Next, we’ll look at slightly more advanced features that allow us to make ChatGPT far more useful in our day-to-day workflows.
 
 
-## Custom instructions
+# Custom instructions
 
-- One advantage is the usage of developer messages, which we can pass via the `instructions` parameter to `client.responses.create()`
-- According to the docs, this gives the model high-level instructions on how it should behave while generating a response, such as tone, goals and examples of correct responses.
-- Notably, these instructions have a higher priority to any other instructions provided via the `input` parameter
-- Dealing with this kind of developer instructions are one important part of prompt engineering, and it allows you to have more control over the models behavior compared to using the graphical user interface
-- Let's have an example where we tell the model to explain complex ideas to us in very short sentences and easy to understand language.
+One of the advantages of the command-line setup over the web interface is the ability to give developer-level instructions. We can pass these via the instructions parameter in `client.responses.create()`.
+
+According to the documentation, these instructions tell the model how to behave while generating a response, such as tone, goals, formatting, or examples of correct responses. Importantly, they have higher priority than anything written in the input prompt.
+
+These instructions are a major part of prompt engineering, a field that ist quite important to get the expected answers from these models. It gives us much more control over the model’s behavior, especially when we are designing agent-based workflows (see later on) where each “agent” plays a defined and specialized role.
+
+Let’s take a very simple example where we tell the model to explain concepts in short, easy-to-understand sentences. This is in contrast to the often lengthy sentences with which ChatGPT often responds to our requests:
 
 
 ```{python filename="python"}
 #| echo: true
 #| collapse: false
 #| code-fold: false
+#| output: asis
 
 # send request
 response = client.responses.create(
@@ -185,19 +192,19 @@ response = client.responses.create(
 # show answer
 response.output_text
 ```
-- I am not sure if I would like a model to respond that way, but you get the idea. Having custom instructions can also be helpful when designing agent-based systems where each model-based agent has a pre-defined role. This pre-defined role is typically defined through such instructions, as it defines the overall response and tone of the response
+Would I want every explanation in my life phrased like this? Probably not. I just want to make a point here: custom instructions let us shape the output style in a way that is most useful to our actual use-case. 
 
 
 
+# Structured outputs
 
-## Structured outputs
+Another, even more powerful API feauture (if you ask me) is **structured outputs**.
 
-- Another very useful feature of the openai API is the ability to define structured outputs, which define upfront in which output format ChatGPT should provide the answer.  
-- This is very helpful if we want to somehow postprocess the answers from ChatGPT or use it in agentic workflows.
-- Structured outputs can for example allow us to force chatgpt to answer in a numeric format when we want to know what 1+1 is.
-- The documentation for structured outputs can be currently found under https://platform.openai.com/docs/guides/structured-outputs?api-mode=responses
-- For structured outputs, we rely on a python library called pydantic, that focuses on data validation and data parsing. The openai api expects us to pass pydantic objects so that it is able to understand what we need
-- First, we have to install pydantic
+![Structures are important.](structure.jpg)
+
+As you are probably aware, ChatGPT typically returns free-form text. That’s fine for many tasks but messy for automation or whenever you want to properly postprocess the output of an answer. Structured outputs let us force the model to return data in a predictable format (for example, a numeric value, a JSON object, or a list of parameters). The documentation for structured outputs currently lives [here](https://platform.openai.com/docs/guides/structured-outputs?api-mode=responses), feel free to check it out. 
+
+Under the hood, this works via the `Pydantic` library (for data validation and parsing). We simply define `Pydantic` classes that describe the output format, then pass this expected output structure to the API call. The model will then return data in exactly that format, allowing us to do any kind of postprocessing. First, we will have to install Pydantic:
 
 
 ```{r filename="powershell"}
@@ -209,7 +216,7 @@ response.output_text
 pip install pydantic
 ```
 
-- now we can load the package into our python session
+Then we load the package into our session:
 
 
 ```{python filename="python"}
@@ -221,8 +228,7 @@ pip install pydantic
 from pydantic import BaseModel, Field
 ```
 
-- and we are able to define our answer class
-- for now we only define one field in our NumericAnswer class, which is the value. By specifying `float` ChatGPT will be forced to provide a float like 1.643 instead of a text-based output.
+And now we are able to define the type with which ChatGPT will answer our prompt. For now, we define only a single field in our `NumericAnswer` class, which is the value. By setting its type to `float`, ChatGPT will be constrained to return a numeric value such as `1.643` instead of a text-based response.
 
 ```{python filename="python"}
 #| echo: true
@@ -235,7 +241,7 @@ class NumericAnswer(BaseModel):
 ```
 
 
-- We are now able to pass this `NumericAnswer` class to chatgpt, but this time we use the `client.responses.parse` function which is designed to handle these structured output cases
+We can now pass this `NumericAnswer` class to ChatGPT, but this time we use `client.responses.parse()` which is designed to handle such structured output cases.
 
 
 ```{python filename="python"}
@@ -254,9 +260,7 @@ response = client.responses.parse(
 response.output_parsed
 ```
 
-- We can see that we get an instance of our pre-defined `NumericAnswer` class as output, which already contains the answer from ChatGPT: 12.0
-- We can also directly access this by the predefined key (`value`) that we have defined while constructing the class
-- As you can see via the `type()` function, the content is saved in a float representation, which eases the postprocessing
+We receive an instance of our pre-defined `NumericAnswer` class as output, which already contains the answer from ChatGPT. In this case it is `12.0`. This value can be accessed directly using the predefined value key that was specified when the class was created. As confirmed by the `type()` function, the content is stored as a `float`, making further postprocessing straightforward.
 
 
 ```{python filename="python"}
@@ -266,13 +270,22 @@ response.output_parsed
 
 # show value
 response.output_parsed.value
+```
+```{python filename="python"}
+#| echo: true
+#| collapse: false
+#| code-fold: false
 
 # show type
 type(response.output_parsed.value)
 ```
 
-- We can also define more advanced structured outputs and even nested classes are possible
-- Lets assume we want to automatically extract defined model parameters and their initial values defined in a NONMEM model. We take an example NONMEM model from https://pkpd-info.com/NONMEM/Model_templates.php
+This is great, isn't it? Let's convert our knowledge into a simple example that is closer to our pharmacometric community. 
+
+# A pharmacometric example
+
+Let’s say we want to automatically extract parameter names and their initial values from a NONMEM model file. In case you are doing a systematic review of published NONMEM models, you might find a utility like this helpful. Here is our example NONMEM model code, which is taken from [pkpd-info](https://pkpd-info.com/NONMEM/Model_templates.php):
+
 
 ```{python filename="python"}
 #| echo: true
@@ -344,8 +357,13 @@ $TABLE ID NOPRINT ONEHEADER FILE=CATAB001
 ```
 
 
-- We can now define what we want to have per parameter the name and its initial value based on the code
+We now want ChatGPT to 
 
+- Find all `$THETA` entries
+- Extract the parameter name 
+- Extract the initial value 
+
+and report all this in a *structured* format. First, we define a `Pydantic` class for a single parameter:
 
 ```{python filename="python"}
 #| echo: true
@@ -358,10 +376,13 @@ class OneParameter(BaseModel):
     initial_value: float
 ```
 
-- As you can see, within the freshly defined `OneParameter` object, the name of the parameter has to be a string and the initial value has to be of type float. So also mixing types is no problem within one class and also having multiple key-value pairs is also no problem
-- Please note, that we can provide custom descriptions to the field by using the `str = Field()` notation. This gives a bit of more flexibility to define what we expect for this field.
-- But we are not done yet. There are multiple parameters in the model code, and we want to extract them for all of them. But we don't want to hard-code the number of expected parameters, this is a task that should be done by the LLM.
-- Luckily, we can simply define a list within a nested class:
+As you can see, within the freshly defined `OneParameter` object, the name of the parameter has to be a `string` and the initial value has to be of type `float`. Mixing types within one class is not a problem, and having multiple key-value pairs is also possible. But more to that later.
+
+Please note that we can provide *custom descriptions* to the field by using the `str = Field()` notation. This adds some custom instructions in defining what we expect for this field, and helps to get the correct output for this class.
+
+But we are not done yet. There are multiple parameters in the model code, and we want to extract them all. Currently we would simply get one of the parameters. But as we do not want to hard-code the number of expected parameters, this is a task that should be handled by the LLM.
+
+Luckily, we can simply define a list within a nested class, to indicate that there might be multiple elements. The number of elements will be determined by ChatGPT.
 
 
 ```{python filename="python"}
@@ -374,8 +395,11 @@ class MultipleParameters(BaseModel):
     parameter_list: list[OneParameter]
 ```
 
-- Very convenient! We simply define a new class (which will be our output class), for which we expect a list of `OneParameter` objects. We do not have to define the length of this list, so depending on the model code we paste as input, the list will be hopefully filled accordingly
-- Now we simply have to create our response, let's see if this works. Of note, we also now give some instructions via the `instructions` argument. to clarify that we are interested in `$THETA` only and we provide a little bit of context. The pre-defined `model_text` will be passed (without further instructions or text) via the `input` argument. The previously defined `MultipleParameters` class, expecting a list of `OneParameter` classes, is our `text_format`.    
+
+Very convenient! We simply define a new class, which will be our output class, and expect it to contain a list of `OneParameter` objects. We do not have to define the length of this list, so depending on the model code we paste as input, the list will hopefully be filled accordingly.
+
+Now we just need to create our response. Let’s see if this works properly. It is worth noting that we also provide some instructions via the `instructions` argument to clarify that we are interested only in `$THETA` and to give a bit of context. The predefined `model_text` will be passed, without further instructions or text, via the input argument. The previously defined `MultipleParameters` class, which expects a list of `OneParameter` classes, will be our `text_format`.
+
 
 ```{python filename="python"}
 #| echo: true
@@ -393,20 +417,28 @@ response = client.responses.parse(
 # show answer
 response.output_parsed
 ```
-- This is now very useful, as we have provided a messy and unstructured NONMEM code and with a little bit of explanation and defining the output structure, we can quickly extract some useful information from the code.
-- We can also directly access now the values of a particular element:
+This is very useful because we have provided messy and unstructured NONMEM code, and with a bit of explanation and a defined output structure, we can quickly extract useful information from the code that enables structured postprocessing. We can now also directly access the values of a particular element:
 
 ```{python filename="python"}
 #| echo: true
 #| collapse: false
 #| code-fold: false
 
-# show name and value
+# show name 
 response.output_parsed.parameter_list[1].name
+```
+
+
+```{python filename="python"}
+#| echo: true
+#| collapse: false
+#| code-fold: false
+
+# show value
 response.output_parsed.parameter_list[1].initial_value
 ```
 
-- We can also use this to create a simple table with name and initial value:
+We can use the `response` object to create a simple table that summarizes the name and the intial value, making it a bit more accessible:
 
 ```{python filename="python"}
 #| echo: true
@@ -426,37 +458,219 @@ df = pd.DataFrame([
 df
 ```
 
-- Great! This comes in handy!
-- As with any other use-case of LLMs, we can actually not be fully sure that this works all the time, and hallucinations and errors can happen. So we should never fully trust such operations and always give it some sanity checks. But you can imagine that such a tool can be helpful if you need to systematically extract lots of data from unstructured text.
+Great! This is definitely handy. But please be aware that - as with any other use of LLMs - we cannot be fully certain that it will work perfectly every time. Hallucinations and errors can occur, so we should never rely on such operations without performing sanity checks. Still, it is easy to see how such a tool can be helpful when systematically extracting data from unstructured text.
+
+
+# Agentic workflows
+
+
+There is much more to learn and explore, and the landscape is changing almost daily. Probably the most exciting thing (to me) are **agentic workflows**, which are worth a closer look.
+
+![A single agent.](robot.jpg)
+
+Agents can be thought of as model-based units designed to be best at a specific, pre-defined task. They operate based on the above-mentioned custom instructions, structured output formats, and a defined model version (like `gpt-4o`). Here we can combine all our tools and knowledge.
+
+An important feature of agents is the ability to define so-called *handovers*. This allows one agent to decide on its own to delegate a task to another agent that is better suited for it. This can be extremely powerful!
+
+By using this approach, we can create a capable network of agents that is able to handle complex tasks. With handovers in place, a single, higher-level triage agent can direct requests to the appropriate expert agent and collect their answers.
+
+To illustrate this, let’s replicate the earlier example, but this time using an simple agent network. For this, we first need to install the `OpenAI Agents SDK` library, which was made to deal with such agents more conveniently.
+
+
+```{r filename="powershell"}
+#| echo: true
+#| collapse: false
+#| code-fold: false
+#| eval: false
+
+# load pandas
+pip install openai-agents
+```
+
+
+Once this was successful, we can again load some agent-specific modules:
+
+
+```{python filename="python"}
+#| echo: true
+#| collapse: false
+#| code-fold: false
+
+# load pandas
+from agents import Agent, Runner
+```
+
+
+In a next step, we can create an agent that simply mirrors the behavior of our model example above:
+
+
+```{python filename="python"}
+#| echo: true
+#| collapse: false
+#| code-fold: false
+
+# define agent
+theta_agent = Agent(
+  name="Theta Extraction Agent",
+  model="gpt-4o",
+  instructions="You are a helpful assistant that reliably extracts the $THETA parameters, specifially the names and the initial values from NONMEM model code",
+  output_type=MultipleParameters,
+  handoff_description="Specialist agent that extracts $THETA parameters with their names and initial values"
+)
+```
 
 
 
-
-## Repetition
-
-- LLMs will always contain a certain level of variability, and without a seed the answer to the same prompt will be always different
-- This is also the reason why hallucinations are still problematic in LLMs, a prompt can give a reasonable answer in 9 out of 10 cases but you might be the unlucky one that is the 1 out of 10.
-- Being able to access ChatGPT from the command line allows us to simply loop over the prompt and then store the results.
+Please note that the setup and arguments are quite similar, but we now define it using `Agent()` instead of `client.responses.parse()`, and `text_format` is replaced by `output_type.` One key difference is the `handoff_description` argument, which will become important later. This description provides additional context so that the triage agent (responsible for delegating tasks) can select the appropriate expert agent to handle the request. Another difference is the absence of the `input=model_text` argument, as we are now defining the agent with custom instructions and output format while keeping it agnostic to specific prompts. The input prompt will only be provided when we actually run the agent, which is what we will do next.
 
 
+```{python filename="python"}
+#| echo: true
+#| collapse: false
+#| code-fold: false
+
+# run the agent with the model code
+result_theta = Runner.run_sync(theta_agent, f"Please extract the parameters from this model: {model_text}")
+
+# show output
+result_theta
+```
+
+Okay, great! Again a lot of meta data, and we can perform a similar operation (as described above) to extract the parameters in a tabular format.
+
+```{python filename="python"}
+#| echo: true
+#| collapse: false
+#| code-fold: false
+
+pd.DataFrame([
+    {"name": p.name, "initial": p.initial_value}
+    for p in result_theta.final_output.parameter_list
+])
+```
+
+Please note that `result_theta` no longer contains a structure named `output_parsed`; it is now called `final_output`. 
+
+So far, we have defined an agent that can be reused for various prompts, but it does not yet provide significant additional benefits. To make the example more useful and novel, we will introduce another agent that can generate a short summary of different parts of a model code. These two agents will later be our agentic workflow, once we combine it with a separate traige agent for task delegation. Again, we will create a custom `Pydantic` class for the output with field descriptions and use it to define our custom agent.
 
 
-<!-- ```{python filename="python"} -->
-<!-- #| echo: true -->
-<!-- #| collapse: false -->
-<!-- #| code-fold: false -->
+```{python filename="python"}
+#| echo: true
+#| collapse: false
+#| code-fold: false
 
-<!-- # prompt chatgpt -->
-<!-- response = client.responses.create( -->
-<!--     model="gpt-4o", -->
-<!--     input="" -->
-<!--   ) -->
+# define class per parameter
+class ModelSummary(BaseModel):
+  structural: str = Field(..., description="A short and concise summary about the structural model (excluding covariate effects and stochastic elements). For example: Is it a one-, two-, or three-compartment structure?")
+  stochastic: str = Field(..., description="A short and concise summary about the stochastic model (excluding residual variability). For example: On which parameters do we have interindividual or interoccasion variability included?")
+  residual: str = Field(..., description="A short and concise summary about the residual unexplained variability / error model (excluding IIV or IOV). For example: Do we have an additive, a proportional, or a combined additive-proportional error model?")
+  
+  
+# define agent
+summary_agent = Agent(
+  name="Model Summary Agent",
+  model="gpt-4o",
+  instructions="You are a helpful assistant that provides a short and concise summary for various aspects of a given NONMEM model code",
+  output_type=ModelSummary,
+  handoff_description="Specialist agent that summarizes important aspects of various aspects of a given NONMEM model code"
+)
 
-<!-- # show answer -->
-<!-- response.output_parsed -->
-<!-- ``` -->
+# run the agent with the model code
+result_summary = Runner.run_sync(summary_agent, f"Please give me a structured summary for this model: {model_text}")
+
+# show as table
+result_summary.final_output.structural
+```
+
+```{python filename="python"}
+#| echo: true
+#| collapse: false
+#| code-fold: false
+
+result_summary.final_output.stochastic
+```
+
+```{python filename="python"}
+#| echo: true
+#| collapse: false
+#| code-fold: false
+
+result_summary.final_output.residual
+```
+
+
+Great, we now have two independent agents, each specialized in a specific aspect of extracting information from the model code. The next step is to define a single “meta-agent” that takes a given request and delegates it to the appropriate agent. Such agents are often referred to as “triage agents.”
+
+
+```{python filename="python"}
+#| echo: true
+#| collapse: false
+#| code-fold: false
+
+# define triage agent
+triage_agent = Agent(
+    name="Triage agent",
+    instructions=(
+        "Help the user with their NONMEM model code."
+        "If they ask about the model parameters and their initials, handoff to the theta extraction agent."
+        "If they want to get a structured summary of the code, handoff to the model summary agent."
+    ),
+    handoffs=[theta_agent, summary_agent]
+)
+
+```
+
+As you can see, this is now a high-level triage agent designed to delegate tasks to the previously defined, more specialized agents. The specialized agents are defined via the `handoffs` argument. As with any agent, it is important to provide clear and meaningful instructions; if the results do not meet our expectations, it is always a good idea to revisit and refine these instructions. Such *prompt engineering* can often improve outcomes. With this setup, we can now go ahead and ask the general triage agent a question about the model parameters, hoping that it will correctly forward the request to the `theta_agent`.
+
+```{python filename="python"}
+#| echo: true
+#| collapse: false
+#| code-fold: false
+
+# run the agent 
+result_triage = Runner.run_sync(triage_agent, f"What initial parameter estimates have been defined for the attached model? {model_text}")
+
+# show output
+result_triage.final_output.parameter_list
+```
+Great, this worked quite well! Let’s see if the other use case works just as smoothly.
+
+
+```{python filename="python"}
+#| echo: true
+#| collapse: false
+#| code-fold: false
+
+# run the agent 
+result_triage = Runner.run_sync(triage_agent, f"Can you quickly summarize the attached model? {model_text}")
+
+# show output
+result_triage.final_output.structural
+```
 
 
 
+```{python filename="python"}
+#| echo: true
+#| collapse: false
+#| code-fold: false
+
+result_triage.final_output.stochastic
+```
+
+```{python filename="python"}
+#| echo: true
+#| collapse: false
+#| code-fold: false
+
+result_triage.final_output.residual
+```
+
+
+Perfect! With that we have demonstrated how to build a powerful agent framework using a very simple example. But the possibilities are limitless and you can think much bigger when you consider that each lower-level agent can also have its own handoffs. All you need is to identify your use case and then build your customized framework.
+
+# Epilogue
+
+I am sure there is still plenty left to explore, and new features appear quietly every week. I am always suprised when I check the documentations which new tools have popped-up since my last visit. In my opinion, well‑set‑up agents for small, low‑risk tasks can make our day‑to‑day work a bit smoother and free up time for things that need more focus. Still, even with simple tasks, it’s worth giving the outputs a quick check to be sure everything makes sense, and of course topics such as data protection have to be considered. I hope these first steps were useful to you, and I’d be happy to hear what you think. See you next time!
 
 
