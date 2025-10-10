@@ -1,0 +1,333 @@
+---
+title: "About parameter precision and Sampling Importance Resampling"
+description: "The queen of getting the correct RSE%"
+author:
+  - name: Marian Klose
+    url: https://github.com/marianklose
+    orcid: 0009-0005-1706-6289
+date: 05-24-2025
+categories: [RUV, Error, NONMEM] 
+image: preview.jpg
+draft: false
+# draft-mode: gone
+echo: true
+execute:
+  freeze: false # never re-render during project render (dependencies might change over time)
+  echo: true
+  message: false
+  warning: false
+citation: 
+  url: https://marian-klose.com/posts/expressing_ruv_as_theta/index.html
+format:
+  html:
+    number-sections: true
+    toc: true
+    code-fold: true
+    code-tools: true
+---
+
+```{r}
+# load packages
+library(tidyverse)
+```
+
+## Introduction
+
+- When running a nonlinear mixed-effects model and getting a successful minimization, we found a - hopefully global - minimum in our -2log likelihood surface (our objective function)
+- But even if the minimization was succesful, and we truely found the global minimum of the surface, does that mean that no other parameter combination could have described the data equally well? Does it mean that when we slightly change the clearance parameter, the model fit will be significantly worse? Typically not! Also other parameter combinations will provide a similar - and only slightly worse fit - to the data. 
+- But if we from now on continue with that one set of maximum likelihood estimates as our parameters, how confident are we that this is truely the "best" parameter set? That's where parameter precision comes into play. 
+- Parameter precision basically tells us how much we can vary a parameter until the model fit becomes significantly worse. It gives us an understanding of how shallow or steep the -2log likelihood surface is around our estimated parameters.
+- That means only if the data carries enough information to precisely estimate our parameters, we can be confident in our model predictions.
+- That is why the parameter precision is an important part of model evaluation, and a commonly reported metric in publications. 
+- Now there are multiple ways to assess the parameter precision, but there are some nuances to be aware of.
+
+### Estimation by Hessian 
+
+- Maybe the most straightforward way to get a measure of parameter precision is the estimation by the second derivative of the objective function (the Hessian matrix). The Hessian is the second derivate but in linear algebra / matrix style.
+- The intuition behind this is as follows: We end up at our maximum likelihood estimates after minimization. To now assess the steepness of the surface around that minimum, we can have a look at the second derivative of the surface at that point. Remember: While the first derivative gives us an idea about the slope at that point (should be zero at the minimum), the second derivative tells us something about the curvature at the minimum.
+- A very steep surface with a high curvature (high second derivative) means that even a small change in parameters would lead to a substantial worsen of the fit (much higher OFV). A shallow surface tells us that we have much more room to change the parameters without significantly worsening the fit.
+- The downside of this approach is that it (i) relies on the assumption that the surface is quadratic around the minimum (MLE), which is often not the case, and (ii) it can only be calculated if the Hessian / second derivative can be actually calculated. This is not always straightforward, especially for complex models with many parameters or for estimation algorithms such as the LAPLACIAN algorithm. 
+- Many modellers will have encountered situations, where (i) the parameter precision measured as relative standard error (RSE%) was substanially different to the other methods for assessment, or (ii) where the COVARIANCE step simply failed.
+- The question is why are people using it? Mainly because it is relative fast to compute and allows us to quickly triage whether to continue with a model or not. 
+- On the other hand it means that we will likely discard models that might have been actually good, and continue with others that are potentially allow only for an unprecise estimation of the parameters.
+- But it seems to be common sense in the pharmacometric community to at least run one of the alternative methods for the "final" selected model that is being reported in the publication. Let's have a look!
+
+### Bootstrapping
+
+- Another popular method is bootstrapping. Here we resample the data with replacement, and re-estimate the model on each of these resampled datasets.
+- When sampling with replacement, we will get a different dataset each time and therefore get an understanding of how sensitive the parameter estimates are to the data - exactly what we want to know!
+- The advantage of this approach is that it does not rely on the assumption of a quadratic surface, and can be applied to any model.
+- The downside is that it is computationally expensive, especially for complex models with larger run times. It can also pose a problem for relatively instable models, that have some issues with convergence, as only those runs that converged can be used for the analysis.
+- If we don't have access to a high-performance computing cluster, running a bootstrap with 1000 runs can take days or even weeks. And even with a HPC, bootstrapping can pose a time challenge. 
+- These downsides are the main reason that pharmacometric scientists were looking for alternative methods, and among them is Sampling importance Resampling (SIR).
+
+
+### Sampling Importance Resampling
+
+- Sampling Importance Resampling (SIR) is the probably most elegant and modern method to asseess parameter precision. 
+- I have personally used it in my projects, and in many publications nowadays you will find the final parameter precision estimates being reported by SIR.
+- But I personally also found it to be the most difficult method to understand and implement. Diagnostics for this method is a bit more complex, and I personally made some mistakes in correctly diagnosing the SIR runs in the beginning. 
+- This provides the motivation for this blog post. I want to reproduce a simple SIR run within R to properly understand the methods.
+
+
+## Importance sampling
+
+- Importance sampling is the underlying statistical method used in SIR. 
+- The main idea of importance sampling is as follows: We have our target distribution $p(x)$, which represents the parameter sets around the maximum likelihood estimates (MLE). We would like to directly sample from it, but the complexity of the system makes direct sampling impossible. 
+- But we can evaluate $p(x)$ at a given set of parameters. This means that we are able to calculate the Objective function value (OFV) if someone gives us a defined value of Clearance, Volume, Omega, RUV etc. (or however your model ist being parameterized)
+- Now the smart part: Why not sample from a proposal distribution $q(x)$, from which we can easily sample, and that is roughly similar to our target distribution $p(x)$? Then, we simply reweight the samples to correct for the fact that they come from $q(x)$, instead of $p(x)$. Key is that we can actually evaluate $p(x)$ at a given set of parameters, letting us assess how "good" a sample is. But more to that later
+- In pharmacometric terms we would choose a proposal distribution $q(x)$ that roughly mimicks the distribution of the parameters around the MLE, and it can be anything that is somewhat close to reality. If we have a successful COVARIANCE step, we can use the derived variance-covariance matrix to generate proposal samples. If we ran a small bootstrap run with a small number of samples, we can use this one as a start. Or we simply come up with some arbitrary but plausible values, like 30% for THETAS and 50% for OMEGAS. This is the beauty of it, as long as the density in the true region is not zero, we will always end up with the correct distribution (assuming that we sample long enough).
+- In pharmacometrics we talk about SIR, as we have three steps:
+
+1. Sampling
+  - here we sample from the proposal distribution 
+2. Importance
+  - we generate the importance weights, where we evaluate the samples with our target distribution
+  - This allows us to assess how "good" the sample were
+3. Resampling
+  - to approximate the target distribution, we now resample from the proposal samples according to their importance weights. Samples in regions with high importance weights will be sampled more often, while samples in regions with low importance weights will be sampled less often.
+
+Let's have a closer look
+
+
+### Visualizing importance sampling
+
+- To better understand the concept, let's visualize it. First we will define a target distribution, which we will try to approximate by importance sampling.
+- The target distribution will be a simple lognormal distribution, and we will use a normal distribution as proposal distribution, which is not too far away from the target distribution.
+- Let's visualize how the density of that target distribution looks like:
+
+```{r}
+# set seed
+set.seed(123)
+
+# define parameters of target distribution
+mu_target <- 1
+sigma_target <- 0.5
+
+# build an x-grid over a reasonable range for a lognormal
+x_grid_target <- seq(0, qlnorm(0.999, meanlog = mu_target, sdlog = sigma_target), length.out = 1000)
+
+# compute the *theoretical* lognormal density
+target_df <- tibble(
+  x = x_grid_target,
+  y = dlnorm(x_grid_target, meanlog = mu_target, sdlog = sigma_target)
+)
+
+# plot the theoretical density (no kernel density from samples)
+ggplot(target_df, aes(x = x, y = y)) +
+  geom_line(color = "blue") +
+  ggtitle("Target Distribution (Lognormal) — Theoretical Density") +
+  xlab("x") +
+  ylab("Density") +
+  theme_bw()
+```
+
+- Now let's take a normal distribution as proposal distribution, and generate some sample from it. We can also calculate the density of that proposal distribution, and visualize it:
+
+```{r}
+# define parameters of proposal distribution
+set.seed(123)
+mu_proposal<- 5
+sigma_proposal<- 3
+n_samples <- 1000
+
+# generate samples from proposal distribution
+proposal_samples <- rnorm(n_samples, mean = mu_proposal, sd = sigma_proposal)
+
+# put samples into a tibble
+proposal_tibble <- tibble(x = proposal_samples, y = 0, Source = "Proposal")
+
+# calculate density of proposal distribution
+proposal_density <- density(proposal_samples)
+
+# define tibble with proposal samples
+proposal_df <- tibble(x = proposal_density$x, y = proposal_density$y)
+
+# show density with samples of proposal distribution using ggplot
+ggplot(proposal_df, aes(x = x, y = y)) +
+  geom_line(color = "blue") +
+  ggtitle("Proposal Distribution (Normal)") +
+  geom_rug(data = proposal_tibble, aes(x = x), sides = "b", alpha = 0.1) +
+  xlab("x") +
+  ylab("Density") +
+  theme_bw()
+```
+
+- The proposal distribution is quite different to the target distribution, but it is not too far away. Visualizing both together makes it easier to see the difference:
+
+```{r}
+# combine both densities into one tibble
+combined_df <- bind_rows(
+  target_df |> mutate(Source = "Target"),
+  proposal_df |> mutate(Source = "Proposal")
+)
+
+# plot both distributions in one plot
+ggplot(combined_df, aes(x = x, y = y, color = Source)) +
+  geom_line() +
+  ggtitle("Proposal and Target Distribution") +
+  geom_rug(
+    data = proposal_tibble,
+    aes(x = x),
+    alpha = 0.1
+  ) +
+  xlab("x") +
+  ylab("Density") +
+  theme_bw()
+```
+
+- We now see much better the differences between the two distributions. The normal distribution is much too wide, and does not really capture the target distribution well. But we also see that there are quite some samples in the region of high density of the target distribution, which is good. The question is now how we can use these samples to approximate the target distribution.
+- For that, we will now calculate the importance weights. For each sample, we want to know how plausible it is to come from the target distribution, compared to the proposal distribution. We calculate
+
+$$w_i \propto \frac{p(x_i)}{q(x_i)}$$
+
+- where $p(x_i)$ is the density of the target distribution at sample $x_i$, and $q(x_i)$ is the density of the proposal distribution at sample $x_i$. We have to do that for every sample
+
+```{r}
+# calculate densities at each proposal sample
+proposal_tibble <- proposal_tibble |> 
+  rowwise() |> 
+  mutate(
+    p_x = dlnorm(x, meanlog = mu_target, sdlog = sigma_target), # target density
+    q_x = dnorm(x, mean = mu_proposal, sd = sigma_proposal) # proposal density
+  ) |> 
+  ungroup() |> 
+  mutate(
+    weight = p_x / q_x, # unnormalized weight
+    weight = weight / sum(weight) # normalized weight
+  )
+
+# show head
+proposal_tibble |> head()
+```
+
+- Now we can visualize the samples again, but this time we scale the size of the points according to their importance weights. Samples in regions with high target density will have high weights, while samples in regions with low target density will have low weights.
+
+```{r}
+# plot proposal samples with size according to weights
+ggplot(combined_df, aes(x = x, y = y, color = Source)) +
+  geom_line() +
+  ggtitle("Proposal and Target Distribution") +
+  # geom_rug(
+  #   data = proposal_tibble,
+  #   aes(x = x, alpha = weight, linewidth = weight, color = Source)
+  # ) +
+  geom_point(data = proposal_tibble, aes(size = weight), alpha = 0.5) +
+  scale_size_continuous(range = c(0.1, 5)) +
+  xlab("x") +
+  ylab("Density") +
+  theme_bw()
+```
+
+
+- We can see that samples in regions with high target density have high weights, while samples in regions with low target density have low weights (or actually zero for values below 0 as the target density is zero). This is exactly what we want to achieve. Now we can resample from the proposal samples according to their weights to approximate the target distribution. 
+- The normalized weights sum up to 1, and can therefore be used as probabilities for resamplingg:
+
+```{r}
+# show sum of normalized weights
+proposal_tibble |> pluck("weight") |> sum()
+```
+
+- Resampling with replacement according to the weights is now straightforward:
+
+```{r}
+# resample according to weights
+resampled_weights <- sample(
+  proposal_tibble$x,
+  size = 500,
+  replace = TRUE,
+  prob = proposal_tibble$weight
+)
+
+# calculate density of resampled values
+resampled_density <- density(resampled_weights)
+
+# define tibble with resampled density
+resampled_df <- tibble(x = resampled_density$x, y = resampled_density$y)
+```
+
+
+- With the resampled values, we can now visualize how well we approximated the target distribution:
+
+```{r}
+# combine all three densities into one tibble
+combined_all_df <- bind_rows(
+  target_df |> mutate(Source = "Target"),
+  proposal_df |> mutate(Source = "Proposal"),
+  resampled_df |> mutate(Source = "Resampled")
+)
+
+# plot all three distributions in one plot
+ggplot(combined_all_df, aes(x = x, y = y, color = Source)) +
+  geom_line() +
+  ggtitle("Proposal, Target and Resampled Distribution") +
+  xlab("x") +
+  ylab("Density") +
+  theme_bw()
+```
+
+- Its quite magic that we can approximate the target distribution so well, even though our proposal distribution was quite different. The key is that we had enough samples in the region of high target density, which we could then upweight by their importance weights. That is not always the case, and we might need a higher number of samples or multiple iterations to get a good approximation. But the principle is the same.
+- But how would this work if we want to have multiple iterations? Let's repeat it with a smaller number of samples. We will repeat the same steps, but this time with only 50 samples from the proposal distribution:
+
+```{r}
+# define a smaller set of samples
+n_samples_small <- n_samples/20
+
+# generate samples from proposal distribution
+proposal_samples_small <- rnorm(n_samples_small, mean = mu_proposal, sd = sigma_proposal)
+
+# put samples into a tibble
+proposal_tibble_small <- tibble(x = proposal_samples_small, y = 0, Source = "Proposal")
+
+# calculate density of proposal distribution
+proposal_density_small <- density(proposal_samples_small)
+
+# define tibble with proposal samples
+proposal_df_small <- tibble(x = proposal_density_small$x, y = proposal_density_small$y)
+
+# calculate densities at each proposal sample
+proposal_tibble_small <- proposal_tibble_small |> 
+  rowwise() |> 
+  mutate(
+    p_x = dlnorm(x, meanlog = mu_target, sdlog = sigma_target), # target density
+    q_x = dnorm(x, mean = mu_proposal, sd = sigma_proposal) # proposal density
+  ) |> 
+  ungroup() |> 
+  mutate(
+    weight = p_x / q_x, # unnormalized weight
+    weight = weight / sum(weight) # normalized weight
+  )
+
+# resample according to weights
+resampled_weights_small <- sample(
+  proposal_tibble_small$x,
+  size = n_samples_small/2,
+  replace = TRUE,
+  prob = proposal_tibble_small$weight
+)
+
+# calculate density of resampled values
+resampled_density_small <- density(resampled_weights_small)
+
+# define tibble with resampled density
+resampled_df_small <- tibble(x = resampled_density_small$x, y = resampled_density_small$y)
+
+# combine all three densities into one tibble
+combined_all_df_small <- bind_rows(
+  target_df |> mutate(Source = "Target"),
+  proposal_df_small |> mutate(Source = "Proposal (small)"),
+  resampled_df_small |> mutate(Source = "Resampled (small)")
+)
+
+# plot all three distributions in one plot
+ggplot(combined_all_df_small, aes(x = x, y = y, color = Source)) +
+  geom_line() +
+  ggtitle("Proposal, Target and Resampled Distribution") +
+  xlab("x") +
+  ylab("Density") +
+  theme_bw()
+```
+
+
+- We can see that our resamples are not there yet. The approximation is not very good, as we had only a small number of samples from the proposal distribution. The idea applied in SIR is now to repeat the same process, but to now generate a fresh set of samples from the resampled distribution, we first have to bring the discrete set of samples into a parameteric form that allows us to generate samples from it.
+- We can do this by a 
