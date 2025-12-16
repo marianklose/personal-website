@@ -4,7 +4,7 @@ project:
     - "*.qmd"
 
 website:
-  title: "Marian Klose"
+  title: ""
   favicon: img/favicon.ico
   comments:
     giscus:
