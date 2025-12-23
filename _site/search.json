@@ -616,6 +616,20 @@
     "text": "Courses and Training\n\n\n2025\n\n\nNonlinear Mixed Effects Modeling Workflows using Pumas\n\n\n\n\n2023 – 2024\n\n\nPharMetrX A1 – A5 Modules\n\n\n\n\n2022\n\n\nPharmacometrics Spring School – Modeling Using MonolixSuite (Lixoft)\n\n\n\n\n2022\n\n\nMATLAB/SimBiology Workshop – Introduction to PBPK Modeling with SimBiology\n\n\n\n\n2021\n\n\nPython – Data Science, Machine Learning & Neural Networks (Udemy)"
   },
   {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "Marian Klose",
+    "section": "",
+    "text": "Hi there! I’m Marian Klose, currently a PhD student at Freie Universitaet Berlin, and part of the PharMetrX graduate research training program.\nHow did I end up here? During my pharmacy studies I got into pharmacometrics pretty early on and loved the mix of computer science, pharmacy, and math. After my graduation, I headed to Florida for six months to work at the University of Florida’s Center for Pharmacometrics and Systems Pharmacology, and also did a three-month internship at Boehringer Ingelheim to see if my interest would remain steady. And I was still fascinated by pharmacometrics, so I decided to start my PhD and applied to the PharMetrX program — and here I am today!\nThankfully, there are many helpful blogs and articles available that break down complex topics into simpler, more accessible concepts. Whenever I come across a concept I don’t fully understand (which happens quite often), I try to explain it to myself using a Quarto or RMarkdown document. Since I’m anyways creating these documents for myself, I thought I might as well share them as little blog posts. My goal really isn’t to produce perfectly polished content, but rather to document my own learning process and potentially help others who might be facing the same challenges."
+  },
+  {
+    "objectID": "index.html#about-me",
+    "href": "index.html#about-me",
+    "title": "Marian Klose",
+    "section": "",
+    "text": "Hi there! I’m Marian Klose, currently a PhD student at Freie Universitaet Berlin, and part of the PharMetrX graduate research training program.\nHow did I end up here? During my pharmacy studies I got into pharmacometrics pretty early on and loved the mix of computer science, pharmacy, and math. After my graduation, I headed to Florida for six months to work at the University of Florida’s Center for Pharmacometrics and Systems Pharmacology, and also did a three-month internship at Boehringer Ingelheim to see if my interest would remain steady. And I was still fascinated by pharmacometrics, so I decided to start my PhD and applied to the PharMetrX program — and here I am today!\nThankfully, there are many helpful blogs and articles available that break down complex topics into simpler, more accessible concepts. Whenever I come across a concept I don’t fully understand (which happens quite often), I try to explain it to myself using a Quarto or RMarkdown document. Since I’m anyways creating these documents for myself, I thought I might as well share them as little blog posts. My goal really isn’t to produce perfectly polished content, but rather to document my own learning process and potentially help others who might be facing the same challenges."
+  },
+  {
     "objectID": "posts/about_this_blog/index.html",
     "href": "posts/about_this_blog/index.html",
     "title": "About this blog",
