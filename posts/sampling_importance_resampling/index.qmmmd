@@ -8,8 +8,8 @@ author:
 date: 05-24-2025
 categories: [RUV, Error, NONMEM] 
 image: preview.jpg
-draft: false
-# draft-mode: gone
+draft: true
+draft-mode: gone
 echo: true
 execute:
   freeze: false # never re-render during project render (dependencies might change over time)

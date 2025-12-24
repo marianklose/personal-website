@@ -81,7 +81,7 @@ setx OPENAI_API_KEY "your_api_key_here"
 We have to make sure to name the environment variable exactly `OPENAI_API_KEY`. The openai Python package looks for this specific name when we initialize it to link the prompts to our account. Very nice, our API key is ready to be used!
 
 
-## Setting up Pyhton
+## Setting up Python
 
 I won’t go into the details of installing Python itself, as there are many excellent tutorials out there for that. Of course we have to take care of some packages and dependencies, and we install it with Python’s package installer `pip`: 
 
