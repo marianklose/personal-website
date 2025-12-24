@@ -4,7 +4,7 @@ project:
     - "*.qmd"
 
 website:
-  title: ""
+  title: "Marian Klose"
   google-analytics: "G-1YZKR6EN7R"
   cookie-consent:
     type: express
