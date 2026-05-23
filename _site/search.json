@@ -837,14 +837,14 @@
     "href": "posts/hitl_llm_agentic_pmx_workflow/index.html",
     "title": "Human-in-the-loop LLM agentic pharmacometric workflow",
     "section": "",
-    "text": "Lorem ipsum"
+    "text": "Lorem ipsum\nLets first dig into some fundamental understanding of LLM-agents, multi-agentic workflows and the specifics of pharmacometrics.\n\n\n\nAn LLM-agent sounds quite fancy, but in the end it is simply the combination of\n\na specific model, e.g., openai::gpt-5.5 or claude::sonnet-4.6, or a locally ran LLM model like xxx. This defines the capabilities of the model, the cost, the speed, and maybe where this model is particularly good at\na set of system messages/instructions that define the tone and the\na set of tools that the agent is able to call, e.g. a web search or a personally defined python function\npotentially a structured output format that defines how the llm is answering\n\nA quick example for a parameter extraction agent, that is able to extract NLME model parameters from a scientific publication and reports the parameters in a structured way.\n\nopenai::gpt-5.5 as the llm architecture\nSystem message: “You are a pharmacometric expert that extracts parameter information in a structured way from a scientific publication”\nNo additional tools are being handed to the agent\nWe define a structured output format so that it gives back a\n\n\n\n\nThe current development seems to rather go into the direction of having many single LLM-agents that are specialized (through model, system message tailored to the task, tools, structured output format) in a specific task than having one single agent that is capable of doing everything. That is how multi-agentic workflow evolved: A complex task is prompted to a orechestrator/supervisor agent, which is then broken down to many subtasks that are handed to the specialized agents, and in the end the orchestrator/supervisor agent receives the output from all of them to fulfull the task.\n\n\n\n\nVibe coding is nice, sure. And it is impressive how quickly you can generate code with simple natural language. But in pharmacometrics we cannot simply let a multi-agent workflow perform an analysis without having any human in the loop. In the end we care about the output, the predicted AUC, Cmax, risk, or whatever numeric we are interested in. If we do not fully trust these numbers, than our analysis is useless. The decisions based on these numbers are simply to important to hand it all over to an agent."
   },
   {
     "objectID": "posts/hitl_llm_agentic_pmx_workflow/index.html#motivation",
     "href": "posts/hitl_llm_agentic_pmx_workflow/index.html#motivation",
     "title": "Human-in-the-loop LLM agentic pharmacometric workflow",
     "section": "",
-    "text": "Lorem ipsum"
+    "text": "Lorem ipsum\nLets first dig into some fundamental understanding of LLM-agents, multi-agentic workflows and the specifics of pharmacometrics."
   },
   {
     "objectID": "posts/hitl_llm_agentic_pmx_workflow/index.html#repository-structure",
@@ -943,5 +943,26 @@
     "title": "Human-in-the-loop LLM agentic pharmacometric workflow",
     "section": "Package root",
     "text": "Package root\n\n\n01_hello_world/src/pk_agent/__init__.py\n\n#| eval: false\n\n\"\"\"\npk_agent: a minimal two-agent LangGraph workflow for pharmacokinetic\nparameter extraction and reporting.\n\"\"\""
+  },
+  {
+    "objectID": "posts/hitl_llm_agentic_pmx_workflow/index.html#what-is-an-llm-agent",
+    "href": "posts/hitl_llm_agentic_pmx_workflow/index.html#what-is-an-llm-agent",
+    "title": "Human-in-the-loop LLM agentic pharmacometric workflow",
+    "section": "",
+    "text": "An LLM-agent sounds quite fancy, but in the end it is simply the combination of\n\na specific model, e.g., openai::gpt-5.5 or claude::sonnet-4.6, or a locally ran LLM model like xxx. This defines the capabilities of the model, the cost, the speed, and maybe where this model is particularly good at\na set of system messages/instructions that define the tone and the\na set of tools that the agent is able to call, e.g. a web search or a personally defined python function\npotentially a structured output format that defines how the llm is answering\n\nA quick example for a parameter extraction agent, that is able to extract NLME model parameters from a scientific publication and reports the parameters in a structured way.\n\nopenai::gpt-5.5 as the llm architecture\nSystem message: “You are a pharmacometric expert that extracts parameter information in a structured way from a scientific publication”\nNo additional tools are being handed to the agent\nWe define a structured output format so that it gives back a"
+  },
+  {
+    "objectID": "posts/hitl_llm_agentic_pmx_workflow/index.html#what-is-a-multi-agentic-workflow",
+    "href": "posts/hitl_llm_agentic_pmx_workflow/index.html#what-is-a-multi-agentic-workflow",
+    "title": "Human-in-the-loop LLM agentic pharmacometric workflow",
+    "section": "",
+    "text": "The current development seems to rather go into the direction of having many single LLM-agents that are specialized (through model, system message tailored to the task, tools, structured output format) in a specific task than having one single agent that is capable of doing everything. That is how multi-agentic workflow evolved: A complex task is prompted to a orechestrator/supervisor agent, which is then broken down to many subtasks that are handed to the specialized agents, and in the end the orchestrator/supervisor agent receives the output from all of them to fulfull the task."
+  },
+  {
+    "objectID": "posts/hitl_llm_agentic_pmx_workflow/index.html#what-are-the-special-challenges-in-pharmacometrics",
+    "href": "posts/hitl_llm_agentic_pmx_workflow/index.html#what-are-the-special-challenges-in-pharmacometrics",
+    "title": "Human-in-the-loop LLM agentic pharmacometric workflow",
+    "section": "",
+    "text": "Vibe coding is nice, sure. And it is impressive how quickly you can generate code with simple natural language. But in pharmacometrics we cannot simply let a multi-agent workflow perform an analysis without having any human in the loop. In the end we care about the output, the predicted AUC, Cmax, risk, or whatever numeric we are interested in. If we do not fully trust these numbers, than our analysis is useless. The decisions based on these numbers are simply to important to hand it all over to an agent."
   }
 ]
