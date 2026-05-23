@@ -39,7 +39,9 @@ Lorem ipsum
 
 ## Repository structure
 
-```{bash filename="powershell"}
+Lorem ipsum 
+
+```{.bash filename="repo structure"}
 #| eval: false
 
 llm-agentic-workflow-sandbox/
@@ -75,9 +77,13 @@ llm-agentic-workflow-sandbox/
                 └── state.py
 ```
 
+
+
 ## Entry point
 
-```{python filename="01_hello_world/main.py"}
+Lorem ipsum
+
+```{.python filename="01_hello_world/main.py"}
 #| eval: false
 
 """
@@ -147,7 +153,7 @@ if __name__ == "__main__":
 
 ## Input data
 
-```{markdown filename="01_hello_world/data/sample_paper.md"}
+```{.markdown filename="01_hello_world/data/sample_paper.md"}
 #| eval: false
 
 # Pharmacokinetic Characterization of Drugamab in Healthy Volunteers
@@ -186,7 +192,7 @@ reported for similar monoclonal antibodies.
 
 ## Package root
 
-```{python filename="01_hello_world/src/pk_agent/__init__.py"}
+```{.python filename="01_hello_world/src/pk_agent/__init__.py"}
 #| eval: false
 
 """
@@ -197,7 +203,7 @@ parameter extraction and reporting.
 
 ## Configuration
 
-```{python filename="01_hello_world/src/pk_agent/config.py"}
+```{.python filename="01_hello_world/src/pk_agent/config.py"}
 #| eval: false
 
 """
@@ -257,7 +263,7 @@ settings = Settings()
 
 ### Package init
 
-```{python filename="01_hello_world/src/pk_agent/graph/__init__.py"}
+```{.python filename="01_hello_world/src/pk_agent/graph/__init__.py"}
 #| eval: false
 
 """
@@ -270,7 +276,7 @@ edges between them (= control flow, i.e. which node runs after which).
 
 ### Builder
 
-```{python filename="01_hello_world/src/pk_agent/graph/builder.py"}
+```{.python filename="01_hello_world/src/pk_agent/graph/builder.py"}
 #| eval: false
 
 """
@@ -337,7 +343,7 @@ def build_graph(checkpointer: BaseCheckpointSaver | None = None):
 
 ### Package init
 
-```{python filename="01_hello_world/src/pk_agent/llm/__init__.py"}
+```{.python filename="01_hello_world/src/pk_agent/llm/__init__.py"}
 #| eval: false
 
 """
@@ -347,7 +353,7 @@ LLM provider abstraction.
 
 ### Provider
 
-```{python filename="01_hello_world/src/pk_agent/llm/provider.py"}
+```{.python filename="01_hello_world/src/pk_agent/llm/provider.py"}
 #| eval: false
 
 """
@@ -394,7 +400,7 @@ def get_llm(temperature: float | None = None) -> BaseChatModel:
 
 ### Package init
 
-```{python filename="01_hello_world/src/pk_agent/nodes/__init__.py"}
+```{.python filename="01_hello_world/src/pk_agent/nodes/__init__.py"}
 #| eval: false
 
 """
@@ -407,7 +413,7 @@ In our case, the nodes take the sate as input and return a dict of updates to th
 
 ### Extractor
 
-```{python filename="01_hello_world/src/pk_agent/nodes/extractor.py"}
+```{.python filename="01_hello_world/src/pk_agent/nodes/extractor.py"}
 #| eval: false
 
 """
@@ -455,7 +461,7 @@ def extract_parameters(state: AgentState) -> dict:
 
 ### Reporter
 
-```{python filename="01_hello_world/src/pk_agent/nodes/reporter.py"}
+```{.python filename="01_hello_world/src/pk_agent/nodes/reporter.py"}
 #| eval: false
 
 """
@@ -506,7 +512,7 @@ def write_report(state: AgentState) -> dict:
 
 ### Package init
 
-```{python filename="01_hello_world/src/pk_agent/prompts/__init__.py"}
+```{.python filename="01_hello_world/src/pk_agent/prompts/__init__.py"}
 #| eval: false
 
 """
@@ -516,7 +522,7 @@ System prompts / messages for the workflow's agents.
 
 ### Extractor prompt
 
-```{python filename="01_hello_world/src/pk_agent/prompts/extractor.py"}
+```{.python filename="01_hello_world/src/pk_agent/prompts/extractor.py"}
 #| eval: false
 
 """
@@ -544,7 +550,7 @@ Important:
 
 ### Reporter prompt
 
-```{python filename="01_hello_world/src/pk_agent/prompts/reporter.py"}
+```{.python filename="01_hello_world/src/pk_agent/prompts/reporter.py"}
 #| eval: false
 
 """
@@ -568,7 +574,7 @@ Requirements:
 
 ### Package init
 
-```{python filename="01_hello_world/src/pk_agent/schemas/__init__.py"}
+```{.python filename="01_hello_world/src/pk_agent/schemas/__init__.py"}
 #| eval: false
 
 """
@@ -582,7 +588,7 @@ rules for the data used in the workflow.
 
 ### PK model
 
-```{python filename="01_hello_world/src/pk_agent/schemas/pk_model.py"}
+```{.python filename="01_hello_world/src/pk_agent/schemas/pk_model.py"}
 #| eval: false
 
 """
@@ -641,7 +647,7 @@ class PKParameters(BaseModel):
 
 ### State
 
-```{python filename="01_hello_world/src/pk_agent/schemas/state.py"}
+```{.python filename="01_hello_world/src/pk_agent/schemas/state.py"}
 #| eval: false
 
 """
