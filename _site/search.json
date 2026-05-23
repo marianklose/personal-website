@@ -543,7 +543,7 @@
     "href": "posts.html",
     "title": "Blog",
     "section": "",
-    "text": "Using ChatGPT from the command line\n\n\n\nChatGPT\n\nopenai\n\nLLM\n\n\n\nSupercharging LLMs by building agentic workflows.\n\n\n\nMarian Klose\n\n\nJul 31, 2025\n\n\n\n\n\n\n\n\n\n\n\n\n\nReproducing NONMEM’s MAP estimation in R\n\n\n\nNONMEM\n\nBayes\n\nMAP\n\nEBE\n\nEstimation\n\n\n\nHow to perform Bayesian MAP estimation yourself using R and why you should care.\n\n\n\nMarian Klose\n\n\nMar 31, 2025\n\n\n\n\n\n\n\n\n\n\n\n\n\nMy attempt to understand the NLME estimation algorithm behind NONMEM\n\n\n\nEstimation\n\nNONMEM\n\nLaplacian\n\nR\n\n\n\nAn R-based reproduction using straight-line equations.\n\n\n\nMarian Klose\n\n\nJan 11, 2025\n\n\n\n\n\n\n\n\n\n\n\n\n\nExpressing RUV as $THETA in NONMEM\n\n\n\nRUV\n\nError\n\nNONMEM\n\n\n\nHave you ever been confused why some people use the $THETA block to code their RUV in NONMEM? You are not alone!\n\n\n\nMarian Klose\n\n\nDec 9, 2024\n\n\n\n\n\n\n\n\n\n\n\n\n\nAbout this blog\n\n\n\nMotivation\n\nDisclaimer\n\n\n\nSome motivations and disclaimers\n\n\n\nMarian Klose\n\n\nDec 5, 2024\n\n\n\n\n\n\nNo matching items"
+    "text": "Human-in-the-loop LLM agentic pharmacometric workflow\n\n\n\nllm\n\nagentic workflows\n\nhuman in the loop\n\n\n\nPart 1: Hello world\n\n\n\nMarian Klose\n\n\nMay 23, 2026\n\n\n\n\n\n\n\n\n\n\n\n\n\nUsing ChatGPT from the command line\n\n\n\nChatGPT\n\nopenai\n\nLLM\n\n\n\nSupercharging LLMs by building agentic workflows.\n\n\n\nMarian Klose\n\n\nJul 31, 2025\n\n\n\n\n\n\n\n\n\n\n\n\n\nReproducing NONMEM’s MAP estimation in R\n\n\n\nNONMEM\n\nBayes\n\nMAP\n\nEBE\n\nEstimation\n\n\n\nHow to perform Bayesian MAP estimation yourself using R and why you should care.\n\n\n\nMarian Klose\n\n\nMar 31, 2025\n\n\n\n\n\n\n\n\n\n\n\n\n\nMy attempt to understand the NLME estimation algorithm behind NONMEM\n\n\n\nEstimation\n\nNONMEM\n\nLaplacian\n\nR\n\n\n\nAn R-based reproduction using straight-line equations.\n\n\n\nMarian Klose\n\n\nJan 11, 2025\n\n\n\n\n\n\n\n\n\n\n\n\n\nExpressing RUV as $THETA in NONMEM\n\n\n\nRUV\n\nError\n\nNONMEM\n\n\n\nHave you ever been confused why some people use the $THETA block to code their RUV in NONMEM? You are not alone!\n\n\n\nMarian Klose\n\n\nDec 9, 2024\n\n\n\n\n\n\n\n\n\n\n\n\n\nAbout this blog\n\n\n\nMotivation\n\nDisclaimer\n\n\n\nSome motivations and disclaimers\n\n\n\nMarian Klose\n\n\nDec 5, 2024\n\n\n\n\n\n\nNo matching items"
   },
   {
     "objectID": "posts/bayes_map_estimation_in_r/index.html",
@@ -831,5 +831,19 @@
     "title": "A model-informed clinical trial simulation tool with a graphical user interface for Duchenne muscular dystrophy",
     "section": "",
     "text": "Quantitative model-based clinical trial simulation tools play a critical role in informing study designs through simulation before actual execution. These tools help drug developers explore various trial scenarios in silico to select a clinical trial design to detect therapeutic effects more efficiently, therefore reducing time, expense, and participants’ burden. To increase the usability of the tools, user-friendly and interactive platforms should be developed to navigate various simulation scenarios. However, developing such tools challenges researchers, requiring expertise in modeling and interface development. This tutorial aims to address this gap by guiding developers in creating tailored R Shiny apps, using an example of a model-based clinical trial simulation tool that we developed for Duchenne muscular dystrophy (DMD). In this tutorial, the structural framework, essential controllers, and visualization techniques for analysis are described, along with key code examples such as criteria selection and power calculation. A virtual population was created using a machine learning algorithm to enlarge the available sample size to simulate clinical trial scenarios in the presented tool. In addition, external validation of the simulated outputs was conducted using a placebo arm of a recently published DMD trial. This tutorial will be particularly useful for developing clinical trial simulation tools based on DMD progression models for other end points and biomarkers. The presented strategies can also be applied to other diseases."
+  },
+  {
+    "objectID": "posts/hitl_llm_agentic_pmx_workflow/index.html",
+    "href": "posts/hitl_llm_agentic_pmx_workflow/index.html",
+    "title": "Human-in-the-loop LLM agentic pharmacometric workflow",
+    "section": "",
+    "text": "Lorem ipsum\n\n\n\npowershell\n\nsetx OPENAI_API_KEY \"your_api_key_here\"\n\n\nLorem ipsum\n\n\n\npython\n\n# load packages\nfrom openai import OpenAI\nimport json\n\n# initialize openai client\nclient = OpenAI()\n\n\nLorem ipsum"
+  },
+  {
+    "objectID": "posts/hitl_llm_agentic_pmx_workflow/index.html#motivation",
+    "href": "posts/hitl_llm_agentic_pmx_workflow/index.html#motivation",
+    "title": "Human-in-the-loop LLM agentic pharmacometric workflow",
+    "section": "",
+    "text": "Lorem ipsum\n\n\n\npowershell\n\nsetx OPENAI_API_KEY \"your_api_key_here\"\n\n\nLorem ipsum\n\n\n\npython\n\n# load packages\nfrom openai import OpenAI\nimport json\n\n# initialize openai client\nclient = OpenAI()\n\n\nLorem ipsum"
   }
 ]

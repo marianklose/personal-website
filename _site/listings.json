@@ -2,6 +2,7 @@
   {
     "listing": "/posts.html",
     "items": [
+      "/posts/hitl_llm_agentic_pmx_workflow/index.html",
       "/posts/command_line_chatgpt/index.html",
       "/posts/bayes_map_estimation_in_r/index.html",
       "/posts/understanding_nlme_estimation/index.html",

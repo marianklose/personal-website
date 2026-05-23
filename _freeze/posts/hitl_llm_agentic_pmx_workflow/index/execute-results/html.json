@@ -1,0 +1,15 @@
+{
+  "hash": "e15c26ee5007bb43d2c850a5497833e5",
+  "result": {
+    "engine": "knitr",
+    "markdown": "---\ntitle: \"Human-in-the-loop LLM agentic pharmacometric workflow\"\ndescription: \"Part 1: Hello world\"\nauthor:\n  - name: Marian Klose\n    url: https://github.com/marianklose\n    orcid: 0009-0005-1706-6289\ndate: 2026-05-23\ncategories: [llm, agentic workflows, human in the loop] \nimage: preview.jpg\ndraft: false\ndraft-mode: visible\necho: true\nexecute:\n  freeze: true # never re-render during project render (dependencies might change over time)\n  echo: true\n  message: false\n  warning: false\ncitation: \n  url: https://marian-klose.com/posts/hitl_llm_agentic_pmx_workflow/index.html\nformat:\n  html:\n    number-sections: false\n    toc: true\n    code-fold: true\n    code-tools: true\n---\n\n# Prologue\n\n## Motivation\n\nLorem ipsum\n\n\n::: {.cell filename='powershell'}\n\n```{.r .cell-code  code-fold=\"false\"}\nsetx OPENAI_API_KEY \"your_api_key_here\"\n```\n:::\n\n\nLorem ipsum\n\n\n::: {.cell filename='python'}\n\n```{.python .cell-code  code-fold=\"false\"}\n# load packages\nfrom openai import OpenAI\nimport json\n\n# initialize openai client\nclient = OpenAI()\n```\n:::\n\n\nLorem ipsum\n\n\n# Epilogue\n\nLorem ipsum.\n\n",
+    "supporting": [],
+    "filters": [
+      "rmarkdown/pagebreak.lua"
+    ],
+    "includes": {},
+    "engineDependencies": {},
+    "preserve": {},
+    "postProcess": true
+  }
+}

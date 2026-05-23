@@ -1,0 +1,62 @@
+---
+title: "Human-in-the-loop LLM agentic pharmacometric workflow"
+description: "Part 1: Hello world"
+author:
+  - name: Marian Klose
+    url: https://github.com/marianklose
+    orcid: 0009-0005-1706-6289
+date: 2026-05-23
+categories: [llm, agentic workflows, human in the loop] 
+image: preview.jpg
+draft: false
+draft-mode: visible
+echo: true
+execute:
+  freeze: true # never re-render during project render (dependencies might change over time)
+  echo: true
+  message: false
+  warning: false
+citation: 
+  url: https://marian-klose.com/posts/hitl_llm_agentic_pmx_workflow/index.html
+format:
+  html:
+    number-sections: false
+    toc: true
+    collapse: false
+    echo: true
+    code-fold: false
+    code-tools: true
+---
+
+# Prologue
+
+## Motivation
+
+Lorem ipsum
+
+```{r filename="powershell"}
+#| eval: false
+
+setx OPENAI_API_KEY "your_api_key_here"
+```
+
+Lorem ipsum
+
+```{python filename="xxx.py"}
+#| eval: false
+
+# load packages
+from openai import OpenAI
+import json
+
+# initialize openai client
+client = OpenAI()
+```
+
+Lorem ipsum
+
+
+# Epilogue
+
+Lorem ipsum.
+
