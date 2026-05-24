@@ -1,0 +1,192 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 1320" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif">
+  <!-- Background -->
+  <rect width="900" height="1320" fill="#ffffff"/>
+
+  <!-- Arrow marker -->
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#475569"/>
+    </marker>
+    <marker id="arrowDashed" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#94a3b8"/>
+    </marker>
+  </defs>
+
+  <!-- Title -->
+  <text x="450" y="45" text-anchor="middle" font-size="22" font-weight="600" fill="#0f172a">main.py workflow execution</text>
+  <text x="450" y="70" text-anchor="middle" font-size="13" fill="#64748b">The paper flows through the LangGraph; state is updated at each node</text>
+
+  <!-- ============= LEFT COLUMN: control flow ============= -->
+  <!-- ============= RIGHT COLUMN: state snapshots ============= -->
+
+  <!-- Column headers -->
+  <text x="225" y="115" text-anchor="middle" font-size="12" font-weight="600" fill="#64748b" letter-spacing="1">CONTROL FLOW</text>
+  <text x="675" y="115" text-anchor="middle" font-size="12" font-weight="600" fill="#64748b" letter-spacing="1">STATE (AgentState)</text>
+
+  <!-- ===== Step 1: Input file ===== -->
+  <g transform="translate(125, 135)">
+    <rect width="200" height="70" rx="6" fill="#fffbeb" stroke="#d97706" stroke-width="1.5"/>
+    <text x="100" y="28" text-anchor="middle" font-size="14" font-weight="600" fill="#0f172a">sample_paper.md</text>
+    <text x="100" y="48" text-anchor="middle" font-size="11" fill="#64748b">raw markdown text</text>
+    <text x="100" y="62" text-anchor="middle" font-size="10" fill="#94a3b8" font-style="italic">read by paper_path.read_text()</text>
+  </g>
+
+  <!-- Arrow down to invoke -->
+  <line x1="225" y1="208" x2="225" y2="248" stroke="#475569" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <text x="235" y="232" font-size="11" fill="#64748b" font-style="italic">graph.invoke({...})</text>
+
+  <!-- ===== START node ===== -->
+  <g transform="translate(165, 250)">
+    <rect width="120" height="42" rx="21" fill="#f8fafc" stroke="#475569" stroke-width="1.5"/>
+    <text x="60" y="26" text-anchor="middle" font-size="13" font-weight="600" fill="#0f172a">START</text>
+  </g>
+
+  <!-- Arrow START -> Extractor -->
+  <line x1="225" y1="295" x2="225" y2="335" stroke="#475569" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+  <!-- Initial state (right column) -->
+  <g transform="translate(465, 235)">
+    <rect width="420" height="110" rx="6" fill="#eff6ff" stroke="#2563eb" stroke-width="1.5"/>
+    <text x="14" y="22" font-size="12" font-weight="600" fill="#1e3a8a">Initial state</text>
+    <text x="14" y="46" font-size="11" font-family="ui-monospace, 'SF Mono', Menlo, monospace" fill="#0f172a">paper_content: "# Pharmacokinetic Characterization of..."</text>
+    <text x="14" y="68" font-size="11" font-family="ui-monospace, 'SF Mono', Menlo, monospace" fill="#94a3b8">extracted_parameters: None</text>
+    <text x="14" y="90" font-size="11" font-family="ui-monospace, 'SF Mono', Menlo, monospace" fill="#94a3b8">report: ""</text>
+  </g>
+
+  <!-- Dashed link from START to initial state -->
+  <line x1="285" y1="271" x2="465" y2="271" stroke="#94a3b8" stroke-width="1.2" stroke-dasharray="4 3" marker-end="url(#arrowDashed)"/>
+
+  <!-- ===== Extractor node ===== -->
+  <g transform="translate(95, 340)">
+    <rect width="260" height="135" rx="8" fill="#ecfdf5" stroke="#16a34a" stroke-width="1.8"/>
+    <text x="130" y="26" text-anchor="middle" font-size="14" font-weight="700" fill="#14532d">extractor</text>
+    <line x1="20" y1="36" x2="240" y2="36" stroke="#bbf7d0" stroke-width="1"/>
+    <text x="130" y="58" text-anchor="middle" font-size="11" fill="#166534">LLM call with</text>
+    <text x="130" y="74" text-anchor="middle" font-size="11" fill="#166534">structured output</text>
+    <text x="130" y="98" text-anchor="middle" font-size="11" font-family="ui-monospace, 'SF Mono', Menlo, monospace" fill="#0f172a">→ PKParameters</text>
+    <text x="130" y="120" text-anchor="middle" font-size="10" fill="#64748b" font-style="italic">temperature = 0.0</text>
+  </g>
+
+  <!-- Arrow Extractor -> next state -->
+  <line x1="225" y1="478" x2="225" y2="518" stroke="#475569" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <text x="235" y="502" font-size="11" fill="#64748b" font-style="italic">returns {"extracted_parameters": ...}</text>
+
+  <!-- Intermediate state (right column) -->
+  <g transform="translate(465, 365)">
+    <rect width="420" height="135" rx="6" fill="#eff6ff" stroke="#2563eb" stroke-width="1.5"/>
+    <text x="14" y="22" font-size="12" font-weight="600" fill="#1e3a8a">State after extractor</text>
+    <text x="14" y="46" font-size="11" font-family="ui-monospace, 'SF Mono', Menlo, monospace" fill="#94a3b8">paper_content: "# Pharmacokinetic Characterization of..."</text>
+    <text x="14" y="68" font-size="11" font-family="ui-monospace, 'SF Mono', Menlo, monospace" fill="#0f172a">extracted_parameters: PKParameters(</text>
+    <text x="30" y="84" font-size="11" font-family="ui-monospace, 'SF Mono', Menlo, monospace" fill="#0f172a">drug_name="Drugamab",</text>
+    <text x="30" y="100" font-size="11" font-family="ui-monospace, 'SF Mono', Menlo, monospace" fill="#0f172a">volume_of_distribution=4.8, clearance=0.35)</text>
+    <text x="14" y="122" font-size="11" font-family="ui-monospace, 'SF Mono', Menlo, monospace" fill="#94a3b8">report: ""</text>
+  </g>
+
+  <!-- Dashed link from extractor to state after extractor -->
+  <line x1="355" y1="407" x2="465" y2="407" stroke="#94a3b8" stroke-width="1.2" stroke-dasharray="4 3" marker-end="url(#arrowDashed)"/>
+
+  <!-- ===== Reporter node ===== -->
+  <g transform="translate(95, 520)">
+    <rect width="260" height="135" rx="8" fill="#ecfdf5" stroke="#16a34a" stroke-width="1.8"/>
+    <text x="130" y="26" text-anchor="middle" font-size="14" font-weight="700" fill="#14532d">reporter</text>
+    <line x1="20" y1="36" x2="240" y2="36" stroke="#bbf7d0" stroke-width="1"/>
+    <text x="130" y="58" text-anchor="middle" font-size="11" fill="#166534">LLM call</text>
+    <text x="130" y="74" text-anchor="middle" font-size="11" fill="#166534">free-form prose</text>
+    <text x="130" y="98" text-anchor="middle" font-size="11" font-family="ui-monospace, 'SF Mono', Menlo, monospace" fill="#0f172a">→ str (summary)</text>
+    <text x="130" y="120" text-anchor="middle" font-size="10" fill="#64748b" font-style="italic">temperature = 0.2</text>
+  </g>
+
+  <!-- Arrow Reporter -> next state -->
+  <line x1="225" y1="658" x2="225" y2="698" stroke="#475569" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <text x="235" y="682" font-size="11" fill="#64748b" font-style="italic">returns {"report": ...}</text>
+
+  <!-- Final state (right column) -->
+  <g transform="translate(465, 545)">
+    <rect width="420" height="135" rx="6" fill="#eff6ff" stroke="#2563eb" stroke-width="1.5"/>
+    <text x="14" y="22" font-size="12" font-weight="600" fill="#1e3a8a">Final state</text>
+    <text x="14" y="46" font-size="11" font-family="ui-monospace, 'SF Mono', Menlo, monospace" fill="#94a3b8">paper_content: "# Pharmacokinetic Characterization of..."</text>
+    <text x="14" y="68" font-size="11" font-family="ui-monospace, 'SF Mono', Menlo, monospace" fill="#94a3b8">extracted_parameters: PKParameters(...)</text>
+    <text x="14" y="90" font-size="11" font-family="ui-monospace, 'SF Mono', Menlo, monospace" fill="#0f172a">report: "Drugamab is a monoclonal antibody</text>
+    <text x="30" y="106" font-size="11" font-family="ui-monospace, 'SF Mono', Menlo, monospace" fill="#0f172a">with V_d = 4.8 L and CL = 0.35 L/h...</text>
+    <text x="30" y="122" font-size="11" font-family="ui-monospace, 'SF Mono', Menlo, monospace" fill="#0f172a">giving t_1/2 ≈ 9.5 h."</text>
+  </g>
+
+  <!-- Dashed link from reporter to final state -->
+  <line x1="355" y1="587" x2="465" y2="587" stroke="#94a3b8" stroke-width="1.2" stroke-dasharray="4 3" marker-end="url(#arrowDashed)"/>
+
+  <!-- ===== END node ===== -->
+  <g transform="translate(165, 700)">
+    <rect width="120" height="42" rx="21" fill="#f8fafc" stroke="#475569" stroke-width="1.5"/>
+    <text x="60" y="26" text-anchor="middle" font-size="13" font-weight="600" fill="#0f172a">END</text>
+  </g>
+
+  <!-- Arrow to printed output -->
+  <line x1="225" y1="745" x2="225" y2="785" stroke="#475569" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <text x="235" y="769" font-size="11" fill="#64748b" font-style="italic">final state returned to main()</text>
+
+  <!-- ===== Printed output ===== -->
+  <g transform="translate(95, 790)">
+    <rect width="260" height="105" rx="6" fill="#fff7ed" stroke="#ea580c" stroke-width="1.5"/>
+    <text x="130" y="22" text-anchor="middle" font-size="13" font-weight="600" fill="#9a3412">printed to console</text>
+    <line x1="20" y1="32" x2="240" y2="32" stroke="#fed7aa" stroke-width="1"/>
+    <text x="130" y="52" text-anchor="middle" font-size="11" fill="#0f172a">extracted parameters table</text>
+    <text x="130" y="70" text-anchor="middle" font-size="11" fill="#0f172a">+ executive summary</text>
+    <text x="130" y="90" text-anchor="middle" font-size="10" fill="#64748b" font-style="italic">result["extracted_parameters"], result["report"]</text>
+  </g>
+
+  <!-- ===== Legend ===== -->
+  <g transform="translate(50, 945)">
+    <text x="0" y="0" font-size="12" font-weight="600" fill="#64748b" letter-spacing="1">LEGEND</text>
+    <line x1="0" y1="10" x2="800" y2="10" stroke="#e2e8f0" stroke-width="1"/>
+
+    <!-- Input/Output -->
+    <g transform="translate(0, 28)">
+      <rect width="22" height="22" rx="3" fill="#fffbeb" stroke="#d97706" stroke-width="1.5"/>
+      <text x="32" y="16" font-size="12" fill="#0f172a">Input / output (files, console)</text>
+    </g>
+
+    <!-- Node -->
+    <g transform="translate(260, 28)">
+      <rect width="22" height="22" rx="3" fill="#ecfdf5" stroke="#16a34a" stroke-width="1.8"/>
+      <text x="32" y="16" font-size="12" fill="#0f172a">Graph node (LLM agent function)</text>
+    </g>
+
+    <!-- State -->
+    <g transform="translate(540, 28)">
+      <rect width="22" height="22" rx="3" fill="#eff6ff" stroke="#2563eb" stroke-width="1.5"/>
+      <text x="32" y="16" font-size="12" fill="#0f172a">Shared state (AgentState)</text>
+    </g>
+
+    <!-- START/END -->
+    <g transform="translate(0, 62)">
+      <rect width="22" height="22" rx="11" fill="#f8fafc" stroke="#475569" stroke-width="1.5"/>
+      <text x="32" y="16" font-size="12" fill="#0f172a">Graph entry / exit point</text>
+    </g>
+
+    <!-- Solid arrow -->
+    <g transform="translate(260, 62)">
+      <line x1="0" y1="11" x2="22" y2="11" stroke="#475569" stroke-width="1.5" marker-end="url(#arrow)"/>
+      <text x="32" y="16" font-size="12" fill="#0f172a">Control flow (edge)</text>
+    </g>
+
+    <!-- Dashed arrow -->
+    <g transform="translate(540, 62)">
+      <line x1="0" y1="11" x2="22" y2="11" stroke="#94a3b8" stroke-width="1.2" stroke-dasharray="4 3" marker-end="url(#arrowDashed)"/>
+      <text x="32" y="16" font-size="12" fill="#0f172a">Updates state (merge)</text>
+    </g>
+  </g>
+
+  <!-- ===== Bottom annotation ===== -->
+  <g transform="translate(50, 1075)">
+    <rect width="800" height="200" rx="8" fill="#f8fafc" stroke="#cbd5e1" stroke-width="1"/>
+    <text x="20" y="28" font-size="13" font-weight="600" fill="#0f172a">What main.py actually does</text>
+    <line x1="20" y1="38" x2="780" y2="38" stroke="#e2e8f0" stroke-width="1"/>
+    <text x="20" y="62" font-size="12" fill="#334155">1. Reads <tspan font-family="ui-monospace, 'SF Mono', Menlo, monospace" fill="#1e3a8a">sample_paper.md</tspan> into a string.</text>
+    <text x="20" y="84" font-size="12" fill="#334155">2. Calls <tspan font-family="ui-monospace, 'SF Mono', Menlo, monospace" fill="#1e3a8a">build_graph()</tspan> to assemble the LangGraph (START → extractor → reporter → END).</text>
+    <text x="20" y="106" font-size="12" fill="#334155">3. Creates a unique <tspan font-family="ui-monospace, 'SF Mono', Menlo, monospace" fill="#1e3a8a">thread_id</tspan> so the checkpointer can store this run's state under one key.</text>
+    <text x="20" y="128" font-size="12" fill="#334155">4. Calls <tspan font-family="ui-monospace, 'SF Mono', Menlo, monospace" fill="#1e3a8a">graph.invoke({"paper_content": ...}, config)</tspan> — this seeds the initial state and runs all nodes synchronously.</text>
+    <text x="20" y="150" font-size="12" fill="#334155">5. Each node receives the state, performs its task, and returns a partial update. LangGraph merges the update back into the state.</text>
+    <text x="20" y="172" font-size="12" fill="#334155">6. After END, the final state is returned and main() prints the extracted parameters and the executive summary.</text>
+    <text x="20" y="192" font-size="11" fill="#64748b" font-style="italic">No human-in-the-loop interrupts yet — those come once the framework is in place.</text>
+  </g>
+</svg>

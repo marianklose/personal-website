@@ -125,9 +125,12 @@ I will go through each file of the codebase, and try to explain to myself what i
 
 # Codebase
 
+
+
 ## Repository structure
 
-Lorem ipsum 
+- Lets start with building up the codebase. Here is a structure of the current repository, in which I will add multiple examples. Currently we deal with the `01_hello_world` example, and later I will add more examples to it.
+
 
 ```{.bash filename="repo structure"}
 llm-agentic-workflow-sandbox/
@@ -163,11 +166,25 @@ llm-agentic-workflow-sandbox/
                 └── state.py
 ```
 
+- We currently have a single `requirements.txt` inside the repo, meaning there is one set of packages and package versions that apply to all of our future example cases
+- the `01_hello_world` folder contains the content of this example, later there will be `02_xxx`, `03_xxx`, ...
+- `main.py` serves as our entry point, this is which gets everything started. 
+- `data/` contains a dummy sample paper that we will use for our test case
+- `src/` is the **source root**, a conventional folder (the "src layout") whose only job is to hold our package one level down. It's not itself a package — there's no `__init__.py` in it.
+- `src/pk_agent/` is our actual top-level **package**. Inside it, `graph/`, `llm/`, `nodes/`, `prompts/`, and `schemas/` are **subpackages**, and files like `config.py` or `builder.py` are **modules**.
+- Imports always start at the package, never at the source root: e.g. `from pk_agent.graph.builder import build_graph`. `src` never appears in an import path.
+- For such a simple case example, we could've put everything into one `main.py` file and be done with it. But this package structure and the separation of input, source files, prompts, graphs etc. keeps it maintainable and easily adjustable later on.
+- Using **packages and subpackages** groups related code under a single namespace (`pk_agent.nodes`, `pk_agent.prompts`, …), so the directory tree itself documents what lives where and imports read like a table of contents.
+- Splitting into **modules** (one `.py` per concern: the LLM provider, the state schema, each node) gives every responsibility exactly one home — swapping the model, tweaking a prompt, or adding a node is a one-file change with a predictable blast radius.
+- This layout also mirrors how real LangChain/LangGraph projects are organized, so learning it on a toy example pays off the moment we scale to `02_xxx`, `03_xxx`, or hand the code to someone else.
+
 
 
 ## Entry point
 
-Lorem ipsum
+- Now we define the entry point, which is our `main.py`. It loads the content of our pharmacometric paper (which we want to extract parameters from), and starts the workflow.
+- A lot of the functions won't make sense yet (e.g., what is `build_graph()` doing?), but we will later tackle these functions and hopefully it makes more sense by then
+
 
 ```{.python filename="01_hello_world/main.py"}
 """
@@ -176,51 +193,50 @@ Entry point: loads the paper and runs the workflow.
 import sys
 import uuid
 from pathlib import Path
-
 from dotenv import load_dotenv
 
-# 1. Make 'src' importable. This is the only place we touch sys.path,
-#    and it's a sandbox convenience. In a packaged project you would
-#    install the package with `pip install -e .` instead.
+# make 'src' importable (sandbox convenience, later via pip install -e). 
 HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE / "src"))
 
-# 2. Load environment variables from the repo-root .env BEFORE importing
-#    any modules that read them at import time (Settings does).
+# load environment variables from the repo-root .env BEFORE importing modules
 load_dotenv(HERE.parent / ".env")
 
-# Imports placed after sys.path / dotenv setup are intentional;
+# importing objects from our own modules inside the pk_agent package
+# imports placed after sys.path / dotenv setup are intentional;
 # noqa: E402 silences the linter about that.
-from pk_agent.config import settings        # noqa: E402
+from pk_agent.config import settings            # noqa: E402
 from pk_agent.graph.builder import build_graph  # noqa: E402
 
-
+# define the main logic
 def main() -> None:
-    # 1. Read the input paper.
+    # read the pmx paper containing prose and the parameter estimates
     paper_path = settings.data_dir / "sample_paper.md"
     paper_content = paper_path.read_text(encoding="utf-8")
 
-    # 2. Build the graph with default settings (in-memory checkpointer).
+    # build the graph (based on our own function)
     graph = build_graph()
 
-    # 3. Create a thread_id for this run. The thread_id is the key
-    #    under which the checkpointer stores state. In production this
-    #    would typically be derived from a session id or user id so
-    #    the same workflow can be resumed later.
+    # create thread_id (checkpointer stores state under this key) for this run
+    # later this might be a session or user id
     thread_id = str(uuid.uuid4())
     config = {"configurable": {"thread_id": thread_id}}
 
+    # some user information
     print(f"=== Workflow started (thread_id={thread_id[:8]}...) ===\n")
 
-    # 4. Run the graph. invoke() executes all nodes synchronously and
-    #    returns the final state. For long-running flows, use stream()
-    #    to receive intermediate updates.
+    # run the graph, invoke() executes all nodes synchronously and returns the final state
+    # for long-running flows, we can use stream() to receive intermediate updates.
+    # we see that we have to pass the initial state to start the graph workflow
+    # the intital state is based on our paper content and the config
     result = graph.invoke(
         {"paper_content": paper_content},
         config=config,
     )
 
-    # 5. Pretty-print the results.
+    # pretty print the results
+    # we see that the results are simply the final version of the updated state
+    # langgraph nodes are always taking states and updating parts of the states
     params = result["extracted_parameters"]
     print("--- Extracted parameters ---")
     print(f"  Drug:        {params.drug_name}")
@@ -230,12 +246,25 @@ def main() -> None:
     print("--- Executive summary ---")
     print(result["report"])
 
-
+# some special python syntax, prevents from executing the main pipeling, e.g.,
+# when only the package is being loaded. only if we directly run the main file
+# then it is also being executed
 if __name__ == "__main__":
     main()
 ```
 
+- Great, that already defines the key logic behind our agentic pmx workflow
+- we first load our own objects from our self-defined packages/subpackages/modules
+- we then construct the initial state by reading in the paper content and the config
+- the intital state is then being passed to the graph, which now runs through the nodes and the final state is being reported as result of that workflow
+- Here is a high-level graphical overview of `main.py`:
+
+![Key workflow in main, generated by Claude](media/main_workflow.svg)
+
+
 ## Input data
+
+- The input data file is quite simple, here we just have that made up short version of a paper, containing prose and some hidden parmameter estimate information within the prose
 
 ```{.markdown filename="01_hello_world/data/sample_paper.md"}
 # Pharmacokinetic Characterization of Drugamab in Healthy Volunteers
@@ -274,6 +303,10 @@ reported for similar monoclonal antibodies.
 
 ## Package root
 
+- pk_agent is our package, and we need to tell python that. By adding an `__init__.py` file into a folder, we tell python "treat this folder as a package"
+- this means they can be later imported by calling something like `from pk_agent.graph.builder import build_graph`
+- often it is empty or just contains a docstring for documentation purposes
+
 ```{.python filename="01_hello_world/src/pk_agent/__init__.py"}
 """
 pk_agent: a minimal two-agent LangGraph workflow for pharmacokinetic
@@ -282,6 +315,9 @@ parameter extraction and reporting.
 ```
 
 ## Configuration
+
+- There are some high level configuration choices (like the model we want to use, in this case `anthropic:claude-sonnet-4-6`) that should better not be hard coded everywhere but live in one central configuration file. This is exactly what we do with `config.py`
+- The settings defined in config are also reading in the .env variables, retrieving any api keys needed and so on. Whatever is being shared across multiple files should be coded in here instead of hard-coding it in the files
 
 ```{.python filename="01_hello_world/src/pk_agent/config.py"}
 """
@@ -304,27 +340,26 @@ to .env at that point. Until then, keep it here where it's visible.
 from pathlib import Path
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
-
+# we define a pydantic settings model 
+# special type that allows to populate fields from env variables and .env files
 class Settings(BaseSettings):
     """Global application settings."""
 
-    # --- Application behavior (version-controlled in this file) ---
-
-    # LLM choice in "<provider>:<model>" format. init_chat_model
+    # defines LLM choice in "<provider>:<model>" format. init_chat_model
     # understands: anthropic, openai, google_genai, ollama, mistralai, ...
     llm_model: str = "anthropic:claude-sonnet-4-6"
     llm_temperature: float = 0.0
 
-    # --- Secrets and machine-specific values (loaded from .env) ---
-
+    # define secrets and machine-specific values, loaded from .env
     anthropic_api_key: str | None = None
     openai_api_key: str | None = None
 
-    # --- Computed paths ---
-
+    # compute path
     project_root: Path = Path(__file__).resolve().parents[2]
     data_dir: Path = project_root / "data"
 
+    # tell pytdantic to also look into the .env file, read it as utf8, 
+    # ignore unknown keys, and match variable names case-insensitively
     model_config = SettingsConfigDict(
         env_file=Path(__file__).resolve().parents[3] / ".env",
         env_file_encoding="utf-8",
@@ -332,35 +367,57 @@ class Settings(BaseSettings):
         case_sensitive=False,
     )
 
-# trigger to read the .env, apply defaults, validate types, construct a populated settings object
-# later we do from pk_agent.config import settings to use the values
+# reads the .env file, applies defaults and constructs a populated settings object
+# we will later do   from pk_agent.config import settings  to use these values
 settings = Settings()
 ```
 
 ## Graph
 
+- Now we start with the first proper subpackage, the graph subpackage we are building.
+- The graph itself defines the workflow orchestration, it defines the nodes (= function/workers/agents) and the edges (= connections/wires)
+- The package needs to answer which nodes exist, in what order they run, and how state moves between them
+- In our simple case, we want to define a Graph which gives us
+
+```
+START → extractor → reporter → END
+```
+
 ### Package init
+
+- As always, we initialize this subpackage with a init file that contains a simple docstring
 
 ```{.python filename="01_hello_world/src/pk_agent/graph/__init__.py"}
 """
 LangGraph workflow construction.
 A LangGraph is basically a flowchart with decision points.
-We have the different nodes (= functions) and the
-edges between them (= control flow, i.e. which node runs after which).
+We have the different nodes (= functions) and the edges between them (= control flow).
 """
 ```
 
 ### Builder
 
+- Now we define the  graph builder module, the central piece of the graph subpackage which contains a factory function `build_graph()`
+- A factory function is a function whose main job is to create and return another object
+- `build_graph()` is a factory function because it constructs the LangGraph workflow and returns a ready-to-use compiled graph.
+- In main, we have at one point constructed the graph and then invoked it with the initial state
+
+```
+pk_agent                  package
+└── graph                 subpackage
+    └── builder.py        module
+        └── build_graph   object (function)
+```
+
 ```{.python filename="01_hello_world/src/pk_agent/graph/builder.py"}
 """
-Graph builder: assembles the LangGraph workflow.
+Graph builder: assembles the LangGraph workflow via a factory function.
 
 We wrap construction in a factory function so that:
   1. Tests can build the graph with a mock or in-memory checkpointer
      and run it in isolation.
-  2. The checkpointer is a parameter, not hard-coded. Swapping
-     InMemorySaver for SqliteSaver or PostgresSaver becomes a
+  2. The checkpointer (saving the state after each step) is a parameter, not hard-coded.
+      Swapping InMemorySaver for SqliteSaver or PostgresSaver becomes a
      one-line change at the call site.
   3. main.py, a future FastAPI endpoint, and a Jupyter notebook can
      all share the same construction code.
@@ -368,12 +425,12 @@ We wrap construction in a factory function so that:
 from langgraph.checkpoint.base import BaseCheckpointSaver
 from langgraph.checkpoint.memory import InMemorySaver
 from langgraph.graph import END, START, StateGraph
-
 from ..nodes.extractor import extract_parameters
 from ..nodes.reporter import write_report
 from ..schemas.state import AgentState
 
 
+# the main factory function that returns the compiled graph that can be invoked or streamed
 def build_graph(checkpointer: BaseCheckpointSaver | None = None):
     """Build the workflow and return a runnable compiled graph.
 
@@ -387,35 +444,47 @@ def build_graph(checkpointer: BaseCheckpointSaver | None = None):
         A CompiledStateGraph exposing .invoke(), .stream(),
         .get_state(), and the rest of the LangGraph API.
     """
-    # 1. Create the graph skeleton, binding it to our state schema.
+    # creating a graph skeleton while binding it to our define state schema
+    # the pydantic class AgentState is defined in 01_hello_world/src/pk_agent/schemas/state.py
     workflow = StateGraph(AgentState)
 
-    # 2. Register each node under a string name. The names appear in
-    #    LangSmith traces and error messages, so make them descriptive.
+    # we tell LangGraph that two nodes exist
+    # the string names appear in LangSmith traces and errors, so they have
+    # to be descriptive for later debugging
     workflow.add_node("extractor", extract_parameters)
     workflow.add_node("reporter", write_report)
 
-    # 3. Wire the edges: START -> extractor -> reporter -> END.
-    #    For conditional routing or parallel fan-out, LangGraph
-    #    provides add_conditional_edges() and the Send primitive,
-    #    but a linear flow is all we need here.
+    # now we are wiring the edges, we want to achieve:
+    # START -> extractor -> reporter -> END
+    # later, with conditional routing we can use add_conditional_edges()
+    # here we have a simple linear workflow
     workflow.add_edge(START, "extractor")
     workflow.add_edge("extractor", "reporter")
     workflow.add_edge("reporter", END)
 
-    # 4. Choose a checkpointer. The checkpointer controls where state
-    #    is persisted between steps. It also enables human-in-the-loop
-    #    interrupts, resume-after-failure, and time-travel debugging.
+    # define the checkpointer, which defines where states are saved between steps
+    # for our sandbox purpose, InMemorySaver() is sufficient. 
+    # having a checkpointer enables later human-in-the-loop interrupts or resume-after-failure
     if checkpointer is None:
         checkpointer = InMemorySaver()
 
-    # 5. Compile freezes the topology and returns a runnable graph.
+    # compile returns a runnable graph according to our config
     return workflow.compile(checkpointer=checkpointer)
 ```
 
+- To visualize the workflow again, we have our friend Claude draw it for us:
+
+![Graph builder by build_graph(), generated by Claude](media/graph_builder.svg)
+
 ## LLM provider
 
+- As mentioned in the introduction, we want to be as model agnostic as possible. We want to easily switch between different providers and models. 
+- This is why we have a central LLM provider module, which defines a single function `get_llm()` that returns a configured LLM instance.
+- It also allows us to later extend the framework with litellm, which can give us more advanced features like fallback routing, retries, cost tracking, and so on. If we want to add these features later, we can simply change the implementation of `get_llm()` without having to touch any of the nodes that call it. This is a key design principle: we want to have a single chokepoint for all LLM calls, so that we can easily manage and extend them later on.
+
 ### Package init
+
+- The regular package init file with a simple docstring
 
 ```{.python filename="01_hello_world/src/pk_agent/llm/__init__.py"}
 """
@@ -424,6 +493,9 @@ LLM provider abstraction.
 ```
 
 ### Provider
+
+- Now we define the provider, which is currently a very simple `get_llm()` function that is basically a wrapper around `init_chat_model()` from LangChain. It takes care of reading the model choice and temperature from the settings, and returns a configured LLM instance that can be used in the nodes.
+- The advantage of having a single `get_llm()` function is that we can later add much more complex logic in this function without having to touch all of the other files. Hard-coding it would make it much harder to maintain and extend later on.
 
 ```{.python filename="01_hello_world/src/pk_agent/llm/provider.py"}
 """
@@ -445,7 +517,7 @@ from langchain_core.language_models import BaseChatModel
 
 from ..config import settings
 
-
+# define the key function that returns a configured LLM instance, which can be used in the nodes
 def get_llm(temperature: float | None = None) -> BaseChatModel:
     """Return a configured chat model.
 
@@ -459,7 +531,10 @@ def get_llm(temperature: float | None = None) -> BaseChatModel:
         A BaseChatModel instance with the standard LangChain interface:
         .invoke(), .stream(), .with_structured_output(), and so on.
     """
+
     # init_chat_model directly comes from langchain
+    # can be later replaced with LiteLLM logic or pydantic-ai or 
+    # whatever we want to use for model calls
     return init_chat_model(
         model=settings.llm_model,
         temperature=temperature if temperature is not None else settings.llm_temperature,
@@ -468,7 +543,14 @@ def get_llm(temperature: float | None = None) -> BaseChatModel:
 
 ## Nodes
 
+- The nodes are the work horses in our workflow, this is where actually things happen and where the state is being updated
+- Each node is basically a function that takes some input, does something (e.g. calls an LLM), and returns some output. In our case, the nodes take the sate as input and return a dict of updates to the state.
+- In agentic workflows, nodes are often LLM-based agents that perform a specific task, e.g. extracting parameters, writing a report, or making a decision. But they can also be simple Python functions that do some data processing or calculations.
+- The key design principle for nodes is that they should be pure functions: they take the state as input and return a new state (or a dict of updates to the state) without mutating the input state directly. This makes them easy to test and reason about, and it also allows LangGraph to handle state merging and persistence in a consistent way.
+
 ### Package init
+
+- The regular package init file with a simple docstring
 
 ```{.python filename="01_hello_world/src/pk_agent/nodes/__init__.py"}
 """
@@ -480,6 +562,11 @@ In our case, the nodes take the sate as input and return a dict of updates to th
 ```
 
 ### Extractor
+
+- Our first node is the extractor, which reads the paper content from the state and extracts the PK parameters from it. It uses the LLM to do this, and it returns the extracted parameters as a structured output (a Pydantic model) that gets merged back into the state.
+- The updated state can later be passed to the next node.
+- Importantly, the node functions within a LangGraph workflow always take the state as input and then return a dictionary of updates. We do not have to take care about how these updates are being merged back into the state, this is something that LangGraph handles for us.
+- Please note: In these node files (`01_hello_world/src/pk_agent/nodes/extractor.py`) we define one single function, like `extract_parameters()`.  In the graph builder (`01_hello_world/src/pk_agent/graph/builder.py`) we then tell LangGraph that this function is a node in our workflow by calling `workflow.add_node("extractor", extract_parameters)`. So we explicitely link the function inside the file to the node name in the graph.
 
 ```{.python filename="01_hello_world/src/pk_agent/nodes/extractor.py"}
 """
@@ -493,16 +580,18 @@ dictionary containing only the fields it wants to update. LangGraph
 handles merging the update back into the state.
 """
 from langchain_core.messages import HumanMessage, SystemMessage
-
 from ..llm.provider import get_llm
 from ..prompts.extractor import EXTRACTOR_SYSTEM_PROMPT
 from ..schemas.pk_model import PKParameters
 from ..schemas.state import AgentState
 
 
+# define key function for the extractor node
 def extract_parameters(state: AgentState) -> dict:
     """Read state.paper_content and extract PK parameters from it."""
 
+    # construct the llm instance, and tell it that we want structured output 
+    # in the form of a PKParameters object
     # .with_structured_output(PKParameters) tells the LLM that its
     # response must conform to the PKParameters schema. LangChain
     # translates the schema into the provider's tool-calling format,
@@ -511,6 +600,10 @@ def extract_parameters(state: AgentState) -> dict:
     # silently passed downstream.
     llm = get_llm().with_structured_output(PKParameters)
 
+    # invoke the model with the system prompt and the paper content as input
+    # we can see that we are passing the paper content from the state as input
+    # by passing a defined extractor system prompt, we can guide the model
+    # to perform its task in the way we want it to (prompt engineering)
     response: PKParameters = llm.invoke(
         [
             SystemMessage(content=EXTRACTOR_SYSTEM_PROMPT),
@@ -519,7 +612,7 @@ def extract_parameters(state: AgentState) -> dict:
     )
 
     # Return only the field we want to update. LangGraph merges this
-    # with the existing state — we never mutate the input state object
+    # with the existing state, we never mutate the input state object
     # directly. Treating nodes as pure functions makes them easy to
     # test and reason about.
     return {"extracted_parameters": response}
@@ -527,30 +620,33 @@ def extract_parameters(state: AgentState) -> dict:
 
 ### Reporter
 
+- The same logic applies to the reporter agent, which takes the extracted parameters from the state and generates a short executive summary based on them. It also uses the LLM to do this, and it returns the generated report as a string that gets merged back into the state.
+
 ```{.python filename="01_hello_world/src/pk_agent/nodes/reporter.py"}
 """
 Reporter node: produces a short executive summary.
 """
 from langchain_core.messages import HumanMessage, SystemMessage
-
 from ..llm.provider import get_llm
 from ..prompts.reporter import REPORTER_SYSTEM_PROMPT
 from ..schemas.state import AgentState
 
-
+# define key function for the reporter node
 def write_report(state: AgentState) -> dict:
     """Read state.extracted_parameters and write the executive summary."""
 
-    # Defensive check. With the current graph topology this branch
-    # cannot be reached, but if someone reorders nodes later the error
-    # message will point them straight at the cause.
+    # defensive check to ensure the extracted parameters are there
     if state.extracted_parameters is None:
         raise ValueError(
             "Reporter was invoked but extracted_parameters is None. "
             "Check the node order in graph/builder.py."
         )
 
+    # extract parameters
     p = state.extracted_parameters
+
+    # construct the user_message content based on the extracted parameters
+    # which will be passed to the LLM as input
     user_content = (
         f"Please write the executive summary for the following model:\n"
         f"- Drug: {p.drug_name}\n"
@@ -558,10 +654,10 @@ def write_report(state: AgentState) -> dict:
         f"- Clearance CL: {p.clearance} L/h"
     )
 
-    # Slightly higher temperature for prose. The extractor needs 0.0
-    # for deterministic structured output; here a small amount of
-    # variation produces more natural writing.
+    # get llm instance with slightly higher temperature
     llm = get_llm(temperature=0.2)
+
+    # invoke the model with the system prompt and the user message as input
     response = llm.invoke(
         [
             SystemMessage(content=REPORTER_SYSTEM_PROMPT),
@@ -569,12 +665,20 @@ def write_report(state: AgentState) -> dict:
         ]
     )
 
+    # return dict with the updated field
+    # which gets merged back into the state by LangGraph
     return {"report": response.content}
 ```
 
 ## Prompts
 
+- Prompts are an important piece in LLM-based workflows, and the buzzword "prompt engineering" reflects that. The way we ask the model to do something has a huge impact on the results we get back, so it is important to design good prompts.
+- We didn't invest a lot of time in our prompts in this case, but for this simple example they are sufficient. In a real use case, we would probably want to iterate on them a bit more, test different versions, and so on.
+- By putting the prompts into separate files, we can easily find and edit them later on without having to dig through the node code. It also keeps the node code cleaner and more focused on the logic, while the prompts are all in one place.
+
 ### Package init
+
+- The regular package init file with a simple docstring
 
 ```{.python filename="01_hello_world/src/pk_agent/prompts/__init__.py"}
 """
@@ -583,6 +687,9 @@ System prompts / messages for the workflow's agents.
 ```
 
 ### Extractor prompt
+
+- Define the system prompt for the extractor agent, has to be clear and specific to guide the model to do what we want it to do
+- Later on, the `EXTRACTOR_SYSTEM_PROMPT` will be used when invoking the LLM in the extractor node (`01_hello_world/src/pk_agent/nodes/extractor.py`)
 
 ```{.python filename="01_hello_world/src/pk_agent/prompts/extractor.py"}
 """
@@ -610,6 +717,8 @@ Important:
 
 ### Reporter prompt
 
+- The same logic applies to the reporter prompt
+
 ```{.python filename="01_hello_world/src/pk_agent/prompts/reporter.py"}
 """
 System prompt for the reporter agent.
@@ -628,9 +737,17 @@ Requirements:
 """
 ```
 
+
+
 ## Schemas
 
+- Schemas are the structured formats of the data that we use in our workflow, typically defined as Pydantic models. They serve as contracts for what the data should look like, both for the LLM agents and for the rest of the codebase.
+- Having pydantic models helps on the one hand to validate the data (e.g. ensuring that the volume of distribution is a positive number), and on the other hand to document the expected shape and meaning of the data (e.g. what fields are expected, what they mean, what units to use, etc.). This is especially important when working with LLMs, as it guides them to produce output in the correct format and with the correct content.
+- In our case, we have two main schemas: one for the PK parameters (the domain model) and one for the shared state that flows through the graph. The PK parameters schema defines what the extracted parameters should look like, while the state schema defines what data is available at each step of the workflow and how it can be updated.
+
 ### Package init
+
+- The regular package init file with a simple docstring
 
 ```{.python filename="01_hello_world/src/pk_agent/schemas/__init__.py"}
 """
@@ -643,6 +760,9 @@ rules for the data used in the workflow.
 ```
 
 ### PK model
+
+- For the PK model, we define the `PKParameters` class, which has three fields: `drug_name`, `volume_of_distribution`, and `clearance`. Each field has a type, a description, and some validation rules (e.g. volume of distribution must be greater than 0).
+- Importantly: The LLM can read the description of the fields, so it can be treated also as some kind of prompt engineering. By providing clear descriptions of what each field means and what units to use, we guide the model to produce output that conforms to our expectations without having to repeat the same instructions in the prompt every time.
 
 ```{.python filename="01_hello_world/src/pk_agent/schemas/pk_model.py"}
 """
@@ -667,7 +787,7 @@ A single Pydantic class serves three purposes at once:
 """
 from pydantic import BaseModel, ConfigDict, Field
 
-
+# define the PKParameters class (expected output of the extractor node)
 class PKParameters(BaseModel):
     """PK parameters of a one-compartment IV model."""
 
@@ -701,6 +821,9 @@ class PKParameters(BaseModel):
 
 ### State
 
+- The state is also an important schema, as it defines the shared data structure that flows through the graph. It contains all the information that the nodes can read from and write to. In our case, it has three fields: `paper_content`, `extracted_parameters`, and `report`. The first one is the raw text of the paper, the second one is the structured PK parameters extracted by the extractor node, and the third one is the executive summary generated by the reporter node.
+
+
 ```{.python filename="01_hello_world/src/pk_agent/schemas/state.py"}
 """
 Graph state: the data pipeline between nodes. A shared whiteboard
@@ -720,7 +843,7 @@ from typing import Optional
 from pydantic import BaseModel, ConfigDict, Field
 from .pk_model import PKParameters
 
-
+# define the AgentState class, which is the shared state object for all nodes in the workflow
 class AgentState(BaseModel):
     """Shared state object for all nodes in the workflow."""
 
@@ -737,6 +860,7 @@ class AgentState(BaseModel):
         description="Executive summary produced by the reporter node.",
     )
 
+    # add extra='forbid' to catch any typos or unexpected fields in the state updates
     model_config = ConfigDict(extra="forbid")
 ```
 
