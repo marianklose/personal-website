@@ -1,6 +1,6 @@
 ---
-title: "Human-in-the-loop LLM agentic pharmacometric workflow"
-description: "Part 1: Hello world"
+title: "Building a Human-in-the-Loop LLM Agent Workflow for Pharmacometrics"
+description: "Part 1: A Hello World Example with LangGraph"
 author:
   - name: Marian Klose
     url: https://github.com/marianklose
@@ -33,11 +33,18 @@ format:
 
 ## Motivation
 
-It is still unclear where exactly the ongoing revolution of Large Language Models (LLMs) is heading, but in 2026 I would say the buzzword "*agentic workflows*" is very common. While previously the public discussion was rather dominated by *copilots* and the simple use of chatbots from the *browser* window, it seems that it has shifted rather towards multi agent workflows, where multiple specialized agents jointly deal with a task.
+It is still unclear where exactly the ongoing revolution of Large Language Models (LLMs) is heading, but in 2026 I would say the buzzword "*agentic workflows*" is very common. While previously the public discussion was rather dominated by *copilots* and the simple use of *chatbots* from the browser window, it seems that it has shifted rather towards multi agent workflows, where multiple specialized agents jointly deal with a task.
 
-In pharmacometrics we typically still need a human in the loop, and the whole reasoning and action steps need to be understandable post hoc. That is why a human in the loop (HITL) approach seems justified. I am still learning and by no means an expert. In a previous blogpost I talked about the simple concepts of a command line ChatGPT chatbot, and now I want to learn and explain to myself a more robust framework for what such a HITL agentic workflow in pharmacometrics could look like.
+In pharmacometrics we typically still need a human in the loop, and the whole reasoning and action steps need to be understandable post hoc. That is why a human in the loop (HITL) approach seems justified. I am still learning and by no means an expert. In a [previous blogpost](https://marian-klose.com/posts/command_line_chatgpt/) I talked about the simple concepts of a command line ChatGPT chatbot, and now I want to learn and explain to myself a more robust framework for what such a HITL agentic workflow in pharmacometrics could look like. 
 
-This blogpost is just me explaining things to myself, and for my own documentation I am wrapping it up in writing with the help of my LLM-assistant Claude. By sharing it online maybe it is also a help to others. But please expect mistakes and treat this post as my messy notes. In this first part my goal is to create a hello world example of two agents in Python that can later be easily adapted to have human approval, and that is robust enough to be extended to real world cases. But let us first dig into some fundamental understanding of LLM agents, multi agent workflows, and the specifics of pharmacometrics.
+::: {.callout-note}
+## A note on how this was written
+I get help from Claude and other chatbots when writing posts like this one, so please don't treat it as solely my own piece of work. It's a weird blend of my own thoughts and reasoning with the collective written knowledge of the world, mixed in through LLM assistance. Fitting, perhaps, for a post about human-in-the-loop workflows.
+:::
+
+This blogpost is just me explaining things to myself, and for my own documentation I am wrapping it up in writing with the help of my LLM-assistant Claude. By sharing it online maybe it is also a help to others. But please expect mistakes and treat this post rather as my messy notes converted into a blogpost with the help of LLMs. In this first part my goal is to create a hello world example of two agents in Python that can later be easily adapted to have human approval, and that is robust enough to be extended to real world cases. But let us first dig into some fundamental understanding of LLM agents, multi agent workflows, and the specifics of pharmacometrics.
+
+
 
 
 ## What is an LLM-agent?
@@ -87,7 +94,7 @@ I personally feel somewhat capable of writing Python code, so I would like to st
 
 The human in the loop approach needs to be implementable, which means that the architecture must be able to pause and wait for a human response. Some pharmacometric workflows also take a long time to finish. If at one point you want your agent to independently run NONMEM, then read the output, and then draft a report based on the outcome, the framework needs to handle long running tasks and orchestrate the agents properly.
 
-Overall, I chose `LangGraph` for the main task of orchestrating and running the agents. After consulting with ChatGPT, Claude, and Gemini, this seems the best option for our use case. It is a rather complex framework with a bit of a steeper learning curve than the `pydantic ai` package I used in the previous blogpost, but hopefully this investment will pay off later. It allows easy switching of providers, so we are not bound to a single one and can even use locally run LLMs if data protection and privacy reasons ask for it.
+Overall, I chose `LangGraph` for the main task of orchestrating and running the agents. After consulting with ChatGPT, Claude, and Gemini, this seems the best option for our use case. It is a rather complex framework with a bit of a steeper learning curve than the `pydantic ai` package I used in the [previous blogpost](https://marian-klose.com/posts/command_line_chatgpt/), but hopefully this investment will pay off later. It allows easy switching of providers, so we are not bound to a single one and can even use locally run LLMs if data protection and privacy reasons ask for it.
 
 On top of this main architecture, we can implement a bunch of other packages to extend the approach later:
 
@@ -107,7 +114,7 @@ Unlike other frameworks, LangGraph supports cycles, which are essential for agen
 
 Checkpointers (which save the workflow's state after each step) persist state between steps (in memory for prototyping, SQLite or Postgres for production). This is what unlocks the three features we actually care about in pharmacometrics: resume after failure for long running tasks, time travel debugging, and human in the loop interrupts where the graph pauses and waits for expert approval before continuing.
 
-The trade off: there is genuine overhead. A plain script would do the job much more efficiently for two linear nodes, see my previous blogpost. But the abstraction pays off the moment we need cycles, branching, persistence, or HITL, and bolting those onto a plain script later means rewriting everything.
+The trade off: there is genuine overhead. A plain script would do the job much more efficiently for two linear nodes, see my [previous blogpost](https://marian-klose.com/posts/command_line_chatgpt/). But the abstraction pays off the moment we need cycles, branching, persistence, or HITL, and bolting those onto a plain script later means rewriting everything.
 
 ![LangGraph workflow diagram, generated by Claude](media/langgraph_state_and_nodes.svg)
 
@@ -125,11 +132,11 @@ I will go through each file of the codebase, and try to explain to myself what i
 
 # Codebase
 
-
+You can find the codebase for this repository in [my GitHub repo](https://github.com/marianklose/llm-agentic-workflow-sandbox). In the following, I will go through the key files and explain the design choices and the logic behind them. 
 
 ## Repository structure
 
-- Lets start with building up the codebase. Here is a structure of the current repository, in which I will add multiple examples. Currently we deal with the `01_hello_world` example, and later I will add more examples to it.
+Let me start by building up the codebase. Here is the structure of the current repository, in which I will add multiple examples. Currently we are dealing with the `01_hello_world` example, and later I will add more examples to it.
 
 
 ```{.bash filename="repo structure"}
@@ -166,24 +173,17 @@ llm-agentic-workflow-sandbox/
                 └── state.py
 ```
 
-- We currently have a single `requirements.txt` inside the repo, meaning there is one set of packages and package versions that apply to all of our future example cases
-- the `01_hello_world` folder contains the content of this example, later there will be `02_xxx`, `03_xxx`, ...
-- `main.py` serves as our entry point, this is which gets everything started. 
-- `data/` contains a dummy sample paper that we will use for our test case
-- `src/` is the **source root**, a conventional folder (the "src layout") whose only job is to hold our package one level down. It's not itself a package — there's no `__init__.py` in it.
-- `src/pk_agent/` is our actual top-level **package**. Inside it, `graph/`, `llm/`, `nodes/`, `prompts/`, and `schemas/` are **subpackages**, and files like `config.py` or `builder.py` are **modules**.
-- Imports always start at the package, never at the source root: e.g. `from pk_agent.graph.builder import build_graph`. `src` never appears in an import path.
-- For such a simple case example, we could've put everything into one `main.py` file and be done with it. But this package structure and the separation of input, source files, prompts, graphs etc. keeps it maintainable and easily adjustable later on.
-- Using **packages and subpackages** groups related code under a single namespace (`pk_agent.nodes`, `pk_agent.prompts`, …), so the directory tree itself documents what lives where and imports read like a table of contents.
-- Splitting into **modules** (one `.py` per concern: the LLM provider, the state schema, each node) gives every responsibility exactly one home — swapping the model, tweaking a prompt, or adding a node is a one-file change with a predictable blast radius.
-- This layout also mirrors how real LangChain/LangGraph projects are organized, so learning it on a toy example pays off the moment we scale to `02_xxx`, `03_xxx`, or hand the code to someone else.
+The repository has a single `requirements.txt` at the top level, meaning that one set of packages and package versions applies to all of our future example cases. The `01_hello_world` folder then contains the content of this specific example, and later there will be `02_xxx`, `03_xxx`, and so on. Inside this folder, `main.py` serves as our entry point, the file which gets everything started, while `data/` contains a dummy sample paper that we will use for our test case.
+
+The `src/` directory is the **source root**, a conventional folder (the "src layout") whose only job is to hold our package one level down. It is not itself a package since there is no `__init__.py` in it. The actual top-level **package** is `src/pk_agent/`, and inside it `graph/`, `llm/`, `nodes/`, `prompts/`, and `schemas/` are **subpackages**, while files like `config.py` or `builder.py` are **modules**. Imports always start at the package, never at the source root: for example `from pk_agent.graph.builder import build_graph`. The `src` directory never appears in an import path.
+
+For such a simple example, we could have put everything into a single `main.py` file and been done with it. But this package structure and the separation of input, source files, prompts, graphs, and so on keeps things maintainable and easily adjustable later on. Using **packages and subpackages** groups related code under a single namespace (`pk_agent.nodes`, `pk_agent.prompts`, …), so the directory tree itself documents what lives where, and imports read like a table of contents. Splitting into **modules** (one `.py` per concern: the LLM provider, the state schema, each node) gives every responsibility exactly one home. Swapping the model, tweaking a prompt, or adding a node is then a one-file change with a predictable blast radius. This layout also mirrors how real LangChain and LangGraph projects are organized, so learning it on a toy example pays off the moment we scale to `02_xxx`, `03_xxx`, or hand the code to someone else.
 
 
 
 ## Entry point
 
-- Now we define the entry point, which is our `main.py`. It loads the content of our pharmacometric paper (which we want to extract parameters from), and starts the workflow.
-- A lot of the functions won't make sense yet (e.g., what is `build_graph()` doing?), but we will later tackle these functions and hopefully it makes more sense by then
+Now we define the entry point, which is our `main.py`. It loads the content of our pharmacometric paper (from which we want to extract parameters) and starts the workflow. A lot of the functions will not make sense yet (e.g. what is `build_graph()` actually doing?), but we will tackle these later, and hopefully by then it makes more sense.
 
 
 ```{.python filename="01_hello_world/main.py"}
@@ -253,18 +253,14 @@ if __name__ == "__main__":
     main()
 ```
 
-- Great, that already defines the key logic behind our agentic pmx workflow
-- we first load our own objects from our self-defined packages/subpackages/modules
-- we then construct the initial state by reading in the paper content and the config
-- the intital state is then being passed to the graph, which now runs through the nodes and the final state is being reported as result of that workflow
-- Here is a high-level graphical overview of `main.py`:
+That already defines the key logic behind our agentic pharmacometric workflow. We first load our own objects from our self-defined packages, subpackages, and modules. We then construct the initial state by reading in the paper content together with the config. The initial state is then passed to the graph, which runs through the nodes, and the final state is reported as the result of that workflow. Here is a high-level graphical overview of `main.py`:
 
 ![Key workflow in main, generated by Claude](media/main_workflow.svg)
 
 
 ## Input data
 
-- The input data file is quite simple, here we just have that made up short version of a paper, containing prose and some hidden parmameter estimate information within the prose
+The input data file is quite simple. We just have a made-up short version of a paper, containing prose and some hidden parameter estimate information within the prose.
 
 ```{.markdown filename="01_hello_world/data/sample_paper.md"}
 # Pharmacokinetic Characterization of Drugamab in Healthy Volunteers
@@ -303,9 +299,7 @@ reported for similar monoclonal antibodies.
 
 ## Package root
 
-- pk_agent is our package, and we need to tell python that. By adding an `__init__.py` file into a folder, we tell python "treat this folder as a package"
-- this means they can be later imported by calling something like `from pk_agent.graph.builder import build_graph`
-- often it is empty or just contains a docstring for documentation purposes
+`pk_agent` is our package, and we need to tell Python that. By adding an `__init__.py` file into a folder, we tell Python "treat this folder as a package", which means it can later be imported by calling something like `from pk_agent.graph.builder import build_graph`. The file is often empty or just contains a docstring for documentation purposes.
 
 ```{.python filename="01_hello_world/src/pk_agent/__init__.py"}
 """
@@ -316,8 +310,7 @@ parameter extraction and reporting.
 
 ## Configuration
 
-- There are some high level configuration choices (like the model we want to use, in this case `anthropic:claude-sonnet-4-6`) that should better not be hard coded everywhere but live in one central configuration file. This is exactly what we do with `config.py`
-- The settings defined in config are also reading in the .env variables, retrieving any api keys needed and so on. Whatever is being shared across multiple files should be coded in here instead of hard-coding it in the files
+There are some high-level configuration choices (like the model we want to use, in this case `anthropic:claude-sonnet-4-6`) that should better not be hard-coded everywhere but live in one central configuration file. This is exactly what we do with `config.py`. The settings defined in `config` also read in the `.env` variables, retrieving any API keys needed, and so on. Whatever is shared across multiple files should be coded in here instead of being hard-coded in the individual files.
 
 ```{.python filename="01_hello_world/src/pk_agent/config.py"}
 """
@@ -327,10 +320,10 @@ settings. SettingsConfigDict tells Pydantic to look for .env three levels up fro
 which is the project root.
 
 Design split between this file and .env:
-  - config.py holds *application behavior* — model choice, temperature,
+  - config.py holds *application behavior*: model choice, temperature,
     paths. These are design decisions, version-controlled, the same
     on every machine.
-  - .env holds *machine-specific or secret values* — API keys. These
+  - .env holds *machine-specific or secret values*: API keys. These
     are gitignored and vary per developer or environment.
 
 If you find yourself wanting to vary something per machine that isn't
@@ -374,10 +367,7 @@ settings = Settings()
 
 ## Graph
 
-- Now we start with the first proper subpackage, the graph subpackage we are building.
-- The graph itself defines the workflow orchestration, it defines the nodes (= function/workers/agents) and the edges (= connections/wires)
-- The package needs to answer which nodes exist, in what order they run, and how state moves between them
-- In our simple case, we want to define a Graph which gives us
+Now we start with the first proper subpackage, the graph subpackage we are building. The graph itself defines the workflow orchestration: it defines the nodes (the functions, workers, or agents) and the edges (the connections, or wires) between them. The package needs to answer which nodes exist, in what order they run, and how state moves between them. In our simple case, we want to define a graph which gives us:
 
 ```
 START → extractor → reporter → END
@@ -385,7 +375,7 @@ START → extractor → reporter → END
 
 ### Package init
 
-- As always, we initialize this subpackage with a init file that contains a simple docstring
+As always, we initialize this subpackage with an `__init__.py` file that contains a simple docstring.
 
 ```{.python filename="01_hello_world/src/pk_agent/graph/__init__.py"}
 """
@@ -397,10 +387,7 @@ We have the different nodes (= functions) and the edges between them (= control 
 
 ### Builder
 
-- Now we define the  graph builder module, the central piece of the graph subpackage which contains a factory function `build_graph()`
-- A factory function is a function whose main job is to create and return another object
-- `build_graph()` is a factory function because it constructs the LangGraph workflow and returns a ready-to-use compiled graph.
-- In main, we have at one point constructed the graph and then invoked it with the initial state
+Now we define the graph builder module, the central piece of the graph subpackage which contains a factory function `build_graph()`. A factory function is a function whose main job is to create and return another object. `build_graph()` is a factory function because it constructs the LangGraph workflow and returns a ready-to-use compiled graph. In `main.py`, we have already seen that we first construct the graph and then invoke it with the initial state. The full path to this object is:
 
 ```
 pk_agent                  package
@@ -472,19 +459,17 @@ def build_graph(checkpointer: BaseCheckpointSaver | None = None):
     return workflow.compile(checkpointer=checkpointer)
 ```
 
-- To visualize the workflow again, we have our friend Claude draw it for us:
+To visualize the workflow again, we have our friend Claude draw it for us:
 
 ![Graph builder by build_graph(), generated by Claude](media/graph_builder.svg)
 
 ## LLM provider
 
-- As mentioned in the introduction, we want to be as model agnostic as possible. We want to easily switch between different providers and models. 
-- This is why we have a central LLM provider module, which defines a single function `get_llm()` that returns a configured LLM instance.
-- It also allows us to later extend the framework with litellm, which can give us more advanced features like fallback routing, retries, cost tracking, and so on. If we want to add these features later, we can simply change the implementation of `get_llm()` without having to touch any of the nodes that call it. This is a key design principle: we want to have a single chokepoint for all LLM calls, so that we can easily manage and extend them later on.
+As mentioned in the introduction, we want to be as model agnostic as possible. We want to easily switch between different providers and models. This is why we have a central LLM provider module, which defines a single function `get_llm()` that returns a configured LLM instance. It also allows us to later extend the framework with `litellm`, which can give us more advanced features like fallback routing, retries, cost tracking, and so on. If we want to add these features later, we can simply change the implementation of `get_llm()` without having to touch any of the nodes that call it. This is a key design principle: we want to have a single chokepoint for all LLM calls, so that we can easily manage and extend them later on.
 
 ### Package init
 
-- The regular package init file with a simple docstring
+The regular package init file with a simple docstring.
 
 ```{.python filename="01_hello_world/src/pk_agent/llm/__init__.py"}
 """
@@ -494,8 +479,7 @@ LLM provider abstraction.
 
 ### Provider
 
-- Now we define the provider, which is currently a very simple `get_llm()` function that is basically a wrapper around `init_chat_model()` from LangChain. It takes care of reading the model choice and temperature from the settings, and returns a configured LLM instance that can be used in the nodes.
-- The advantage of having a single `get_llm()` function is that we can later add much more complex logic in this function without having to touch all of the other files. Hard-coding it would make it much harder to maintain and extend later on.
+Now we define the provider, which is currently a very simple `get_llm()` function that is basically a wrapper around `init_chat_model()` from LangChain. It takes care of reading the model choice and temperature from the settings, and returns a configured LLM instance that can be used in the nodes. The advantage of having a single `get_llm()` function is that we can later add much more complex logic in this function without having to touch all the other files. Hard-coding it would make it much harder to maintain and extend later on.
 
 ```{.python filename="01_hello_world/src/pk_agent/llm/provider.py"}
 """
@@ -543,18 +527,17 @@ def get_llm(temperature: float | None = None) -> BaseChatModel:
 
 ## Nodes
 
-- The nodes are the work horses in our workflow, this is where actually things happen and where the state is being updated
-- Each node is basically a function that takes some input, does something (e.g. calls an LLM), and returns some output. In our case, the nodes take the sate as input and return a dict of updates to the state.
-- In agentic workflows, nodes are often LLM-based agents that perform a specific task, e.g. extracting parameters, writing a report, or making a decision. But they can also be simple Python functions that do some data processing or calculations.
-- The key design principle for nodes is that they should be pure functions: they take the state as input and return a new state (or a dict of updates to the state) without mutating the input state directly. This makes them easy to test and reason about, and it also allows LangGraph to handle state merging and persistence in a consistent way.
+The nodes are the workhorses in our workflow. This is where things actually happen and where the state gets updated. Each node is basically a function that takes some input, does something, and returns some output. In our case, the nodes take the state as input, run an LLM-agent, and return a dictionary of updates that is merged back into the state. In agentic workflows, nodes are often LLM-based agents that perform a specific task, e.g. extracting parameters, writing a report, or making a decision. But they can also be simple Python functions that do some data processing or calculations.
+
+The key design principle for nodes is that they should be pure functions: they take the state as input and return a new state (or a dict of updates to the state) without mutating the input state directly. This makes them easy to test and reason about, and it also allows LangGraph to handle state merging and persistence in a consistent way.
 
 ### Package init
 
-- The regular package init file with a simple docstring
+The regular package init file with a simple docstring.
 
 ```{.python filename="01_hello_world/src/pk_agent/nodes/__init__.py"}
 """
-Workflow nodes — the units of work in the LangGraph graph.
+Workflow nodes: the units of work in the LangGraph graph.
 Each node is basically a function that takes some input,
 does something (e.g. calls an LLM), and returns some output.
 In our case, the nodes take the sate as input and return a dict of updates to the state.
@@ -563,10 +546,11 @@ In our case, the nodes take the sate as input and return a dict of updates to th
 
 ### Extractor
 
-- Our first node is the extractor, which reads the paper content from the state and extracts the PK parameters from it. It uses the LLM to do this, and it returns the extracted parameters as a structured output (a Pydantic model) that gets merged back into the state.
-- The updated state can later be passed to the next node.
-- Importantly, the node functions within a LangGraph workflow always take the state as input and then return a dictionary of updates. We do not have to take care about how these updates are being merged back into the state, this is something that LangGraph handles for us.
-- Please note: In these node files (`01_hello_world/src/pk_agent/nodes/extractor.py`) we define one single function, like `extract_parameters()`.  In the graph builder (`01_hello_world/src/pk_agent/graph/builder.py`) we then tell LangGraph that this function is a node in our workflow by calling `workflow.add_node("extractor", extract_parameters)`. So we explicitely link the function inside the file to the node name in the graph.
+Our first node is the extractor, which reads the paper content from the state and extracts the PK parameters from it. It uses the LLM to do this, and it returns the extracted parameters as a structured output (a Pydantic model) that gets merged back into the state. The updated state can later be passed to the next node.
+
+Importantly, the node functions within a LangGraph workflow always take the state as input and then return a dictionary of updates. We do not have to take care of how these updates are merged back into the state, this is something that LangGraph handles for us.
+
+Please note: in these node files (`01_hello_world/src/pk_agent/nodes/extractor.py`) we define one single function, like `extract_parameters()`. In the graph builder (`01_hello_world/src/pk_agent/graph/builder.py`) we then tell LangGraph that this function is a node in our workflow by calling `workflow.add_node("extractor", extract_parameters)`. So we explicitly link the function inside the file to the node name in the graph.
 
 ```{.python filename="01_hello_world/src/pk_agent/nodes/extractor.py"}
 """
@@ -620,7 +604,7 @@ def extract_parameters(state: AgentState) -> dict:
 
 ### Reporter
 
-- The same logic applies to the reporter agent, which takes the extracted parameters from the state and generates a short executive summary based on them. It also uses the LLM to do this, and it returns the generated report as a string that gets merged back into the state.
+The same logic applies to the reporter agent, which takes the extracted parameters from the state and generates a short executive summary based on them. It also uses the LLM to do this, and it returns the generated report as a string that gets merged back into the state.
 
 ```{.python filename="01_hello_world/src/pk_agent/nodes/reporter.py"}
 """
@@ -672,13 +656,14 @@ def write_report(state: AgentState) -> dict:
 
 ## Prompts
 
-- Prompts are an important piece in LLM-based workflows, and the buzzword "prompt engineering" reflects that. The way we ask the model to do something has a huge impact on the results we get back, so it is important to design good prompts.
-- We didn't invest a lot of time in our prompts in this case, but for this simple example they are sufficient. In a real use case, we would probably want to iterate on them a bit more, test different versions, and so on.
-- By putting the prompts into separate files, we can easily find and edit them later on without having to dig through the node code. It also keeps the node code cleaner and more focused on the logic, while the prompts are all in one place.
+Prompts are an important piece in LLM-based workflows, and the buzzword "prompt engineering" reflects that. The way we ask the model to do something has a huge impact on the results we get back, so it is important to design good prompts. We did not invest a lot of time in our prompts in this case, but for this simple example they are sufficient. In a real use case, we would probably want to iterate on them a bit more, test different versions, and so on.
+
+By putting the prompts into separate files, we can easily find and edit them later on without having to dig through the node code. It also keeps the node code cleaner and more focused on the logic, while the prompts are all in one place.
 
 ### Package init
 
-- The regular package init file with a simple docstring
+The regular package init file with a simple docstring.
+
 
 ```{.python filename="01_hello_world/src/pk_agent/prompts/__init__.py"}
 """
@@ -688,8 +673,7 @@ System prompts / messages for the workflow's agents.
 
 ### Extractor prompt
 
-- Define the system prompt for the extractor agent, has to be clear and specific to guide the model to do what we want it to do
-- Later on, the `EXTRACTOR_SYSTEM_PROMPT` will be used when invoking the LLM in the extractor node (`01_hello_world/src/pk_agent/nodes/extractor.py`)
+Now we define the system prompt for the extractor agent. It has to be clear and specific to guide the model to do what we want it to do. Later on, the `EXTRACTOR_SYSTEM_PROMPT` will be used when invoking the LLM in the extractor node (`01_hello_world/src/pk_agent/nodes/extractor.py`).
 
 ```{.python filename="01_hello_world/src/pk_agent/prompts/extractor.py"}
 """
@@ -717,7 +701,7 @@ Important:
 
 ### Reporter prompt
 
-- The same logic applies to the reporter prompt
+The same logic applies to the reporter prompt.
 
 ```{.python filename="01_hello_world/src/pk_agent/prompts/reporter.py"}
 """
@@ -741,13 +725,13 @@ Requirements:
 
 ## Schemas
 
-- Schemas are the structured formats of the data that we use in our workflow, typically defined as Pydantic models. They serve as contracts for what the data should look like, both for the LLM agents and for the rest of the codebase.
-- Having pydantic models helps on the one hand to validate the data (e.g. ensuring that the volume of distribution is a positive number), and on the other hand to document the expected shape and meaning of the data (e.g. what fields are expected, what they mean, what units to use, etc.). This is especially important when working with LLMs, as it guides them to produce output in the correct format and with the correct content.
-- In our case, we have two main schemas: one for the PK parameters (the domain model) and one for the shared state that flows through the graph. The PK parameters schema defines what the extracted parameters should look like, while the state schema defines what data is available at each step of the workflow and how it can be updated.
+Schemas are the structured formats of the data that we use in our workflow, typically defined as Pydantic models. They serve as contracts for what the data should look like, both for the LLM agents and for the rest of the codebase. Having Pydantic models helps on the one hand to validate the data (e.g. ensuring that the volume of distribution is a positive number), and on the other hand to document the expected shape and meaning of the data (e.g. what fields are expected, what they mean, what units to use, and so on). This is especially important when working with LLMs, as it guides them to produce output in the correct format and with the correct content.
+
+In our case, we have two main schemas: one for the PK parameters (the domain model) and one for the shared state that flows through the graph. The PK parameters schema defines what the extracted parameters should look like, while the state schema defines what data is available at each step of the workflow and how it can be updated.
 
 ### Package init
 
-- The regular package init file with a simple docstring
+The regular package init file with a simple docstring.
 
 ```{.python filename="01_hello_world/src/pk_agent/schemas/__init__.py"}
 """
@@ -761,8 +745,10 @@ rules for the data used in the workflow.
 
 ### PK model
 
-- For the PK model, we define the `PKParameters` class, which has three fields: `drug_name`, `volume_of_distribution`, and `clearance`. Each field has a type, a description, and some validation rules (e.g. volume of distribution must be greater than 0).
-- Importantly: The LLM can read the description of the fields, so it can be treated also as some kind of prompt engineering. By providing clear descriptions of what each field means and what units to use, we guide the model to produce output that conforms to our expectations without having to repeat the same instructions in the prompt every time.
+For the PK model, we define the `PKParameters` class, which has three fields: `drug_name`, `volume_of_distribution`, and `clearance`. Each field has a type, a description, and some validation rules (e.g. volume of distribution must be greater than 0).
+
+Importantly, the LLM can read the description of the fields, so it can be treated as some kind of prompt engineering as well. By providing clear descriptions of what each field means and what units to use, we guide the model to produce output that conforms to our expectations without having to repeat the same instructions in the prompt every time.
+
 
 ```{.python filename="01_hello_world/src/pk_agent/schemas/pk_model.py"}
 """
@@ -821,8 +807,7 @@ class PKParameters(BaseModel):
 
 ### State
 
-- The state is also an important schema, as it defines the shared data structure that flows through the graph. It contains all the information that the nodes can read from and write to. In our case, it has three fields: `paper_content`, `extracted_parameters`, and `report`. The first one is the raw text of the paper, the second one is the structured PK parameters extracted by the extractor node, and the third one is the executive summary generated by the reporter node.
-
+The state is also an important schema, as it defines the shared data structure that flows through the graph. It contains all the information that the nodes can read from and write to. In our case, it has three fields: `paper_content`, `extracted_parameters`, and `report`. The first one is the raw text of the paper, the second one is the structured PK parameters extracted by the extractor node, and the third one is the executive summary generated by the reporter node.
 
 ```{.python filename="01_hello_world/src/pk_agent/schemas/state.py"}
 """
@@ -867,12 +852,12 @@ class AgentState(BaseModel):
 
 # Running the agentic workflow
 
-- That was a looooot of code for a simple example, and as said, this could've been done in a more concise way. But the more robust structure will surely pay off later on when we want to extend the workflow, add more nodes, add human-in-the-loop interactions, and so on. 
-- But now we should test the whole thing and see if it works.
+That was a looooot of code for a simple example, and as said, this could have been done in a much more concise way. But the more robust structure will surely pay off later on when we want to extend the workflow, add more nodes, add human-in-the-loop interactions, and so on. Now we should test the whole thing and see if it actually works.
+
 
 ## Setting up virtual environment and installing dependencies
 
-- The first thing we have to do is to set up a virtual environment and install any dependencies. The dependencies are hidden in the `requirements.txt` file, and here is the content:
+The first thing we have to do is to set up a virtual environment and install any dependencies. The dependencies are hidden in the `requirements.txt` file, and here is the content:
 
 ```{.python filename="llm-agentic-workflow-sandbox/requirements.txt"}
 langgraph>=0.6.0
@@ -883,27 +868,26 @@ pydantic-settings>=2.0.0
 python-dotenv>=1.0.0
 ```
 
-- We would first change directory into the proper folder
+We first change directory into the proper folder:
 
 ```bash
 cd llm-agentic-workflow-sandbox
 ```
 
-- Then we create and activate a virtual environment (using venv, but you can also use conda or whatever you prefer)
+Then we create and activate a virtual environment (using `venv`, but you can also use `conda` or whatever you prefer):
 
 ```bash
 python -m venv .venv
 .venv\Scripts\activate
 ```
 
-- And finally, we install the dependencies:
+And finally, we install the dependencies:
 
 ```bash
 pip install -r requirements.txt
 ```
 
-- This creates a fresh virtual environment with all the dependencies installed, and we can now run our code without worrying about conflicts with other projects or system-wide packages.
-- We still need to define the API keys for the LLM provider of choice in the `.env` file:
+This creates a fresh virtual environment with all the dependencies installed, and we can now run our code without worrying about conflicts with other projects or system-wide packages. We still need to define the API keys for the LLM provider of choice in the `.env` file:
 
 ```{.python filename="llm-agentic-workflow-sandbox/.env"}
 # the anthropic API key, needed to use the claude-sonnet-4-6 model
@@ -913,7 +897,9 @@ ANTHROPIC_API_KEY=sk-xxxxx-xxxx-xx-xxxxxxxxxxxxxxx
 # OPENAI_API_KEY=
 ```
 
-- With everything set up, we can now run the main file to execute the workflow:
+## Executing the agentic workflow
+
+With everything set up, we can now run the main file to execute the workflow:
 
 ```bash
 python 01_hello_world/main.py
@@ -945,14 +931,12 @@ the disposition of Drugamab in the studied population.
 ```
 
 
-- Hurray, our first multi-agentic workflow with two independent nodes is running and producing results!
-- It correctly extracted the NLME model parameters from the dummy paper content and then generated a short executive summary based on these parameters.
+Hurray, our first multi-agentic workflow with two independent nodes is running and producing results! It correctly extracted the NLME model parameters from the dummy paper content and then generated a short executive summary based on these parameters.
 
+Since we use `graph.invoke()` in `main.py`, the workflow runs in a single go from start to end. If we wanted to have more control over the execution we could use `graph.stream()` instead, which gives us an iterator that yields the state after each node is executed. This way, we could inspect the state after the extractor node, ask a human to verify or correct the extracted parameters, and then pass the updated state to the reporter node. This is what will be covered in part 2, where we will add human-in-the-loop interactions to the workflow. For the first part, I am happy with this simple end-to-end example and call it a day. 
 
 # Epilogue
 
-- This was a very simplified example, and we invested heavily into a solid and robust codebase to later on extend the framework. 
-- Now we have everything we need to easily add more nodes, human-in-the-loop interactions, more complex state management, and so on. We can also easily switch between different LLM providers and models by changing the implementation of `get_llm()`.
-- An exciting time we are living in, and I hope this example gives you a good starting point to build your own agentic workflows in the pharmacometrics domain!
-- That's it for me in this first part, hopefully part 2 will follow soon. If you find mistakes or have feedback, please use the comment function below. Stay tuned!
+This was a very simplified example, and we invested heavily into a solid and robust codebase in order to extend the framework later on. Now we have everything we need to easily add more nodes, human-in-the-loop interactions, more complex state management, and so on. We can also easily switch between different LLM providers and models by changing the implementation of `get_llm()`.
 
+An exciting time we are living in, and I hope this example gives you a good starting point to build your own agentic workflows in pharmacometrics. That is it for me in this first part, and hopefully part 2 will follow soon. If you find mistakes or have feedback, please use the comment function below. Stay tuned!
