@@ -43,7 +43,7 @@ Bayesian estimation is a widely-used method in pharmacometrics. Many pharmacomet
 
 ![Portrait of Thomas Bayes.](media/Thomas_Bayes.gif){width=40% #fig-thomas-bayes}  
 
-In many scenarios, these Bayesian calculations happen automatically *under the hood* when fitting pharmacometric models (e.g., in NONMEM), making it quite easy to use Bayesian estimates without exploring the underlying concepts and calculations. I myself did this for quite some time. Reproducing  calculations through equations is often the best way to grasp the underlying principles. Therefore, I have decided to write this blogpost, in which I want to explain the Bayesian idea and reproduce a simple Bayesian MAP estimation in R. I will mainly focus on the point estimates of the posterior distribution (`MAP` or `EBE`). Addressing the full *posterior* distribution is also important and might be covered in a future post. There are other nice blogposts which cover full Bayesian approaches in more detail, such as @navarro2023.
+In many scenarios, these Bayesian calculations happen automatically *under the hood* when fitting pharmacometric models (e.g., in NONMEM), making it quite easy to use Bayesian estimates without exploring the underlying concepts and calculations. I myself did this for quite some time. Reproducing  calculations through equations is often the best way to grasp the underlying principles. Therefore, I have decided to write this blogpost, in which I want to explain the Bayesian idea and reproduce a simple Bayesian MAP estimation in R. I will mainly focus on the point estimates of the posterior distribution (`MAP` or `EBE`). Addressing the full *posterior* distribution is also important and might be covered in a future post. There are other nice blogposts which cover full Bayesian approaches in more detail, such as @navarroBuildingPopulationPharmacokinetic2023.
 
 Please note: These are just my personal reflections and interpretations of Bayesian concepts. I cannot guarantee that my explanations, equations, or terminology are flawless. If you notice any inaccuracies, please let me know so I can correct them! 
 
@@ -94,7 +94,7 @@ Many pharmacometricians use MAP estimates due to their computational simplicity 
 
 ## Our goal in pharmacometrics {#sec-bayesian-idea-goal}
 
-So, what role does Bayesian methodology play in pharmacometrics? Obviously it is not about optimizing your commute.  Instead, we typically use Bayesian estimation to individualize the model parameters for a given individual $i$, which has a set of unique observations $Y_{i}$. This concept was first introduced to the pharmacometric community by @sheiner1972, if I am not mistaken. On the one hand, `MAP` estimation happens during model building, at each iteration step [^2] and then after the actual estimation has finished, at the `POSTHOC` step. On the other hand, it is also used in MIPD settings as described above. The approach remains the same, and we will later have a look at a simple pharmacokinetic example to illustrate this.
+So, what role does Bayesian methodology play in pharmacometrics? Obviously it is not about optimizing your commute.  Instead, we typically use Bayesian estimation to individualize the model parameters for a given individual $i$, which has a set of unique observations $Y_{i}$. This concept was first introduced to the pharmacometric community by @sheinerModellingIndividualPharmacokinetics1972, if I am not mistaken. On the one hand, `MAP` estimation happens during model building, at each iteration step [^2] and then after the actual estimation has finished, at the `POSTHOC` step. On the other hand, it is also used in MIPD settings as described above. The approach remains the same, and we will later have a look at a simple pharmacokinetic example to illustrate this.
 
 So far we used a relatable example rather focusing on the intuition behind Bayesian thinking. Now we want to dive a bit into the mathematics behind it to be able to formally reproduce a simple Bayesian MAP estimation in R.
 
@@ -104,7 +104,7 @@ So far we used a relatable example rather focusing on the intuition behind Bayes
 
 ## Data and visualization {#sec-pharmex-data}
 
-Without data, no Bayesian parameter individualization. For our MAP estimation, we are using the same simulated data set I have defined in the previous blogpost about NLME modelling. See @klose2025 for more details about this data set. Let's start by loading the simulated concentration-time data and showing the head of the data set:
+Without data, no Bayesian parameter individualization. For our MAP estimation, we are using the same simulated data set I have defined in the previous blogpost about NLME modelling. See @kloseMyAttemptUnderstand2025 for more details about this data set. Let's start by loading the simulated concentration-time data and showing the head of the data set:
 
 ```{r}
 # read in simulated dataset from previous blogpost
@@ -156,7 +156,7 @@ With that being done, we are all set to define the NLME model in NONMEM in a nex
 
 ## NLME model structure {#sec-pharmex-nlme}
 
-For our example and reference, we'll use a simple one-compartment IV model with first-order kinetics, previously fitted to similar data (@klose2025). Here's a sketch of the simple model structure:
+For our example and reference, we'll use a simple one-compartment IV model with first-order kinetics, previously fitted to similar data (@kloseMyAttemptUnderstand2025). Here's a sketch of the simple model structure:
 
 ![Model structure of our simple 1 cmt i.v. bolus model with first order kinetics.](media/model_structure.png){width=100% #fig-mod-struct}
 
@@ -335,7 +335,7 @@ In the end, we would have to use a numerical optimizer function to explore the p
 
 ### Prior term {#sec-bayesth-map-prior}
 
-The prior distribution $p(\eta_i)$ captures our inital beliefs and uncertainties regarding $\eta_i$ before observing the data. Bayesian methods allow to  incorporate prior knowledge through various distributions and parameters (which is why Bayesians are sometimes being criticized of being too subjective). In pharmacometrics, a common approach is using a prior based on a previously estimated model, typically a normal distribution with mean 0 and variance $\omega^2_{CL}$ estimated from the NLME model. In contrast to other disciplines, the choice of our priors is generally less controversial, although there has been recent discussion regarding whether this one-approach-fits-all is always appropriate or if priors should be adjusted (e.g., flattened compared to the NLME estimate) in certain situations. See @hughes2021 for more information. The general "role" of the prior term is that strong deviations from the "typical" individual should only be considered when it allows us do substantially better explain the observed data. I like to see it as some kind of penalty function which prevents us from doing a potentially flawed curve fitting exercise. The probability density function (PDF) of a normal distribution can be used to calculate its contribution:
+The prior distribution $p(\eta_i)$ captures our inital beliefs and uncertainties regarding $\eta_i$ before observing the data. Bayesian methods allow to  incorporate prior knowledge through various distributions and parameters (which is why Bayesians are sometimes being criticized of being too subjective). In pharmacometrics, a common approach is using a prior based on a previously estimated model, typically a normal distribution with mean 0 and variance $\omega^2_{CL}$ estimated from the NLME model. In contrast to other disciplines, the choice of our priors is generally less controversial, although there has been recent discussion regarding whether this one-approach-fits-all is always appropriate or if priors should be adjusted (e.g., flattened compared to the NLME estimate) in certain situations. See @hughesHybridMachineLearning2021 for more information. The general "role" of the prior term is that strong deviations from the "typical" individual should only be considered when it allows us do substantially better explain the observed data. I like to see it as some kind of penalty function which prevents us from doing a potentially flawed curve fitting exercise. The probability density function (PDF) of a normal distribution can be used to calculate its contribution:
  
 
 $$p(\eta_i) = \frac{1}{\sqrt{2\pi\omega^2}} \cdot \exp\left(-\frac{(\eta_i-\mu)^2}{2\omega^2}\right)$$  {#eq-prior-1}
@@ -348,7 +348,7 @@ Taking the log yields:
 
 $$\log(p(\eta_i)) = -0.5 \log(2\pi\omega^2) - \frac{\eta_i^2}{2\omega^2}$$ {#eq-prior-3}
 
-Now, we can compute the prior term for any given individual $\eta_i$, using variance $\omega^2_{CL}$ (e.g., 0.11) from our NLME model. If we have a good reason to believe that our prior should be different (e.g., we apply our model to another population), we could adjust the variance accordingly (as described in @hughes2021).
+Now, we can compute the prior term for any given individual $\eta_i$, using variance $\omega^2_{CL}$ (e.g., 0.11) from our NLME model. If we have a good reason to believe that our prior should be different (e.g., we apply our model to another population), we could adjust the variance accordingly (as described in @hughesHybridMachineLearning2021).
 
 ### Likelihood term {#sec-bayesth-map-likelihood}
 
@@ -464,7 +464,7 @@ From the plots, we see that certain values of $\eta_i$ and $CL_i$ are more likel
 
 ## Likelihood term {#sec-rrepro-likelihood}
 
-To calculate the log likelihood term described in @eq-likelihood-2, we first have to define a model prediction function. Given our simple one-compartment model, we use a closed-form expression, though the principles apply equally to ODE-based models. More details on the model prediction function can be found in the previous blogpost, see @klose2025.
+To calculate the log likelihood term described in @eq-likelihood-2, we first have to define a model prediction function. Given our simple one-compartment model, we use a closed-form expression, though the principles apply equally to ODE-based models. More details on the model prediction function can be found in the previous blogpost, see @kloseMyAttemptUnderstand2025.
 
 
 ```{r filename="function: model_fun()"}

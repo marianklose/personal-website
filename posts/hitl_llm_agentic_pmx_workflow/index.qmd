@@ -5,14 +5,14 @@ author:
   - name: Marian Klose
     url: https://github.com/marianklose
     orcid: 0009-0005-1706-6289
-date: 2026-05-23
+date: 2026-05-25
 categories: [llm, agentic workflows, human in the loop] 
-image: preview.jpg
+image: preview.png
 draft: false
 draft-mode: visible
 echo: true
 execute:
-  freeze: true # never re-render during project render (dependencies might change over time)
+  freeze: false
   echo: true
   message: false
   warning: false
@@ -39,10 +39,10 @@ In pharmacometrics we typically still need a human in the loop, and the whole re
 
 ::: {.callout-note}
 ## A note on how this was written
-I get help from Claude and other chatbots when writing posts like this one, so please don't treat it as solely my own piece of work. It's a weird blend of my own thoughts and reasoning with the collective written knowledge of the world, mixed in through LLM assistance. Fitting, perhaps, for a post about human-in-the-loop workflows.
+I get help from Claude and other LLM chatbots when writing posts like this one, so please don't treat it as solely my own piece of work. It's a blend of my own thoughts and reasoning with the collective written knowledge of the world, mixed in through LLM assistance. Fitting, perhaps, for a post about human-in-the-loop workflows.
 :::
 
-This blogpost is just me explaining things to myself, and for my own documentation I am wrapping it up in writing with the help of my LLM-assistant Claude. By sharing it online maybe it is also a help to others. But please expect mistakes and treat this post rather as my messy notes converted into a blogpost with the help of LLMs. In this first part my goal is to create a hello world example of two agents in Python that can later be easily adapted to have human approval, and that is robust enough to be extended to real world cases. But let us first dig into some fundamental understanding of LLM agents, multi agent workflows, and the specifics of pharmacometrics.
+This blogpost is just me explaining things to myself, and for my own documentation I am wrapping it up in a blogpost. By sharing it online maybe it is also a help to others. But please expect mistakes and treat this post rather as my messy notes converted into a blogpost with the help of LLMs. In this first part my goal is to create a hello world example of two agents in Python that can later be easily adapted to have human approval, and that is robust enough to be extended to real world cases. But let us first dig into some fundamental understanding of LLM agents, multi agent workflows, and the specifics of pharmacometrics.
 
 
 

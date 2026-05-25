@@ -15,7 +15,7 @@ comments: false
 2023 – Present
 :::
 ::: {.g-col-6}
-**Doctoral Studies**  
+**Doctoral Studies (expected completion: end of 2026)**  
 :::
 ::: {.g-col-3}
 *PharMetrX program*
@@ -283,7 +283,7 @@ R
 Python
 :::
 ::: {.g-col-9}
-**Beginner**
+**Intermediate**
 :::
 :::
 

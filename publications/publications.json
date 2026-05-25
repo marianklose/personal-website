@@ -1,0 +1,146 @@
+[
+  {
+    "type": "publication",
+    "title": "Evaluation of the MeroRisk Calculator, A User-Friendly Tool to Predict the Risk of Meropenem Target Non-Attainment in Critically Ill Patients",
+    "authors": "Liebchen U, <u>Klose M</u>, Paal M, Vogeser M, Zoller M, Schroeder I, Schmitt L, Huisinga W, Michelet R, Zander J, Scharf C, Weinelt FA, Kloft C",
+    "date": "2021-04-20",
+    "journal": "Antibiotics",
+    "doi": "10.3390/antibiotics10040468"
+  },
+  {
+    "type": "abstract",
+    "title": "Using microdose-based activity measurement to individualise dosing of cytochrome P450 metabolised drugs: a case study with yohimbine and tamoxifen",
+    "authors": "Michelet R, Weinelt F, <u>Klose M</u>, Mc Laughlin AM, Kluwe F, Montefusco-Pereira C, Van Dyk M, Vay M, Huisinga W, Kloft C, Mikus G",
+    "date": "2021-09-02",
+    "journal": "PAGE 2021",
+    "url": "https://www.page-meeting.org/default.asp?abstract=9807"
+  },
+  {
+    "type": "abstract",
+    "title": "The Impact of UGT2B7 and CYP2D6 Gene-Drug- and CYP-mediated Drug-Drug-Interactions on Oxycodone and Oxymorphone Pharmacokinetics using PBPK Modelling",
+    "authors": "<u>Klose M</u>, Schmidt S, Cristofoletti R",
+    "date": "2022-10-30",
+    "journal": "ACoP13",
+    "url": "https://www.go-acop.org/?abstract=413"
+  },
+  {
+    "type": "publication",
+    "title": "TLD-1, a novel liposomal doxorubicin, in patients with advanced solid tumors: Dose escalation and expansion part of a multicenter open-label phase I trial (SAKK 65/16)",
+    "authors": "Colombo I, Koster KL, Holer L, Haefliger S, Rabaglio M, Bastian S, Schwitter M, Eckhardt K, Hayoz S, Mc Laughlin AM, Kloft C, <u>Klose M</u>, Halbherr S, Baumgartner C, Sessa C, Stathis A, Hess D, Joerger M",
+    "date": "2024-02-02",
+    "journal": "European Journal of Cancer",
+    "doi": "10.1016/j.ejca.2024.113588"
+  },
+  {
+    "type": "publication",
+    "title": "Exploring the impact of CYP2D6 and UGT2B7 gene-drug interactions, and CYP-mediated DDI on oxycodone and oxymorphone pharmacokinetics using physiologically-based pharmacokinetic modeling and simulation",
+    "authors": "<u>Klose M</u>, Cristofoletti R, Silva CM, Mangal N, Turgeon J, Michaud V, Lesko LJ, Schmidt S",
+    "date": "2024-03-01",
+    "journal": "European Journal of Pharmaceutical Sciences",
+    "doi": "10.1016/j.ejps.2023.106689"
+  },
+  {
+    "type": "publication",
+    "title": "Population pharmacokinetics of TLD-1, a novel liposomal doxorubicin, in a phase I trial",
+    "authors": "Mc Laughlin AM, Hess D, Michelet R, Colombo I, Haefliger S, Bastian S, Rabaglio M, Schwitter M, Fischer S, Eckhardt K, Hayoz S, Kopp C, <u>Klose M</u>, Sessa C, Stathis A, Halbherr S, Huisinga W, Joerger M, Kloft C",
+    "date": "2024-06-15",
+    "journal": "Cancer Chemotherapy and Pharmacology",
+    "doi": "10.1007/s00280-024-04679-z"
+  },
+  {
+    "type": "abstract",
+    "title": "Machine learning-driven flattening of model priors: A comparative simulation study across multiple compounds",
+    "authors": "<u>Klose M</u>, Thoma F, Kovar L, Huisinga W, Michelet R, Kloft C",
+    "date": "2024-06-26",
+    "journal": "PAGE 2024",
+    "url": "https://www.page-meeting.org/default.asp?abstract=10858"
+  },
+  {
+    "type": "publication",
+    "title": "Type 1 diabetes prevention clinical trial simulator: Case reports of model-informed drug development tool",
+    "authors": "Morales JF, <u>Klose M</u>, Hoffert Y, Podichetty JT, Burton J, Schmidt S, Romero K, O'Doherty I, Martin F, Campbell-Thompson M, Haller MJ, Atkinson MA, Kim S",
+    "date": "2024-07-03",
+    "journal": "CPT: Pharmacometrics & Systems Pharmacology",
+    "doi": "10.1002/psp4.13193"
+  },
+  {
+    "type": "publication",
+    "title": "A model-informed clinical trial simulation tool with a graphical user interface for Duchenne muscular dystrophy",
+    "authors": "Kim J, Morales JF, Kang S, <u>Klose M</u>, Willcocks RJ, Daniels MJ, Belfiore-Oshan R, Walter GA, Rooney WD, Vandenborne K, Kim S",
+    "date": "2024-10-03",
+    "journal": "CPT: Pharmacometrics & Systems Pharmacology",
+    "doi": "10.1002/psp4.13246"
+  },
+  {
+    "type": "abstract",
+    "title": "TLD-1 – A novel liposomal doxorubicin formulation, in patients with advanced solid tumors: Final results of a multicenter, open-label, cross-over phase I study (SAKK 65/16)",
+    "authors": "Joerger M, <u>Klose M</u>, Colombo I, Koster K, Gobat K, Haefliger S, Rabaglio M, Bastian S, Schwitter M, Eckhardt K, Hayoz S, Halbherr S, Sessa C, Michelet R, Mc Laughlin A, Hess D, Kloft C, Stathis A",
+    "date": "2025-03-03",
+    "journal": "ESMO TAT 2025",
+    "url": "https://oncologypro.esmo.org/meeting-resources/esmo-targeted-anticancer-therapies-congress-2025/tld-1-a-novel-liposomal-doxorubicin-formulation-in-patients-with-advanced-solid-tumors-final-results-of-a-multicenter-open-label-cross-over-p"
+  },
+  {
+    "type": "presentation",
+    "title": "A Bayesian-NLME approach identifies patients at risk of delayed MTX elimination if informative TDM data is provided",
+    "authors": "<u>Klose M</u>, Marschner D, Knott M, Wendler J, Müller-Kühnle J, Kovar L, Huisinga W, Nyhoegen C, Michelet R, Mc Laughlin AM, Illerhaus G, Kloft C",
+    "date": "2025-05-16",
+    "journal": "PK/PD Expert Meeting 2025 — Best Presentation Award Session",
+    "url": "https://www.pkpd-expertentreffen.de/"
+  },
+  {
+    "type": "abstract",
+    "title": "A Bayesian-NLME approach identifies patients at risk of delayed MTX elimination if informative TDM data is provided",
+    "authors": "<u>Klose M</u>, Marschner D, Knott M, Wendler J, Müller-Kühnle J, Kovar L, Huisinga W, Nyhoegen C, Michelet R, Mc Laughlin AM, Illerhaus G, Kloft C",
+    "date": "2025-06-04",
+    "journal": "PAGE 2025",
+    "url": "https://www.page-meeting.org/default.asp?abstract=11507"
+  },
+  {
+    "type": "publication",
+    "title": "TLD-1, a novel liposomal doxorubicin, in patients with solid tumors: Comparative pharmacokinetics and final results of a multicenter phase 1 study (SAKK 65/16)",
+    "authors": "<u>Klose M</u>, Colombo I, Gobat K, Koster KL, Haefliger S, Rabaglio M, Bastian S, Schwitter M, Zürrer-Härdi U, Eckhardt K, Hayoz S, Halbherr S, Sessa C, Michelet R, Mc Laughlin AM, Hess D, Stathis A, Kloft C, Joerger M",
+    "date": "2025-11-18",
+    "journal": "Clinical Pharmacokinetics",
+    "doi": "10.1007/s40262-025-01588-z"
+  },
+  {
+    "type": "publication",
+    "title": "Prior-fitted functional flow: In-context generative models for pharmacokinetics (preprint)",
+    "authors": "Ojeda C, Hartung N, Huisinga W, Jahn T, Kavwele PK, <u>Klose M</u>, Kumar P, Sánchez RJ, Faroughy DA",
+    "date": "2026-04-19",
+    "journal": "arXiv",
+    "doi": "10.48550/arXiv.2604.17670"
+  },
+  {
+    "type": "abstract",
+    "title": "Prior-fitted amortized generative neural networks models for population pharmacokinetics",
+    "authors": "Ojeda Marin CA, Sanchéz RJ, Hartung N, Huisinga W, Kumar P, <u>Klose M</u>, Jahn T, Faroughy DA",
+    "date": "2026-06-03",
+    "journal": "PAGE 2026",
+    "url": "https://www.page-meeting.org/default.asp?abstract=12101"
+  },
+  {
+    "type": "abstract",
+    "title": "Prospective randomised controlled trial on model-informed precision dosing (MIPD) for ustekinumab and vedolizumab in inflammatory bowel diseases (MOVE-IT): A Bayesian framework incorporating parameter uncertainty",
+    "authors": "Widigson ESK, Braun K, Duvnjak Z, <u>Klose M</u>, Frimor C, Anilkumar K, Huisinga W, Steenholdt C, Ainsworth MA, Kloft C",
+    "date": "2026-06-03",
+    "journal": "PAGE 2026",
+    "url": "https://www.page-meeting.org/default.asp?abstract=12045"
+  },
+  {
+    "type": "abstract",
+    "title": "Direct and hybrid machine learning approaches do not outperform NLME-based full Bayesian forecasting for early identification of delayed methotrexate elimination",
+    "authors": "<u>Klose M</u>, Marschner D, Knott M, Wendler J, Müller-Kühnle J, Nyhoegen C, Hartung N, Huisinga W, Michelet R, Mc Laughlin AM, Illerhaus G, Kloft C",
+    "date": "2026-06-03",
+    "journal": "PAGE 2026",
+    "url": "https://www.page-meeting.org/default.asp?abstract=11877"
+  },
+  {
+    "type": "presentation",
+    "title": "Bringing quantitative approaches to the bedside: Forecasting the risk of delayed methotrexate elimination",
+    "authors": "<u>Klose M</u>",
+    "date": "2026-06-06",
+    "journal": "15th Global Gators Symposium 2026",
+    "url": "https://pharmacy.ufl.edu/global-gators-symposium/15th-global-gators-symposium-program/"
+  }
+]
