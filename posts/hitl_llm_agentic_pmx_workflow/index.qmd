@@ -865,6 +865,94 @@ class AgentState(BaseModel):
 ```
 
 
+# Running the agentic workflow
+
+- That was a looooot of code for a simple example, and as said, this could've been done in a more concise way. But the more robust structure will surely pay off later on when we want to extend the workflow, add more nodes, add human-in-the-loop interactions, and so on. 
+- But now we should test the whole thing and see if it works.
+
+## Setting up virtual environment and installing dependencies
+
+- The first thing we have to do is to set up a virtual environment and install any dependencies. The dependencies are hidden in the `requirements.txt` file, and here is the content:
+
+```{.python filename="llm-agentic-workflow-sandbox/requirements.txt"}
+langgraph>=0.6.0
+langchain>=1.0.0
+langchain-anthropic>=0.3.0
+pydantic>=2.0.0
+pydantic-settings>=2.0.0
+python-dotenv>=1.0.0
+```
+
+- We would first change directory into the proper folder
+
+```bash
+cd llm-agentic-workflow-sandbox
+```
+
+- Then we create and activate a virtual environment (using venv, but you can also use conda or whatever you prefer)
+
+```bash
+python -m venv .venv
+.venv\Scripts\activate
+```
+
+- And finally, we install the dependencies:
+
+```bash
+pip install -r requirements.txt
+```
+
+- This creates a fresh virtual environment with all the dependencies installed, and we can now run our code without worrying about conflicts with other projects or system-wide packages.
+- We still need to define the API keys for the LLM provider of choice in the `.env` file:
+
+```{.python filename="llm-agentic-workflow-sandbox/.env"}
+# the anthropic API key, needed to use the claude-sonnet-4-6 model
+ANTHROPIC_API_KEY=sk-xxxxx-xxxx-xx-xxxxxxxxxxxxxxx
+
+# only needed if we switch providers to openai/chatgpt
+# OPENAI_API_KEY=
+```
+
+- With everything set up, we can now run the main file to execute the workflow:
+
+```bash
+python 01_hello_world/main.py
+```
+
+This gives us the following output:
+
+```{.python filename="output"}
+(.venv) PS C:\xxx\llm-agentic-workflow-sandbox> python 01_hello_world/main.py
+
+=== Workflow started (thread_id=c69f3a80...) ===
+
+--- Extracted parameters ---
+  Drug:        Drugamab
+  V_d:         4.8 L
+  CL:          0.35 L/h
+
+--- Executive summary ---
+Drugamab was characterized by a one-compartment intravenous 
+pharmacokinetic model with a volume of distribution (V_d) 
+of 4.8 L and a systemic clearance (CL) of 0.35 L/h. 
+The elimination half-life, calculated as t_1/2 = ln(2) × V_d / CL,
+was approximately 9.5 hours. Concentration-time data following 
+intravenous administration were adequately described by 
+monoexponential decline consistent with linear, 
+first-order elimination kinetics. These structural model 
+parameters provide a quantitative basis for characterizing 
+the disposition of Drugamab in the studied population.
+```
+
+
+- Hurray, our first multi-agentic workflow with two independent nodes is running and producing results!
+- It correctly extracted the NLME model parameters from the dummy paper content and then generated a short executive summary based on these parameters.
+
+
 # Epilogue
 
-Lorem ipsum.
+- This was a very simplified example, and we invested heavily into a solid and robust codebase to later on extend the framework. 
+- Now we have everything we need to easily add more nodes, human-in-the-loop interactions, more complex state management, and so on. We can also easily switch between different LLM providers and models by changing the implementation of `get_llm()`.
+- An exciting time we are living in, and I hope this example gives you a good starting point to build your own agentic workflows in the pharmacometrics domain!
+- That's it for me in this first part, hopefully part 2 will follow soon. If you find mistakes or have feedback, please use the comment function below. Stay tuned!
+
